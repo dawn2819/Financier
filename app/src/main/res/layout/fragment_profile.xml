@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="100dp">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/profile_title"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/on_surface"/>
+        </LinearLayout>
+
+        <!-- Avatar section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginBottom="24dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_profile_avatar"
+                android:layout_width="84dp"
+                android:layout_height="84dp"
+                app:shapeAppearanceOverlay="@style/ShapeCircle"
+                android:src="@drawable/ic_default_avatar"
+                android:scaleType="centerCrop"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:id="@+id/tv_display_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dawn"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/on_surface"/>
+
+            <TextView
+                android:id="@+id/tv_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@dawn"
+                android:textSize="14sp"
+                android:textColor="@color/on_surface_variant"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/premium_member"
+                android:textSize="11sp"
+                android:textColor="@color/secondary"
+                android:textStyle="bold"
+                android:background="@drawable/bg_badge"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"/>
+        </LinearLayout>
+
+        <!-- General Preferences card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/surface_container"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            android:layout_marginBottom="12dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/general_preferences"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_surface_variant"
+                    android:letterSpacing="0.05"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Language row -->
+                <LinearLayout
+                    android:id="@+id/row_language"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/language_label" android:textSize="15sp" android:textColor="@color/on_surface"/>
+                    <TextView android:id="@+id/tv_language" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tiếng Việt" android:textSize="14sp" android:textColor="@color/on_surface_variant"/>
+                    <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_chevron_right" android:tint="@color/on_surface_variant" android:layout_marginStart="4dp"/>
+                </LinearLayout>
+
+                <!-- Currency row -->
+                <LinearLayout
+                    android:id="@+id/row_currency"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/currency_label" android:textSize="15sp" android:textColor="@color/on_surface"/>
+                    <TextView android:id="@+id/tv_currency" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VND" android:textSize="14sp" android:textColor="@color/on_surface_variant"/>
+                    <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_chevron_right" android:tint="@color/on_surface_variant" android:layout_marginStart="4dp"/>
+                </LinearLayout>
+
+                <!-- Notifications -->
+                <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/notifications_label" android:textSize="15sp" android:textColor="@color/on_surface"/>
+                    <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switch_notifications" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true"/>
+                </LinearLayout>
+
+                <!-- Dark Mode -->
+                <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/dark_mode_label" android:textSize="15sp" android:textColor="@color/on_surface"/>
+                    <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switch_dark_mode" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Security card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/surface_container"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            android:layout_marginBottom="12dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/security_privacy" android:textSize="10sp" android:textStyle="bold" android:textColor="@color/on_surface_variant" android:letterSpacing="0.05" android:layout_marginBottom="12dp"/>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/biometric_lock" android:textSize="15sp" android:textColor="@color/on_surface"/>
+                    <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switch_biometric" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+                <LinearLayout android:id="@+id/row_manage_accounts" android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/manage_accounts" android:textSize="15sp" android:textColor="@color/on_surface"/>
+                    <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_chevron_right" android:tint="@color/on_surface_variant"/>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Sign out -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_sign_out"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="@string/sign_out"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/error"
+            app:backgroundTint="#1AFFB4AB"
+            app:strokeColor="@color/error"
+            app:strokeWidth="1dp"
+            app:cornerRadius="26dp"
+            android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

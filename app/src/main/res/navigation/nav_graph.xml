@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:anim="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/dashboardFragment">
+
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.financier.app.ui.dashboard.DashboardFragment"
+        android:label="Home">
+        <action
+            android:id="@+id/action_dashboard_to_transactions"
+            app:destination="@id/transactionsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_dashboard_to_profile"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/transactionsFragment"
+        android:name="com.financier.app.ui.transactions.TransactionsFragment"
+        android:label="History"/>
+
+    <fragment
+        android:id="@+id/budgetFragment"
+        android:name="com.financier.app.ui.budget.BudgetFragment"
+        android:label="Budget"/>
+
+    <fragment
+        android:id="@+id/reportsFragment"
+        android:name="com.financier.app.ui.reports.ReportsFragment"
+        android:label="Reports"/>
+
+    <fragment
+        android:id="@+id/aiChatFragment"
+        android:name="com.financier.app.ui.ai.AiChatFragment"
+        android:label="AI"/>
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.financier.app.ui.profile.ProfileFragment"
+        android:label="Profile">
+        <action
+            android:id="@+id/action_profile_to_accounts"
+            app:destination="@id/manageAccountsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/manageAccountsFragment"
+        android:name="com.financier.app.ui.profile.ManageAccountsFragment"
+        android:label="Accounts"/>
+
+</navigation>

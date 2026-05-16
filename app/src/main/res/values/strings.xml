@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">Financier</string>
+
+    <!-- Auth -->
+    <string name="login_title">Welcome Back</string>
+    <string name="login_subtitle">Sign in to your account</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="btn_login">Sign In</string>
+    <string name="btn_register">Create Account</string>
+    <string name="register_title">Create Account</string>
+    <string name="display_name_hint">Your Name</string>
+    <string name="error_empty_fields">Please fill in all fields</string>
+    <string name="error_invalid_credentials">Invalid username or password</string>
+    <string name="error_username_taken">Username already taken</string>
+
+    <!-- Dashboard -->
+    <string name="welcome_back">Welcome back,</string>
+    <string name="good_morning">Good morning, %s</string>
+    <string name="good_afternoon">Good afternoon, %s</string>
+    <string name="good_evening">Good evening, %s</string>
+    <string name="total_balance">TOTAL BALANCE</string>
+    <string name="income">Income</string>
+    <string name="expenses">Expenses</string>
+    <string name="daily_spending">Daily spending</string>
+    <string name="remaining_budget">Remaining budget</string>
+    <string name="spending_trend">Spending Trend</string>
+    <string name="last_7_days">Last 7 days</string>
+    <string name="recent_transactions">Recent transactions</string>
+    <string name="view_all">View All</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_history">History</string>
+    <string name="nav_budget">Budget</string>
+    <string name="nav_reports">Reports</string>
+    <string name="nav_ai">AI</string>
+
+    <!-- Transactions -->
+    <string name="search_transactions">Search transactions…</string>
+    <string name="filter_date">Date</string>
+    <string name="filter_category">Category</string>
+    <string name="filter_type">Type</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="monthly_overview">Monthly Overview</string>
+
+    <!-- Add Transaction -->
+    <string name="add_transaction">Add Transaction</string>
+    <string name="expense">EXPENSE</string>
+    <string name="income_type">INCOME</string>
+    <string name="amount">AMOUNT</string>
+    <string name="date">Date</string>
+    <string name="note">Note</string>
+    <string name="note_hint">What was this for?</string>
+    <string name="category">Category</string>
+    <string name="save_transaction">Save Transaction</string>
+    <string name="select_account">Select Account</string>
+
+    <!-- Categories -->
+    <string name="cat_food">Food</string>
+    <string name="cat_transport">Transport</string>
+    <string name="cat_shopping">Shopping</string>
+    <string name="cat_health">Health</string>
+    <string name="cat_entertainment">Entertain</string>
+    <string name="cat_housing">Housing</string>
+    <string name="cat_education">Edu</string>
+    <string name="cat_gym">Gym</string>
+    <string name="cat_bills">Bills</string>
+    <string name="cat_travel">Travel</string>
+    <string name="cat_pets">Pets</string>
+    <string name="cat_others">Others</string>
+    <string name="cat_salary">Salary</string>
+    <string name="cat_freelance">Freelance</string>
+    <string name="cat_investment">Investment</string>
+    <string name="cat_gift">Gift</string>
+
+    <!-- Budget -->
+    <string name="budget_title">Budget</string>
+    <string name="total_monthly_budget">TOTAL MONTHLY BUDGET</string>
+    <string name="spent_so_far">Spent so far</string>
+    <string name="categories">Categories</string>
+    <string name="add_new_budget">Add New Budget</string>
+    <string name="budget_insight">Budget Insight</string>
+    <string name="near_limit">Near Limit</string>
+    <string name="remaining">Remaining</string>
+    <string name="used">%d%% used</string>
+
+    <!-- Reports -->
+    <string name="reports_title">Reports</string>
+    <string name="filter_week">Week</string>
+    <string name="filter_month">Month</string>
+    <string name="filter_year">Year</string>
+    <string name="ai_insights">AI Insights</string>
+    <string name="spending_by_category">Spending by Category</string>
+    <string name="monthly_comparison">Monthly Comparison</string>
+    <string name="annual_net_worth">Annual Net Worth</string>
+    <string name="current_balance">Current Balance</string>
+    <string name="vs_last_year">vs last year</string>
+
+    <!-- AI Chat -->
+    <string name="ai_title">Financier AI</string>
+    <string name="ai_greeting">Hi %s! I\'m your AI financial assistant. How can I help you today?</string>
+    <string name="ai_hint">Ask Financier anything…</string>
+    <string name="chip_analyze">Analyze spending</string>
+    <string name="chip_saving">Set saving goal</string>
+    <string name="chip_bills">Check bills</string>
+    <string name="ai_badge">Financier AI</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profile</string>
+    <string name="premium_member">Premium Member</string>
+    <string name="general_preferences">GENERAL PREFERENCES</string>
+    <string name="currency_label">Currency</string>
+    <string name="notifications_label">Notifications</string>
+    <string name="dark_mode_label">Dark Mode</string>
+    <string name="language_label">Language</string>
+    <string name="security_privacy">SECURITY &amp; PRIVACY</string>
+    <string name="biometric_lock">Biometric Lock</string>
+    <string name="export_data">Export Data (CSV)</string>
+    <string name="support">SUPPORT</string>
+    <string name="help_support">Help &amp; Support</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="manage_accounts">Manage Accounts</string>
+
+    <!-- Accounts -->
+    <string name="accounts_title">My Accounts</string>
+    <string name="add_account">Add Account</string>
+    <string name="account_name_hint">Account name (e.g. Cash, VCB, MoMo)</string>
+    <string name="account_type">Account Type</string>
+    <string name="initial_balance">Initial Balance</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+
+    <!-- Account types -->
+    <string name="type_cash">Cash</string>
+    <string name="type_bank">Bank</string>
+    <string name="type_ewallet">E-Wallet</string>
+    <string name="type_savings">Savings</string>
+
+    <!-- Common -->
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="ok">OK</string>
+    <string name="loading">Loading…</string>
+    <string name="no_data">No data yet</string>
+    <string name="error_generic">Something went wrong. Please try again.</string>
+
+    <!-- Notifications -->
+    <string name="notification_bill_reminder">Bill Reminder</string>
+    <string name="btn_pay_now">Pay Now</string>
+    <string name="btn_remind_later">Remind later</string>
+    <string name="account_context">Account Context</string>
+
+    <!-- Language names -->
+    <string name="lang_english">English</string>
+    <string name="lang_vietnamese">Tiếng Việt</string>
+</resources>

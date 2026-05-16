@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">Financier</string>
+
+    <!-- Auth -->
+    <string name="login_title">Chào Mừng Trở Lại</string>
+    <string name="login_subtitle">Đăng nhập vào tài khoản của bạn</string>
+    <string name="username_hint">Tên đăng nhập</string>
+    <string name="password_hint">Mật khẩu</string>
+    <string name="btn_login">Đăng Nhập</string>
+    <string name="btn_register">Tạo Tài Khoản</string>
+    <string name="register_title">Tạo Tài Khoản</string>
+    <string name="display_name_hint">Tên hiển thị</string>
+    <string name="error_empty_fields">Vui lòng điền đầy đủ thông tin</string>
+    <string name="error_invalid_credentials">Tên đăng nhập hoặc mật khẩu không đúng</string>
+    <string name="error_username_taken">Tên đăng nhập đã được sử dụng</string>
+
+    <!-- Dashboard -->
+    <string name="welcome_back">Chào mừng trở lại,</string>
+    <string name="good_morning">Chào buổi sáng, %s</string>
+    <string name="good_afternoon">Chào buổi chiều, %s</string>
+    <string name="good_evening">Chào buổi tối, %s</string>
+    <string name="total_balance">TỔNG SỐ DƯ</string>
+    <string name="income">Thu nhập</string>
+    <string name="expenses">Chi tiêu</string>
+    <string name="daily_spending">Chi tiêu hôm nay</string>
+    <string name="remaining_budget">Ngân sách còn lại</string>
+    <string name="spending_trend">Xu Hướng Chi Tiêu</string>
+    <string name="last_7_days">7 ngày gần nhất</string>
+    <string name="recent_transactions">Giao dịch gần đây</string>
+    <string name="view_all">Xem tất cả</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Trang chủ</string>
+    <string name="nav_history">Lịch sử</string>
+    <string name="nav_budget">Ngân sách</string>
+    <string name="nav_reports">Báo cáo</string>
+    <string name="nav_ai">AI</string>
+
+    <!-- Transactions -->
+    <string name="search_transactions">Tìm kiếm giao dịch…</string>
+    <string name="filter_date">Ngày</string>
+    <string name="filter_category">Danh mục</string>
+    <string name="filter_type">Loại</string>
+    <string name="today">Hôm nay</string>
+    <string name="yesterday">Hôm qua</string>
+    <string name="monthly_overview">Tổng Quan Tháng</string>
+
+    <!-- Add Transaction -->
+    <string name="add_transaction">Thêm Giao Dịch</string>
+    <string name="expense">CHI TIÊU</string>
+    <string name="income_type">THU NHẬP</string>
+    <string name="amount">SỐ TIỀN</string>
+    <string name="date">Ngày</string>
+    <string name="note">Ghi chú</string>
+    <string name="note_hint">Giao dịch này là gì?</string>
+    <string name="category">Danh mục</string>
+    <string name="save_transaction">Lưu Giao Dịch</string>
+    <string name="select_account">Chọn tài khoản</string>
+
+    <!-- Categories -->
+    <string name="cat_food">Ăn uống</string>
+    <string name="cat_transport">Đi lại</string>
+    <string name="cat_shopping">Mua sắm</string>
+    <string name="cat_health">Sức khỏe</string>
+    <string name="cat_entertainment">Giải trí</string>
+    <string name="cat_housing">Nhà ở</string>
+    <string name="cat_education">Giáo dục</string>
+    <string name="cat_gym">Thể dục</string>
+    <string name="cat_bills">Hóa đơn</string>
+    <string name="cat_travel">Du lịch</string>
+    <string name="cat_pets">Thú cưng</string>
+    <string name="cat_others">Khác</string>
+    <string name="cat_salary">Lương</string>
+    <string name="cat_freelance">Freelance</string>
+    <string name="cat_investment">Đầu tư</string>
+    <string name="cat_gift">Quà tặng</string>
+
+    <!-- Budget -->
+    <string name="budget_title">Ngân Sách</string>
+    <string name="total_monthly_budget">TỔNG NGÂN SÁCH THÁNG</string>
+    <string name="spent_so_far">Đã chi</string>
+    <string name="categories">Danh mục</string>
+    <string name="add_new_budget">Thêm Ngân Sách</string>
+    <string name="budget_insight">Gợi Ý Ngân Sách</string>
+    <string name="near_limit">Gần Hết Hạn Mức</string>
+    <string name="remaining">Còn lại</string>
+    <string name="used">Đã dùng %d%%</string>
+
+    <!-- Reports -->
+    <string name="reports_title">Báo Cáo</string>
+    <string name="filter_week">Tuần</string>
+    <string name="filter_month">Tháng</string>
+    <string name="filter_year">Năm</string>
+    <string name="ai_insights">Nhận Xét AI</string>
+    <string name="spending_by_category">Chi Tiêu Theo Danh Mục</string>
+    <string name="monthly_comparison">So Sánh Tháng</string>
+    <string name="annual_net_worth">Tổng Tài Sản Năm</string>
+    <string name="current_balance">Số dư hiện tại</string>
+    <string name="vs_last_year">so với năm ngoái</string>
+
+    <!-- AI Chat -->
+    <string name="ai_title">Financier AI</string>
+    <string name="ai_greeting">Xin chào %s! Tôi là trợ lý tài chính AI của bạn. Tôi có thể giúp gì cho bạn?</string>
+    <string name="ai_hint">Hỏi Financier bất cứ điều gì…</string>
+    <string name="chip_analyze">Phân tích chi tiêu</string>
+    <string name="chip_saving">Đặt mục tiêu tiết kiệm</string>
+    <string name="chip_bills">Xem hóa đơn</string>
+    <string name="ai_badge">Financier AI</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Hồ Sơ</string>
+    <string name="premium_member">Thành Viên Premium</string>
+    <string name="general_preferences">TÙY CHỈNH CHUNG</string>
+    <string name="currency_label">Đơn vị tiền tệ</string>
+    <string name="notifications_label">Thông báo</string>
+    <string name="dark_mode_label">Chế độ tối</string>
+    <string name="language_label">Ngôn ngữ</string>
+    <string name="security_privacy">BẢO MẬT &amp; RIÊNG TƯ</string>
+    <string name="biometric_lock">Khóa sinh trắc học</string>
+    <string name="export_data">Xuất Dữ Liệu (CSV)</string>
+    <string name="support">HỖ TRỢ</string>
+    <string name="help_support">Trợ Giúp &amp; Hỗ Trợ</string>
+    <string name="privacy_policy">Chính Sách Bảo Mật</string>
+    <string name="sign_out">Đăng Xuất</string>
+    <string name="manage_accounts">Quản Lý Tài Khoản</string>
+
+    <!-- Accounts -->
+    <string name="accounts_title">Tài Khoản Của Tôi</string>
+    <string name="add_account">Thêm Tài Khoản</string>
+    <string name="account_name_hint">Tên tài khoản (vd: Tiền mặt, VCB, MoMo)</string>
+    <string name="account_type">Loại tài khoản</string>
+    <string name="initial_balance">Số dư ban đầu</string>
+    <string name="save">Lưu</string>
+    <string name="delete">Xóa</string>
+    <string name="edit">Sửa</string>
+
+    <!-- Account types -->
+    <string name="type_cash">Tiền mặt</string>
+    <string name="type_bank">Ngân hàng</string>
+    <string name="type_ewallet">Ví điện tử</string>
+    <string name="type_savings">Tiết kiệm</string>
+
+    <!-- Common -->
+    <string name="cancel">Hủy</string>
+    <string name="confirm">Xác nhận</string>
+    <string name="ok">OK</string>
+    <string name="loading">Đang tải…</string>
+    <string name="no_data">Chưa có dữ liệu</string>
+    <string name="error_generic">Đã xảy ra lỗi. Vui lòng thử lại.</string>
+
+    <!-- Notifications -->
+    <string name="notification_bill_reminder">Nhắc Nhở Hóa Đơn</string>
+    <string name="btn_pay_now">Thanh Toán Ngay</string>
+    <string name="btn_remind_later">Nhắc Sau</string>
+    <string name="account_context">Thông Tin Tài Khoản</string>
+
+    <!-- Language names -->
+    <string name="lang_english">English</string>
+    <string name="lang_vietnamese">Tiếng Việt</string>
+</resources>

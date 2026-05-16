@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="8dp">
+
+    <!-- Color dot -->
+    <View
+        android:id="@+id/view_color_dot"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:background="@drawable/bg_circle_transparent"
+        android:layout_marginEnd="12dp"/>
+
+    <!-- Category name -->
+    <TextView
+        android:id="@+id/tv_category_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Category"
+        android:textSize="14sp"
+        android:textColor="@color/on_surface"/>
+
+    <!-- Amount -->
+    <TextView
+        android:id="@+id/tv_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0 ₫"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/on_surface"
+        android:layout_marginEnd="8dp"/>
+
+    <!-- Percentage -->
+    <TextView
+        android:id="@+id/tv_percentage"
+        android:layout_width="48dp"
+        android:layout_height="wrap_content"
+        android:text="0%"
+        android:textSize="12sp"
+        android:textColor="@color/on_surface_variant"
+        android:gravity="end"/>
+</LinearLayout>
