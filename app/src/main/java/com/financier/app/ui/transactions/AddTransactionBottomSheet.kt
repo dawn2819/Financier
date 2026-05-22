@@ -81,6 +81,8 @@ class AddTransactionBottomSheet : BottomSheetDialogFragment() {
             updateDateDisplay()
             binding.btnSave.text = "Cập nhật"
         }
+
+        animateEntrance()
     }
 
     private fun loadDefaultAccount() {
@@ -99,7 +101,9 @@ class AddTransactionBottomSheet : BottomSheetDialogFragment() {
 
     private fun setupToggle() {
         binding.btnExpense.setOnClickListener { setType("EXPENSE") }
+        applySpringTouchListener(binding.btnExpense)
         binding.btnIncome.setOnClickListener { setType("INCOME") }
+        applySpringTouchListener(binding.btnIncome)
         setType("EXPENSE")
     }
 
@@ -132,11 +136,14 @@ class AddTransactionBottomSheet : BottomSheetDialogFragment() {
 
         numButtons.forEachIndexed { index, btn ->
             btn.setOnClickListener { appendDigit(index.toString()) }
+            applySpringTouchListener(btn)
         }
         binding.btnDot.setOnClickListener {
             if (!currentAmountStr.contains(".")) appendDigit(".")
         }
+        applySpringTouchListener(binding.btnDot)
         binding.btnBackspace.setOnClickListener { deleteLastDigit() }
+        applySpringTouchListener(binding.btnBackspace)
         updateAmountDisplay()
     }
 
@@ -163,6 +170,20 @@ class AddTransactionBottomSheet : BottomSheetDialogFragment() {
         } else {
             binding.tvAmount.text = CurrencyFormatter.formatRaw(amount.toLong())
         }
+
+        // Quick scale pop animation
+        binding.tvAmount.animate()
+            .scaleX(1.08f)
+            .scaleY(1.08f)
+            .setDuration(60)
+            .withEndAction {
+                binding.tvAmount.animate()
+                    .scaleX(1.0f)
+                    .scaleY(1.0f)
+                    .setDuration(100)
+                    .start()
+            }
+            .start()
     }
 
     private fun setupCategoryGrid() {
@@ -182,6 +203,7 @@ class AddTransactionBottomSheet : BottomSheetDialogFragment() {
                 selectedCategory = categoryKeys[index]
                 highlightSelectedCategory(btn, categories)
             }
+            applySpringTouchListener(btn)
         }
 
         // Default select food or the edit transaction's category
@@ -197,8 +219,19 @@ class AddTransactionBottomSheet : BottomSheetDialogFragment() {
         all.forEach { btn ->
             if (btn == selected) {
                 btn.backgroundTintList = resources.getColorStateList(R.color.primary_container, null)
+                btn.animate()
+                    .scaleX(1.12f)
+                    .scaleY(1.12f)
+                    .setDuration(250)
+                    .setInterpolator(android.view.animation.OvershootInterpolator(2.5f))
+                    .start()
             } else {
                 btn.backgroundTintList = resources.getColorStateList(R.color.surface_container_highest, null)
+                btn.animate()
+                    .scaleX(1.0f)
+                    .scaleY(1.0f)
+                    .setDuration(150)
+                    .start()
             }
         }
     }
@@ -220,6 +253,7 @@ class AddTransactionBottomSheet : BottomSheetDialogFragment() {
                 cal.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
+        applySpringTouchListener(binding.btnDate)
     }
 
     private fun updateDateDisplay() {
@@ -267,6 +301,77 @@ class AddTransactionBottomSheet : BottomSheetDialogFragment() {
                     dismiss()
                 }
             }
+        }
+        applySpringTouchListener(binding.btnSave)
+    }
+
+    private fun getTargetScale(v: View): Float {
+        val categoryKeys = listOf(
+            "food", "transport", "shopping", "health", "entertainment",
+            "housing", "education", "gym", "bills", "travel", "pets", "others"
+        )
+        val categoryButtons = listOf(
+            binding.btnCatFood, binding.btnCatTransport, binding.btnCatShopping,
+            binding.btnCatHealth, binding.btnCatEntertain, binding.btnCatHousing,
+            binding.btnCatEdu, binding.btnCatGym, binding.btnCatBills,
+            binding.btnCatTravel, binding.btnCatPets, binding.btnCatOthers
+        )
+        val idx = categoryButtons.indexOf(v)
+        if (idx != -1) {
+            return if (selectedCategory == categoryKeys[idx]) 1.12f else 1.0f
+        }
+        return 1.0f
+    }
+
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
+    private fun applySpringTouchListener(view: View) {
+        view.setOnTouchListener { v, event ->
+            when (event.action) {
+                android.view.MotionEvent.ACTION_DOWN -> {
+                    v.animate()
+                        .scaleX(0.92f)
+                        .scaleY(0.92f)
+                        .setDuration(80)
+                        .setInterpolator(android.view.animation.DecelerateInterpolator())
+                        .start()
+                }
+                android.view.MotionEvent.ACTION_UP, android.view.MotionEvent.ACTION_CANCEL -> {
+                    val currentTargetScale = getTargetScale(v)
+                    v.animate()
+                        .scaleX(currentTargetScale)
+                        .scaleY(currentTargetScale)
+                        .setDuration(180)
+                        .setInterpolator(android.view.animation.OvershootInterpolator(2.0f))
+                        .start()
+                }
+            }
+            false
+        }
+    }
+
+    private fun animateEntrance() {
+        val viewsToAnimate = listOf(
+            binding.btnExpense.parent as View,
+            binding.tvAmount.parent.parent as View,
+            binding.btnDate.parent.parent as View,
+            binding.btnCatFood.parent as View,
+            binding.btn1.parent.parent as View,
+            binding.btnSave
+        )
+
+        viewsToAnimate.forEach { v ->
+            v.alpha = 0f
+            v.translationY = 50f
+        }
+
+        viewsToAnimate.forEachIndexed { index, v ->
+            v.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setDuration(400)
+                .setStartDelay(index * 50L)
+                .setInterpolator(android.view.animation.DecelerateInterpolator())
+                .start()
         }
     }
 

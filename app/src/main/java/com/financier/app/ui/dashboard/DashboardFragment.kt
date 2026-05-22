@@ -159,7 +159,9 @@ class DashboardFragment : Fragment() {
         }
 
         viewModel.recentTransactions.observe(viewLifecycleOwner) { transactions ->
-            transactionAdapter.submitList(transactions)
+            transactionAdapter.submitList(transactions) {
+                binding.rvRecentTransactions.scheduleLayoutAnimation()
+            }
             if (isFirstLoad) {
                 isFirstLoad = false
             }
