@@ -50,16 +50,34 @@
                     android:letterSpacing="-0.02"/>
             </LinearLayout>
 
-            <!-- Notification bell -->
-            <ImageButton
-                android:id="@+id/btn_notification"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+            <!-- Toolbar Action Buttons -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_gravity="end"
-                android:background="@drawable/bg_circle_transparent"
-                android:src="@android:drawable/ic_popup_sync"
-                android:tint="@color/on_surface_variant"
-                android:padding="8dp"/>
+                android:gravity="center_vertical">
+
+                <ImageButton
+                    android:id="@+id/btn_scan_qr"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_circle_transparent"
+                    android:src="@drawable/ic_qr_code"
+                    app:tint="@color/on_surface_variant"
+                    android:padding="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Scan QR"/>
+
+                <ImageButton
+                    android:id="@+id/btn_notification"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_circle_transparent"
+                    android:src="@android:drawable/ic_popup_sync"
+                    android:tint="@color/on_surface_variant"
+                    android:padding="8dp"/>
+            </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>
 

@@ -21,3 +21,13 @@
 # SQLCipher
 -keep class net.sqlcipher.** { *; }
 -keep class net.sqlcipher.database.* { *; }
+
+# MPAndroidChart
+-keep class com.github.mikephil.charting.** { *; }
+-dontwarn com.github.mikephil.charting.**
+
+# ZXing / Embedded Scanner
+-keep class com.google.zxing.** { *; }
+-keep class com.journeyapps.barcodescanner.** { *; }
+-dontwarn com.google.zxing.**
+-dontwarn com.journeyapps.barcodescanner.**

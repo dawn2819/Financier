@@ -159,4 +159,22 @@
     <!-- Language names -->
     <string name="lang_english">English</string>
     <string name="lang_vietnamese">Tiếng Việt</string>
+
+    <!-- Phase 1, 2, 3 Additions -->
+    <string name="filter_day">Ngày</string>
+    <string name="export_pdf">Xuất PDF</string>
+    <string name="bank_link_title">Liên kết SMS Ngân hàng</string>
+    <string name="sms_permission_required">Quyền SMS là bắt buộc để tự động đồng bộ giao dịch ngân hàng</string>
+    <string name="grant_permission">Cấp quyền</string>
+    <string name="scan_old_sms">Quét tin nhắn cũ</string>
+    <string name="scan_old_sms_success">Đã quét hộp thư SMS thành công. Thêm được %d giao dịch.</string>
+    <string name="qr_scan_title">Quét QR</string>
+    <string name="open_bank_app">Mở ứng dụng ngân hàng</string>
+    <string name="qr_scan_result">Kết quả quét VietQR</string>
+    <string name="qr_receiver">Người nhận</string>
+    <string name="qr_bank">Ngân hàng</string>
+    <string name="qr_account_number">Số tài khoản</string>
+    <string name="qr_amount">Số tiền</string>
+    <string name="qr_description">Nội dung</string>
+    <string name="no_bank_app_found">Không tìm thấy ứng dụng của ngân hàng này trên thiết bị.</string>
 </resources>

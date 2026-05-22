@@ -30,6 +30,9 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        requestHighRefreshRate()
+
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -43,6 +46,27 @@ class LoginActivity : AppCompatActivity() {
 
         setupListeners()
         playEntryAnimation()
+    }
+
+    private fun requestHighRefreshRate() {
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                val display = this.display
+                val modes = display?.supportedModes
+                val maxRefreshRateMode = modes?.maxByOrNull { it.refreshRate }
+                if (maxRefreshRateMode != null) {
+                    val params = window.attributes
+                    params.preferredDisplayModeId = maxRefreshRateMode.modeId
+                    window.attributes = params
+                }
+            } else {
+                val params = window.attributes
+                params.preferredRefreshRate = 120f
+                window.attributes = params
+            }
+        } catch (e: Exception) {
+            // Avoid crash if display modes are not accessible
+        }
     }
 
     private fun playEntryAnimation() {

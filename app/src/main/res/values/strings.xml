@@ -159,4 +159,22 @@
     <!-- Language names -->
     <string name="lang_english">English</string>
     <string name="lang_vietnamese">Tiếng Việt</string>
+
+    <!-- Phase 1, 2, 3 Additions -->
+    <string name="filter_day">Day</string>
+    <string name="export_pdf">Export PDF</string>
+    <string name="bank_link_title">Bank SMS Link</string>
+    <string name="sms_permission_required">SMS Permission is required to parse transactions</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="scan_old_sms">Scan Old SMS</string>
+    <string name="scan_old_sms_success">Successfully scanned SMS inbox. Parsed %d transactions.</string>
+    <string name="qr_scan_title">Scan QR</string>
+    <string name="open_bank_app">Open Bank App</string>
+    <string name="qr_scan_result">QR Scan Result</string>
+    <string name="qr_receiver">Receiver</string>
+    <string name="qr_bank">Bank</string>
+    <string name="qr_account_number">Account Number</string>
+    <string name="qr_amount">Amount</string>
+    <string name="qr_description">Description</string>
+    <string name="no_bank_app_found">Corresponding banking app is not installed.</string>
 </resources>

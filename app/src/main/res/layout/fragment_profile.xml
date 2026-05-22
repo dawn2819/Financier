@@ -154,6 +154,10 @@
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/biometric_lock" android:textSize="15sp" android:textColor="@color/on_surface"/>
                     <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switch_biometric" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                 </LinearLayout>
+                <LinearLayout android:id="@+id/row_bank_link" android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/bank_link_title" android:textSize="15sp" android:textColor="@color/on_surface"/>
+                    <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_chevron_right" android:tint="@color/on_surface_variant"/>
+                </LinearLayout>
                 <LinearLayout android:id="@+id/row_manage_accounts" android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/manage_accounts" android:textSize="15sp" android:textColor="@color/on_surface"/>
                     <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_chevron_right" android:tint="@color/on_surface_variant"/>

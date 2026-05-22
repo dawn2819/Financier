@@ -108,4 +108,34 @@ interface TransactionDao {
         AND date_ms >= :fromMs AND date_ms <= :toMs
     """)
     suspend fun getIncomeBetween(userId: Long, fromMs: Long, toMs: Long): Double
+
+    @Query("""
+        SELECT COALESCE(SUM(amount), 0) FROM transactions 
+        WHERE user_id = :userId 
+        AND type = 'INCOME'
+        AND date_ms >= :fromMs AND date_ms <= :toMs
+    """)
+    suspend fun getTotalIncomeRange(userId: Long, fromMs: Long, toMs: Long): Double
+
+    @Query("""
+        SELECT COALESCE(SUM(amount), 0) FROM transactions 
+        WHERE user_id = :userId 
+        AND type = 'EXPENSE'
+        AND date_ms >= :fromMs AND date_ms <= :toMs
+    """)
+    suspend fun getTotalExpenseRange(userId: Long, fromMs: Long, toMs: Long): Double
+
+    @Query("""
+        SELECT category, COALESCE(SUM(amount), 0) AS amount FROM transactions 
+        WHERE user_id = :userId 
+        AND type = 'EXPENSE'
+        AND date_ms >= :fromMs AND date_ms <= :toMs
+        GROUP BY category
+    """)
+    suspend fun getExpenseByCategoryRange(userId: Long, fromMs: Long, toMs: Long): List<CategorySum>
 }
+
+data class CategorySum(
+    val category: String,
+    val amount: Double
+)

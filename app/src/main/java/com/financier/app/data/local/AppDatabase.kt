@@ -19,9 +19,10 @@ import net.sqlcipher.database.SupportFactory
         FinancialAccountEntity::class,
         TransactionEntity::class,
         BudgetEntity::class,
-        AppSettingsEntity::class
+        AppSettingsEntity::class,
+        BankSmsLogEntity::class
     ],
-    version = 1,
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -31,6 +32,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao
     abstract fun budgetDao(): BudgetDao
     abstract fun settingsDao(): SettingsDao
+    abstract fun bankSmsLogDao(): BankSmsLogDao
 
     companion object {
         @Volatile

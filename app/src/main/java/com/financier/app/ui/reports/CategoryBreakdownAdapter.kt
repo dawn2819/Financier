@@ -25,6 +25,12 @@ class CategoryBreakdownAdapter : RecyclerView.Adapter<CategoryBreakdownAdapter.V
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(items[position])
     override fun getItemCount() = items.size
 
+    private val colorCache = java.util.concurrent.ConcurrentHashMap<String, Int>()
+
+    private fun getCachedColor(colorStr: String): Int {
+        return colorCache.getOrPut(colorStr) { Color.parseColor(colorStr) }
+    }
+
     inner class ViewHolder(private val binding: ItemCategoryBreakdownBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -37,10 +43,7 @@ class CategoryBreakdownAdapter : RecyclerView.Adapter<CategoryBreakdownAdapter.V
             binding.tvPercentage.text = "${String.format("%.1f", item.percentage)}%"
 
             try {
-                val gd = android.graphics.drawable.GradientDrawable()
-                gd.shape = android.graphics.drawable.GradientDrawable.OVAL
-                gd.setColor(Color.parseColor(colorHex))
-                binding.viewColorDot.background = gd
+                binding.viewColorDot.background?.mutate()?.setTint(getCachedColor(colorHex))
             } catch (_: Exception) {}
         }
     }

@@ -23,6 +23,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_dashboard_to_qr_scan"
+            app:destination="@id/qrScanFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
@@ -56,11 +63,28 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_profile_to_bank_link"
+            app:destination="@id/bankLinkFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
         android:id="@+id/manageAccountsFragment"
         android:name="com.financier.app.ui.profile.ManageAccountsFragment"
         android:label="Accounts"/>
+
+    <fragment
+        android:id="@+id/bankLinkFragment"
+        android:name="com.financier.app.ui.profile.BankLinkFragment"
+        android:label="Bank SMS Link"/>
+
+    <fragment
+        android:id="@+id/qrScanFragment"
+        android:name="com.financier.app.ui.qr.QrScanFragment"
+        android:label="Scan QR"/>
 
 </navigation>

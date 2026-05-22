@@ -128,6 +128,11 @@ class DashboardFragment : Fragment() {
             }
             viewModel.loadData()
         }
+
+        // Scan QR code
+        binding.btnScanQr.setOnClickListener {
+            findNavController().navigate(R.id.action_dashboard_to_qr_scan)
+        }
     }
 
     private fun observeData() {

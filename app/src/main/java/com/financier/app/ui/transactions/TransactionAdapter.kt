@@ -31,8 +31,35 @@ class TransactionAdapter(
         holder.bind(getItem(position))
     }
 
+    private val colorCache = java.util.concurrent.ConcurrentHashMap<String, Int>()
+
+    private fun getCachedColor(colorStr: String): Int {
+        return colorCache.getOrPut(colorStr) { Color.parseColor(colorStr) }
+    }
+
     inner class ViewHolder(private val binding: ItemTransactionBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    onItemClick(getItem(pos))
+                }
+            }
+            binding.btnEdit.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    onEditClick(getItem(pos))
+                }
+            }
+            binding.btnDelete.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    onDeleteClick(getItem(pos))
+                }
+            }
+        }
 
         fun bind(item: TransactionEntity) {
             val ctx = binding.root.context
@@ -40,31 +67,26 @@ class TransactionAdapter(
             // Category info
             val (iconRes, categoryName, colorHex) = getCategoryInfo(ctx, item.category)
             binding.tvTransactionName.text = item.note.ifEmpty { categoryName }
-            binding.tvCategory.text = "$categoryName • ${formatTime(item.dateMs)}"
+            binding.tvCategory.text = "$categoryName • ${com.financier.app.common.DateFormatter.formatTime(item.dateMs)}"
 
             // Amount
             val isIncome = item.type == "INCOME"
             val prefix = if (isIncome) "+" else "-"
             val amountColor = if (isIncome)
-                Color.parseColor("#78DC77")
+                getCachedColor("#78DC77")
             else
-                Color.parseColor("#FFB4AB")
+                getCachedColor("#FFB4AB")
 
             binding.tvAmount.text = "$prefix${CurrencyFormatter.format(item.amount, currency)}"
             binding.tvAmount.setTextColor(amountColor)
 
             // Category icon background color
             try {
-                binding.ivCategoryIcon.setBackgroundColor(Color.parseColor(colorHex + "33"))
-                binding.ivCategoryIcon.setColorFilter(Color.parseColor(colorHex))
+                binding.ivCategoryIcon.setBackgroundColor(getCachedColor(colorHex + "33"))
+                binding.ivCategoryIcon.setColorFilter(getCachedColor(colorHex))
             } catch (e: Exception) { /* skip */ }
 
             binding.ivCategoryIcon.setImageResource(iconRes)
-
-            // Click listeners
-            binding.root.setOnClickListener { onItemClick(item) }
-            binding.btnEdit.setOnClickListener { onEditClick(item) }
-            binding.btnDelete.setOnClickListener { onDeleteClick(item) }
         }
     }
 
@@ -95,13 +117,11 @@ class TransactionAdapter(
         }
 
         fun formatTime(ms: Long): String {
-            val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
-            return sdf.format(Date(ms))
+            return com.financier.app.common.DateFormatter.formatTime(ms)
         }
 
         fun formatDate(ms: Long): String {
-            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            return sdf.format(Date(ms))
+            return com.financier.app.common.DateFormatter.formatDate(ms)
         }
     }
 }

@@ -18,11 +18,49 @@ import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
 
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 class ReportsFragment : Fragment() {
     private var _binding: FragmentReportsBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: ReportsViewModel
     private lateinit var breakdownAdapter: CategoryBreakdownAdapter
+
+    private val createPdfLauncher = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.CreateDocument("application/pdf")
+    ) { uri ->
+        uri?.let {
+            try {
+                val outputStream = requireContext().contentResolver.openOutputStream(it)
+                if (outputStream != null) {
+                    val filterText = when (viewModel.filter.value ?: TimeFilter.MONTH) {
+                        TimeFilter.DAY -> getString(R.string.filter_day)
+                        TimeFilter.WEEK -> getString(R.string.filter_week)
+                        TimeFilter.MONTH -> getString(R.string.filter_month)
+                        TimeFilter.YEAR -> getString(R.string.filter_year)
+                    }
+                    val income = viewModel.totalIncome.value ?: 0.0
+                    val expense = viewModel.totalExpense.value ?: 0.0
+                    val categories = viewModel.categorySpending.value ?: emptyList()
+
+                    ReportExportHelper.exportToPdf(
+                        requireContext(),
+                        outputStream,
+                        filterText,
+                        income,
+                        expense,
+                        categories
+                    )
+                    outputStream.close()
+                    android.widget.Toast.makeText(requireContext(), "PDF exported successfully", android.widget.Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                android.widget.Toast.makeText(requireContext(), "Failed to export PDF: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
+            }
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentReportsBinding.inflate(inflater, container, false)
@@ -39,6 +77,12 @@ class ReportsFragment : Fragment() {
         setupFilters()
         setupBreakdownList()
         observeData()
+
+        binding.btnExportPdf.setOnClickListener {
+            val sdf = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+            val filename = "financier_report_${sdf.format(Date())}.pdf"
+            createPdfLauncher.launch(filename)
+        }
     }
 
     private fun setupCharts() {
@@ -85,6 +129,7 @@ class ReportsFragment : Fragment() {
     }
 
     private fun setupFilters() {
+        binding.chipDay.setOnClickListener { viewModel.setFilter(TimeFilter.DAY) }
         binding.chipWeek.setOnClickListener { viewModel.setFilter(TimeFilter.WEEK) }
         binding.chipMonth.setOnClickListener { viewModel.setFilter(TimeFilter.MONTH) }
         binding.chipYear.setOnClickListener { viewModel.setFilter(TimeFilter.YEAR) }

@@ -59,19 +59,25 @@ class BudgetViewModel(context: Context, private val userId: Long) : ViewModel() 
     fun loadBudgets() {
         val month = _currentMonth.value ?: return
         val year = _currentYear.value ?: return
-
+ 
         viewModelScope.launch(Dispatchers.IO) {
             val budgets = budgetDao.getBudgetsByMonthSync(userId, month, year)
+            
+            val fromMs = com.financier.app.common.DateFormatter.getStartOfMonth(month, year)
+            val toMs = com.financier.app.common.DateFormatter.getEndOfMonth(month, year)
+            val categorySums = txDao.getExpenseByCategoryRange(userId, fromMs, toMs)
+            val spentMap = categorySums.associateBy({ it.category.lowercase() }, { it.amount })
+
             val items = budgets.map { budget ->
-                val spent = txDao.getExpenseByCategory(userId, budget.category, month, year.toString())
+                val spent = spentMap[budget.category.lowercase()] ?: 0.0
                 val pct = if (budget.limitAmount > 0) ((spent / budget.limitAmount) * 100).toInt().coerceIn(0, 100) else 0
                 BudgetItem(budget, spent, pct)
             }
-
+ 
             val total = budgets.sumOf { it.limitAmount }
             val spent = items.sumOf { it.spent }
             val overallPct = if (total > 0) ((spent / total) * 100).toInt().coerceIn(0, 100) else 0
-
+ 
             withContext(Dispatchers.Main) {
                 _budgetItems.value = items
                 _totalBudget.value = total

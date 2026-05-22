@@ -20,12 +20,22 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/reports_title"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="@color/on_surface"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_export_pdf"
+                style="@style/Widget.Material3.Button.TextButton.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/export_pdf"
+                app:icon="@drawable/ic_export"
+                android:textColor="@color/primary"
+                app:iconTint="@color/primary"/>
         </LinearLayout>
 
         <!-- Time Filter Chips -->
@@ -36,6 +46,15 @@
             android:layout_marginBottom="16dp"
             app:singleSelection="true"
             app:selectionRequired="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_day"
+                style="@style/Widget.Material3.Chip.Filter"
+                app:chipBackgroundColor="@color/surface_container"
+                android:textColor="@color/on_surface"/>
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_week"
@@ -54,7 +73,7 @@
                 style="@style/Widget.Material3.Chip.Filter"
                 app:chipBackgroundColor="@color/surface_container"
                 android:textColor="@color/on_surface"
-                app:checked="true"/>
+                android:checked="true"/>
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_year"

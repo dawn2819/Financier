@@ -7,7 +7,9 @@ import com.financier.app.data.local.entity.TransactionEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import java.util.*
 
 class DashboardViewModel(context: Context, private val userId: Long) : ViewModel() {
@@ -46,11 +48,14 @@ class DashboardViewModel(context: Context, private val userId: Long) : ViewModel
         viewModelScope.launch(Dispatchers.IO) {
             val cal = Calendar.getInstance()
             val month = cal.get(Calendar.MONTH) + 1
-            val year = cal.get(Calendar.YEAR).toString()
+            val yearInt = cal.get(Calendar.YEAR)
+
+            val fromMs = com.financier.app.common.DateFormatter.getStartOfMonth(month, yearInt)
+            val toMs = com.financier.app.common.DateFormatter.getEndOfMonth(month, yearInt)
 
             // Income / Expense tháng này
-            val income = txDao.getTotalIncome(userId, month, year)
-            val expense = txDao.getTotalExpense(userId, month, year)
+            val income = txDao.getTotalIncomeRange(userId, fromMs, toMs)
+            val expense = txDao.getTotalExpenseRange(userId, fromMs, toMs)
 
             // Balance = tổng tiền ban đầu + thu - chi
             val accounts = accountDao.getAccountsByUserSync(userId)
@@ -81,25 +86,22 @@ class DashboardViewModel(context: Context, private val userId: Long) : ViewModel
         }
     }
 
-    private suspend fun getWeeklyTrend(): List<Pair<String, Float>> {
-        val result = mutableListOf<Pair<String, Float>>()
-        val dayFormat = SimpleDateFormat("EEE", Locale.getDefault())
-        val shortDays = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
-
-        val cal = Calendar.getInstance()
-        // Lùi về 6 ngày trước
-        cal.add(Calendar.DAY_OF_YEAR, -6)
-
-        for (i in 0..6) {
+    private suspend fun getWeeklyTrend(): List<Pair<String, Float>> = coroutineScope {
+        val days = (0..6).map { i ->
+            val cal = Calendar.getInstance()
+            cal.add(Calendar.DAY_OF_YEAR, -6 + i)
+            cal
+        }
+        val deferredList = days.map { cal ->
             val start = getStartOfDay(cal)
             val end = getEndOfDay(cal)
-            val expense = txDao.getExpenseBetween(userId, start, end).toFloat()
-
-            val label = dayFormat.format(cal.time).take(3)
-            result.add(Pair(label, expense))
-            cal.add(Calendar.DAY_OF_YEAR, 1)
+            val label = com.financier.app.common.DateFormatter.formatDay(cal.time).take(3)
+            async(Dispatchers.IO) {
+                val expense = txDao.getExpenseBetween(userId, start, end).toFloat()
+                Pair(label, expense)
+            }
         }
-        return result
+        deferredList.awaitAll()
     }
 
     private fun getStartOfDay(cal: Calendar = Calendar.getInstance()): Long {
@@ -116,6 +118,7 @@ class DashboardViewModel(context: Context, private val userId: Long) : ViewModel
         c.set(Calendar.HOUR_OF_DAY, 23)
         c.set(Calendar.MINUTE, 59)
         c.set(Calendar.SECOND, 59)
+        c.set(Calendar.MILLISECOND, 999)
         return c.timeInMillis
     }
 

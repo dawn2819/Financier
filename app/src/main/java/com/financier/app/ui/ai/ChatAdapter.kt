@@ -32,8 +32,7 @@ class ChatAdapter : ListAdapter<ChatMessage, ChatAdapter.ViewHolder>(DIFF) {
 
         fun bind(msg: ChatMessage) {
             tvMessage.text = msg.text
-            val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
-            tvTime?.text = sdf.format(Date(msg.timestamp))
+            tvTime?.text = com.financier.app.common.DateFormatter.formatTime(msg.timestamp)
         }
     }
 

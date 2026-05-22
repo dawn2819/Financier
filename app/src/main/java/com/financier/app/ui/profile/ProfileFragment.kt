@@ -54,6 +54,11 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(R.id.manageAccountsFragment)
         }
 
+        // Bank SMS Link
+        binding.rowBankLink.setOnClickListener {
+            findNavController().navigate(R.id.action_profile_to_bank_link)
+        }
+
         // Sign out
         binding.btnSignOut.setOnClickListener {
             SessionManager.clearSession(requireContext())
