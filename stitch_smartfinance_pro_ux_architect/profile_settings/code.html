@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "surface-container-low": "#171d16",
+                  "on-primary": "#00390a",
+                  "surface-container-highest": "#30362e",
+                  "on-tertiary-container": "#690034",
+                  "surface-bright": "#353b33",
+                  "on-error-container": "#ffdad6",
+                  "inverse-surface": "#dee4d9",
+                  "on-surface": "#dee4d9",
+                  "inverse-on-surface": "#2c322a",
+                  "inverse-primary": "#006e1c",
+                  "on-surface-variant": "#becab9",
+                  "tertiary-fixed": "#ffd9e2",
+                  "tertiary-container": "#f26f9d",
+                  "primary-fixed-dim": "#78dc77",
+                  "tertiary-fixed-dim": "#ffb1c7",
+                  "surface": "#0f150e",
+                  "surface-tint": "#78dc77",
+                  "surface-dim": "#0f150e",
+                  "on-secondary": "#003258",
+                  "error": "#ffb4ab",
+                  "outline": "#899484",
+                  "on-tertiary-fixed-variant": "#861948",
+                  "on-tertiary": "#650032",
+                  "primary-fixed": "#94f990",
+                  "tertiary": "#ffb1c7",
+                  "secondary": "#9ecaff",
+                  "background": "#0f150e",
+                  "surface-variant": "#30362e",
+                  "on-background": "#dee4d9",
+                  "on-secondary-fixed": "#001d36",
+                  "secondary-fixed": "#d1e4ff",
+                  "secondary-container": "#1e95f2",
+                  "surface-container-lowest": "#0a1009",
+                  "error-container": "#93000a",
+                  "surface-container-high": "#262c24",
+                  "on-secondary-fixed-variant": "#00497d",
+                  "surface-container": "#1b211a",
+                  "on-tertiary-fixed": "#3e001c",
+                  "on-error": "#690005",
+                  "outline-variant": "#3f4a3c",
+                  "on-secondary-container": "#002b4d",
+                  "on-primary-fixed-variant": "#005313",
+                  "primary": "#78dc77",
+                  "on-primary-fixed": "#002204",
+                  "primary-container": "#4caf50",
+                  "on-primary-container": "#003c0b",
+                  "secondary-fixed-dim": "#9ecaff"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "container-margin": "16px",
+                  "base": "4px",
+                  "md": "16px",
+                  "xs": "4px",
+                  "xl": "32px",
+                  "sm": "8px",
+                  "lg": "24px",
+                  "gutter": "16px"
+          },
+          "fontFamily": {
+                  "h1": ["Inter"],
+                  "label-caps": ["Inter"],
+                  "body-lg": ["Inter"],
+                  "body-md": ["Inter"],
+                  "h2": ["Inter"],
+                  "caption": ["Inter"]
+          },
+          "fontSize": {
+                  "h1": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                  "label-caps": ["10px", {"lineHeight": "12px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                  "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                  "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                  "h2": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                  "caption": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      background-color: #0f150e;
+      color: #dee4d9;
+      font-family: 'Inter', sans-serif;
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.4);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="dark selection:bg-primary selection:text-on-primary">
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-surface/90">
+<div class="flex justify-between items-center w-full px-md h-16 max-w-7xl mx-auto">
+<span class="font-h1 text-h1 font-bold text-primary">Financier</span>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined p-base text-primary hover:bg-surface-variant/50 transition-colors rounded-full active:scale-90" data-icon="notifications">notifications</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of Alex Rivers, a man in his mid-30s with a warm and confident expression. He is set against a blurred urban architectural background with soft evening lighting. The image has a high-quality, editorial feel with natural skin tones and sharp details, perfectly aligning with the premium dark theme and professional financial aesthetic of the application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOvIKhDZD0UaAs1_OGggtJYkCN4a0QBHmTO8vDSI70iovs_HbIiOUd0-tz-FrecTk-iFL4c0rkFhgHDzcqRNThoLZ2AY4-ds32rKsrnsM_Hl7rGmcCVVXSwJdpBX_Pz_yoJHkcgXl45PP_zdp9S2ejNoW0z9GTnYFW-PXodS-d2j9V87KQUKfiCsUldPeLjmwh669PVGgcn4nLg3mQVWEaFTnBz9qeGoOXkulh5KNlfshVkWagLIp_tBlwRJOMX3xb4ds9sXf_O7Il"/>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-md max-w-2xl mx-auto min-h-screen">
+<section class="flex flex-col items-center mb-xl">
+<div class="relative mb-md">
+<div class="w-24 h-24 rounded-full overflow-hidden border-4 border-primary shadow-lg shadow-primary/20">
+<img class="w-full h-full object-cover" data-alt="Detailed close-up portrait of Alex Rivers for the user profile section. The lighting is soft and cinematic, emphasizing a professional yet approachable persona. The background is a sophisticated dark teal gradient with subtle bokeh effects, complementing the dark mode UI. The overall composition is centered and balanced, reflecting the premium identity of the Financier brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0sMs8xlXZH85JGCiEjFo4n13O6iuKHik4QxlW9He8f6T_087bjwR_FOeDqSFArE8pws0gnerTm4yFieqpUSTcOCLccjZHlPxxS7-DtWBMz8mhkint8O_3C-K5uWSjltpo8zqRWqTRHEQZZQSBH5FhHqgfwXflcD2m0uNVX6ND4n0uHvSy1rirEIVtf9wL7KBfkx-8-Zwj4CAY-LJOuiOxo_AwsIYkKLgYbo-uPVf9x0ul-alUFgSPKCS_lCG1JebdWvc0fCElXt7C"/>
+</div>
+<button class="absolute bottom-0 right-0 bg-primary text-on-primary p-xs rounded-full border-2 border-surface active:scale-95 transition-transform shadow-lg">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+</div>
+<h2 class="font-h2 text-h2 text-on-surface">Alex Rivers</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">alex.rivers@finance.com</p>
+<div class="mt-sm px-md py-xs bg-secondary-container/20 text-secondary font-caption text-caption rounded-full border border-secondary/30">
+        Premium Member
+      </div>
+</section>
+<div class="space-y-gutter">
+<div class="glass-card rounded-xl p-md">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-md opacity-60">GENERAL PREFERENCES</h3>
+<div class="space-y-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<span class="font-body-lg text-body-lg">Currency</span>
+</div>
+<div class="flex items-center gap-xs text-on-surface-variant font-body-md">
+<span>USD ($)</span>
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">notifications_active</span>
+</div>
+<span class="font-body-lg text-body-lg">Notifications</span>
+</div>
+<button class="w-12 h-6 rounded-full bg-primary relative transition-colors">
+<div class="absolute right-1 top-1 w-4 h-4 bg-on-primary rounded-full"></div>
+</button>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">dark_mode</span>
+</div>
+<span class="font-body-lg text-body-lg">Dark Mode</span>
+</div>
+<button class="w-12 h-6 rounded-full bg-primary relative transition-colors">
+<div class="absolute right-1 top-1 w-4 h-4 bg-on-primary rounded-full"></div>
+</button>
+</div>
+</div>
+</div>
+<div class="glass-card rounded-xl p-md">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-md opacity-60">SECURITY &amp; PRIVACY</h3>
+<div class="space-y-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">fingerprint</span>
+</div>
+<span class="font-body-lg text-body-lg">Biometric Lock</span>
+</div>
+<button class="w-12 h-6 rounded-full bg-primary relative transition-colors">
+<div class="absolute right-1 top-1 w-4 h-4 bg-on-primary rounded-full"></div>
+</button>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">description</span>
+</div>
+<span class="font-body-lg text-body-lg">Export Data (CSV)</span>
+</div>
+<button class="hover:bg-surface-variant/50 p-xs rounded-full transition-colors active:scale-90">
+<span class="material-symbols-outlined">download</span>
+</button>
+</div>
+</div>
+</div>
+<div class="glass-card rounded-xl p-md">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-md opacity-60">SUPPORT</h3>
+<div class="space-y-md">
+<div class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">help_center</span>
+</div>
+<span class="font-body-lg text-body-lg group-hover:text-primary transition-colors">Help &amp; Support</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+<div class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">policy</span>
+</div>
+<span class="font-body-lg text-body-lg group-hover:text-primary transition-colors">Privacy Policy</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+</div>
+</div>
+<button class="w-full py-md font-h2 text-h2 text-error bg-error/10 border border-error/20 rounded-xl hover:bg-error/20 transition-colors active:scale-[0.98]">
+        Sign Out
+      </button>
+</div>
+</main>
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-4 pt-2 backdrop-blur-xl bg-surface/90 border-t border-outline-variant/10 rounded-t-xl">
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-caption text-caption">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-caption text-caption">History</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-caption text-caption">Budget</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-caption text-caption">Reports</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-caption text-caption">Profile</span>
+</div>
+</nav>
+</body></html>
