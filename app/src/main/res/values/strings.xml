@@ -177,4 +177,8 @@
     <string name="qr_amount">Amount</string>
     <string name="qr_description">Description</string>
     <string name="no_bank_app_found">Corresponding banking app is not installed.</string>
+    <string name="biometric_title">Biometric Login</string>
+    <string name="biometric_subtitle">Use your fingerprint or face to authenticate</string>
+    <string name="biometric_negative_button">Use Password</string>
+    <string name="biometric_failed_fallback_pw">Biometric verification failed. Please enter your password.</string>
 </resources>

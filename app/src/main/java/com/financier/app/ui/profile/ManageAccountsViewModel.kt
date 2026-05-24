@@ -14,7 +14,17 @@ class ManageAccountsViewModel(context: Context, private val userId: Long) : View
 
     val accounts: LiveData<List<FinancialAccountEntity>> = accountDao.getAccountsByUser(userId)
 
-    fun addAccount(name: String, type: String, currency: String, colorHex: String) {
+    fun addAccount(
+        name: String,
+        type: String,
+        currency: String,
+        colorHex: String,
+        cardNumber: String? = null,
+        cardExpiry: String? = null,
+        cardPin: String? = null,
+        isLinked: Boolean = false,
+        walletType: String? = null
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             accountDao.insertAccount(
                 FinancialAccountEntity(
@@ -24,7 +34,12 @@ class ManageAccountsViewModel(context: Context, private val userId: Long) : View
                     initialBalance = 0.0,
                     currency = currency,
                     colorHex = colorHex,
-                    icon = getIconForType(type)
+                    icon = getIconForType(type),
+                    cardNumber = cardNumber,
+                    cardExpiry = cardExpiry,
+                    cardPin = cardPin,
+                    isLinked = isLinked,
+                    walletType = walletType
                 )
             )
         }

@@ -27,6 +27,7 @@ class ReportsFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: ReportsViewModel
     private lateinit var breakdownAdapter: CategoryBreakdownAdapter
+    private var currentCurrency = "VND"
 
     private val createPdfLauncher = registerForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.CreateDocument("application/pdf")
@@ -142,12 +143,26 @@ class ReportsFragment : Fragment() {
     }
 
     private fun observeData() {
+        viewModel.currency.observe(viewLifecycleOwner) { currency ->
+            currentCurrency = currency
+            breakdownAdapter.currency = currency
+            viewModel.totalIncome.value?.let { income ->
+                binding.tvTotalIncome.text = "+${CurrencyFormatter.format(income, currency)}"
+            }
+            viewModel.totalExpense.value?.let { expense ->
+                binding.tvTotalExpense.text = "-${CurrencyFormatter.format(expense, currency)}"
+            }
+            viewModel.categorySpending.value?.let { items ->
+                updatePieChart(items)
+            }
+        }
+
         viewModel.totalIncome.observe(viewLifecycleOwner) { income ->
-            binding.tvTotalIncome.text = "+${CurrencyFormatter.format(income ?: 0.0, "VND")}"
+            binding.tvTotalIncome.text = "+${CurrencyFormatter.format(income ?: 0.0, currentCurrency)}"
         }
 
         viewModel.totalExpense.observe(viewLifecycleOwner) { expense ->
-            binding.tvTotalExpense.text = "-${CurrencyFormatter.format(expense ?: 0.0, "VND")}"
+            binding.tvTotalExpense.text = "-${CurrencyFormatter.format(expense ?: 0.0, currentCurrency)}"
         }
 
         viewModel.categorySpending.observe(viewLifecycleOwner) { items ->
@@ -186,7 +201,7 @@ class ReportsFragment : Fragment() {
         }
 
         binding.pieChart.data = PieData(dataSet)
-        binding.pieChart.centerText = CurrencyFormatter.formatShort(items.sumOf { it.amount }, "VND")
+        binding.pieChart.centerText = CurrencyFormatter.formatShort(items.sumOf { it.amount }, currentCurrency)
         binding.pieChart.setCenterTextColor(Color.WHITE)
         binding.pieChart.setCenterTextSize(16f)
         binding.pieChart.animateY(800)

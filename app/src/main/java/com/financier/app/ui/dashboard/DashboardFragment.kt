@@ -17,6 +17,7 @@ import com.financier.app.common.CurrencyFormatter
 import com.financier.app.common.SessionManager
 import com.financier.app.databinding.FragmentDashboardBinding
 import com.financier.app.ui.transactions.TransactionAdapter
+import com.financier.app.ui.transactions.TransactionDetailsBottomSheet
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -31,6 +32,7 @@ class DashboardFragment : Fragment() {
     private lateinit var viewModel: DashboardViewModel
     private lateinit var transactionAdapter: TransactionAdapter
     private var isFirstLoad = true
+    private var currentCurrency = "VND"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -68,7 +70,9 @@ class DashboardFragment : Fragment() {
     private fun setupRecyclerView() {
         transactionAdapter = TransactionAdapter(
             currency = "VND",
-            onItemClick = { /* TODO: transaction detail */ },
+            onItemClick = { tx ->
+                TransactionDetailsBottomSheet.newInstance(tx.id).show(parentFragmentManager, "tx_detail")
+            },
             onEditClick = { /* unused on dashboard */ },
             onDeleteClick = { /* unused on dashboard */ }
         )
@@ -133,13 +137,30 @@ class DashboardFragment : Fragment() {
         binding.btnScanQr.setOnClickListener {
             findNavController().navigate(R.id.action_dashboard_to_qr_scan)
         }
+
+        binding.cardIncome.setOnClickListener {
+            val bundle = Bundle().apply { putString("filterType", "INCOME") }
+            findNavController().navigate(R.id.transactionsFragment, bundle)
+        }
+
+        binding.cardExpense.setOnClickListener {
+            val bundle = Bundle().apply { putString("filterType", "EXPENSE") }
+            findNavController().navigate(R.id.transactionsFragment, bundle)
+        }
     }
 
     private fun observeData() {
-        val currency = "VND"
+        viewModel.currency.observe(viewLifecycleOwner) { targetCurrency ->
+            currentCurrency = targetCurrency
+            transactionAdapter.updateDisplayCurrency(targetCurrency)
+        }
+
+        viewModel.accountCurrencyMap.observe(viewLifecycleOwner) { map ->
+            transactionAdapter.updateAccountCurrencyMap(map)
+        }
 
         viewModel.balance.observe(viewLifecycleOwner) { balance ->
-            binding.tvBalance.text = CurrencyFormatter.format(balance ?: 0.0, currency)
+            binding.tvBalance.text = CurrencyFormatter.format(balance ?: 0.0, currentCurrency)
             // Animate balance text on first load
             if (isFirstLoad) {
                 animateCardEntry(binding.tvBalance.parent.parent as? View)
@@ -147,15 +168,15 @@ class DashboardFragment : Fragment() {
         }
 
         viewModel.monthlyIncome.observe(viewLifecycleOwner) { income ->
-            binding.tvIncome.text = "+${CurrencyFormatter.format(income ?: 0.0, currency)}"
+            binding.tvIncome.text = "+${CurrencyFormatter.format(income ?: 0.0, currentCurrency)}"
         }
 
         viewModel.monthlyExpense.observe(viewLifecycleOwner) { expense ->
-            binding.tvExpense.text = "-${CurrencyFormatter.format(expense ?: 0.0, currency)}"
+            binding.tvExpense.text = "-${CurrencyFormatter.format(expense ?: 0.0, currentCurrency)}"
         }
 
         viewModel.dailySpending.observe(viewLifecycleOwner) { daily ->
-            binding.tvDailySpending.text = CurrencyFormatter.format(daily ?: 0.0, currency)
+            binding.tvDailySpending.text = CurrencyFormatter.format(daily ?: 0.0, currentCurrency)
         }
 
         viewModel.recentTransactions.observe(viewLifecycleOwner) { transactions ->

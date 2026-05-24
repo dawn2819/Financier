@@ -64,7 +64,8 @@ class SmsReceiver : BroadcastReceiver() {
                 type = parsed.type,
                 category = if (parsed.type == "INCOME") "income" else "others",
                 note = "[${parsed.bankName}] ${parsed.note}",
-                dateMs = parsed.dateMs
+                dateMs = parsed.dateMs,
+                isSmsSynced = true
             )
             val txId = transactionDao.insertTransaction(transaction)
 

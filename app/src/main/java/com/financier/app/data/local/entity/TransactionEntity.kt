@@ -54,6 +54,9 @@ data class TransactionEntity(
     @ColumnInfo(name = "date_ms")
     val dateMs: Long = System.currentTimeMillis(),
 
+    @ColumnInfo(name = "is_sms_synced")
+    val isSmsSynced: Boolean = false,
+
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis()
 )

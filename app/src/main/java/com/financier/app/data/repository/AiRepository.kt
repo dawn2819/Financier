@@ -24,6 +24,43 @@ class AiRepository {
         currency: String,
         topCategories: String = ""
     ): Result<String> {
+        val lowerMsg = userMessage.lowercase().trim()
+        val localResponse = when {
+            lowerMsg.contains("xin chào") || lowerMsg.contains("hello") || lowerMsg.contains("hi") || lowerMsg.contains("chào") -> {
+                "👋 Xin chào! Tôi là trợ lý tài chính Financier AI của bạn. Tôi có thể giúp gì cho bạn hôm nay?"
+            }
+            lowerMsg.contains("số dư") || lowerMsg.contains("tài khoản") || lowerMsg.contains("tiền hiện có") || lowerMsg.contains("balance") -> {
+                "💰 Số dư hiện tại trên các tài khoản của bạn là ${CurrencyFormatter.format(totalBalance, currency)}. Hãy tiếp tục duy trì quản lý tài chính tốt nhé!"
+            }
+            lowerMsg.contains("chi tiêu") || lowerMsg.contains("outcome") || lowerMsg.contains("expense") || lowerMsg.contains("đã tiêu") || lowerMsg.contains("tiêu dùng") || lowerMsg.contains("báo cáo") -> {
+                val cats = if (topCategories.isNotEmpty()) " Các danh mục chi tiêu nhiều nhất gồm: $topCategories." else ""
+                "📊 Tổng chi tiêu trong tháng này của bạn là ${CurrencyFormatter.format(monthlyExpense, currency)}.$cats"
+            }
+            lowerMsg.contains("thu nhập") || lowerMsg.contains("lương") || lowerMsg.contains("income") || lowerMsg.contains("tiền vào") -> {
+                "💰 Tổng thu nhập trong tháng này của bạn là ${CurrencyFormatter.format(monthlyIncome, currency)}. Tuyệt vời, hãy cân đối để đầu tư và tiết kiệm nhé!"
+            }
+            lowerMsg.contains("tiết kiệm") || lowerMsg.contains("savings") || lowerMsg.contains("dành dụm") -> {
+                "💡 Lời khuyên tiết kiệm dành cho bạn: Hãy thử chia thu nhập theo quy tắc 50/30/20 (50% thiết yếu, 30% sở thích, 20% tiết kiệm). Đồng thời, hãy luôn đặt mục tiêu ngân sách rõ ràng!"
+            }
+            else -> null
+        }
+
+        if (localResponse != null) {
+            chatHistory.add(
+                GeminiContent(
+                    role = "user",
+                    parts = listOf(GeminiPart(userMessage))
+                )
+            )
+            chatHistory.add(
+                GeminiContent(
+                    role = "model",
+                    parts = listOf(GeminiPart(localResponse))
+                )
+            )
+            return Result.success(localResponse)
+        }
+
         return try {
             // Build system prompt
             val systemPrompt = buildSystemPrompt(

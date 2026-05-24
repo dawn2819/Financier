@@ -46,6 +46,21 @@ data class FinancialAccountEntity(
     @ColumnInfo(name = "is_active")
     val isActive: Boolean = true,
 
+    @ColumnInfo(name = "card_number")
+    val cardNumber: String? = null,
+
+    @ColumnInfo(name = "card_expiry")
+    val cardExpiry: String? = null,
+
+    @ColumnInfo(name = "card_pin")
+    val cardPin: String? = null,
+
+    @ColumnInfo(name = "is_linked")
+    val isLinked: Boolean = false,
+
+    @ColumnInfo(name = "wallet_type")
+    val walletType: String? = null,
+
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis()
 )

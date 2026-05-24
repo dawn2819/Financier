@@ -5,6 +5,13 @@ import java.util.Locale
 
 object CurrencyFormatter {
 
+    fun convert(amount: Double, from: String, to: String): Double {
+        if (from == to) return amount
+        return if (from == "USD" && to == "VND") amount * 25000.0
+        else if (from == "VND" && to == "USD") amount / 25000.0
+        else amount
+    }
+
     fun format(amount: Double, currency: String): String {
         return when (currency) {
             "VND" -> {

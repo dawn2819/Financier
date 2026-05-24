@@ -133,6 +133,12 @@ interface TransactionDao {
         GROUP BY category
     """)
     suspend fun getExpenseByCategoryRange(userId: Long, fromMs: Long, toMs: Long): List<CategorySum>
+
+    @Query("SELECT * FROM transactions WHERE user_id = :userId AND date_ms >= :fromMs AND date_ms <= :toMs")
+    suspend fun getTransactionsInRangeSync(userId: Long, fromMs: Long, toMs: Long): List<TransactionEntity>
+
+    @Query("SELECT * FROM transactions WHERE user_id = :userId")
+    suspend fun getAllTransactionsSync(userId: Long): List<TransactionEntity>
 }
 
 data class CategorySum(
