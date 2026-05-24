@@ -20,6 +20,8 @@ class BudgetViewModel(context: Context, private val userId: Long) : ViewModel() 
     private val db = AppDatabase.getDatabase(context)
     private val budgetDao = db.budgetDao()
     private val txDao = db.transactionDao()
+    private val accountDao = db.financialAccountDao()
+    private val settingsDao = db.settingsDao()
 
     private val _currentMonth = MutableLiveData<Int>()
     private val _currentYear = MutableLiveData<Int>()
@@ -35,6 +37,9 @@ class BudgetViewModel(context: Context, private val userId: Long) : ViewModel() 
 
     private val _overallPercentage = MutableLiveData<Int>()
     val overallPercentage: LiveData<Int> = _overallPercentage
+
+    private val _currency = MutableLiveData<String>()
+    val currency: LiveData<String> = _currency
 
     val monthLabel: LiveData<String> = MediatorLiveData<String>().apply {
         addSource(_currentMonth) { updateLabel(this) }
@@ -61,15 +66,30 @@ class BudgetViewModel(context: Context, private val userId: Long) : ViewModel() 
         val year = _currentYear.value ?: return
  
         viewModelScope.launch(Dispatchers.IO) {
+            val settings = settingsDao.getSettingsByUser(userId)
+            val targetCurrency = settings?.currency ?: "VND"
+
+            val accounts = accountDao.getAccountsByUserSync(userId)
+            val accountCurrencyMap = accounts.associate { it.id to it.currency }
+
             val budgets = budgetDao.getBudgetsByMonthSync(userId, month, year)
             
             val fromMs = com.financier.app.common.DateFormatter.getStartOfMonth(month, year)
             val toMs = com.financier.app.common.DateFormatter.getEndOfMonth(month, year)
-            val categorySums = txDao.getExpenseByCategoryRange(userId, fromMs, toMs)
-            val spentMap = categorySums.associateBy({ it.category.lowercase() }, { it.amount })
+            val txList = txDao.getTransactionsInRangeSync(userId, fromMs, toMs)
+
+            val categoryMap = mutableMapOf<String, Double>()
+            for (tx in txList) {
+                if (tx.type == "EXPENSE") {
+                    val accCurrency = accountCurrencyMap[tx.accountId] ?: "VND"
+                    val converted = com.financier.app.common.CurrencyFormatter.convert(tx.amount, accCurrency, targetCurrency)
+                    val catLower = tx.category.lowercase()
+                    categoryMap[catLower] = (categoryMap[catLower] ?: 0.0) + converted
+                }
+            }
 
             val items = budgets.map { budget ->
-                val spent = spentMap[budget.category.lowercase()] ?: 0.0
+                val spent = categoryMap[budget.category.lowercase()] ?: 0.0
                 val pct = if (budget.limitAmount > 0) ((spent / budget.limitAmount) * 100).toInt().coerceIn(0, 100) else 0
                 BudgetItem(budget, spent, pct)
             }
@@ -79,6 +99,7 @@ class BudgetViewModel(context: Context, private val userId: Long) : ViewModel() 
             val overallPct = if (total > 0) ((spent / total) * 100).toInt().coerceIn(0, 100) else 0
  
             withContext(Dispatchers.Main) {
+                _currency.value = targetCurrency
                 _budgetItems.value = items
                 _totalBudget.value = total
                 _totalSpent.value = spent

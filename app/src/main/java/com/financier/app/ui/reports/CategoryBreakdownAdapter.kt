@@ -12,6 +12,12 @@ class CategoryBreakdownAdapter : RecyclerView.Adapter<CategoryBreakdownAdapter.V
 
     private var items: List<CategorySpending> = emptyList()
 
+    var currency: String = "VND"
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
     fun submitList(list: List<CategorySpending>) {
         items = list
         notifyDataSetChanged()
@@ -39,7 +45,7 @@ class CategoryBreakdownAdapter : RecyclerView.Adapter<CategoryBreakdownAdapter.V
             val (_, name, colorHex) = TransactionAdapter.getCategoryInfo(ctx, item.category)
 
             binding.tvCategoryName.text = name
-            binding.tvAmount.text = CurrencyFormatter.formatShort(item.amount, "VND")
+            binding.tvAmount.text = CurrencyFormatter.formatShort(item.amount, currency)
             binding.tvPercentage.text = "${String.format("%.1f", item.percentage)}%"
 
             try {

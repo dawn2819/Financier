@@ -14,11 +14,22 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class TransactionAdapter(
-    private val currency: String,
+    private var currency: String,
+    private var accountCurrencyMap: Map<Long, String> = emptyMap(),
     private val onItemClick: (TransactionEntity) -> Unit,
     private val onEditClick: (TransactionEntity) -> Unit,
     private val onDeleteClick: (TransactionEntity) -> Unit
 ) : ListAdapter<TransactionEntity, TransactionAdapter.ViewHolder>(DIFF_CALLBACK) {
+
+    fun updateAccountCurrencyMap(map: Map<Long, String>) {
+        accountCurrencyMap = map
+        notifyDataSetChanged()
+    }
+
+    fun updateDisplayCurrency(newCurrency: String) {
+        currency = newCurrency
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemTransactionBinding.inflate(
@@ -64,6 +75,9 @@ class TransactionAdapter(
         fun bind(item: TransactionEntity) {
             val ctx = binding.root.context
 
+            // Bind iv_sms_badge visibility
+            binding.ivSmsBadge.visibility = if (item.isSmsSynced) android.view.View.VISIBLE else android.view.View.GONE
+
             // Category info
             val (iconRes, categoryName, colorHex) = getCategoryInfo(ctx, item.category)
             binding.tvTransactionName.text = item.note.ifEmpty { categoryName }
@@ -77,7 +91,11 @@ class TransactionAdapter(
             else
                 getCachedColor("#FFB4AB")
 
-            binding.tvAmount.text = "$prefix${CurrencyFormatter.format(item.amount, currency)}"
+            // Convert amount dynamically to the display currency
+            val accountCurrency = accountCurrencyMap[item.accountId] ?: "VND"
+            val displayAmount = com.financier.app.common.CurrencyFormatter.convert(item.amount, accountCurrency, currency)
+
+            binding.tvAmount.text = "$prefix${CurrencyFormatter.format(displayAmount, currency)}"
             binding.tvAmount.setTextColor(amountColor)
 
             // Category icon background color

@@ -8,6 +8,10 @@ import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
+import java.util.concurrent.Executor
+import androidx.appcompat.app.AppCompatDelegate
 import com.financier.app.MainActivity
 import com.financier.app.R
 import com.financier.app.common.LocaleHelper
@@ -38,14 +42,63 @@ class LoginActivity : AppCompatActivity() {
 
         db = AppDatabase.getDatabase(this)
 
-        // Nếu đã đăng nhập trước đó thì skip login
+        // Nếu đã đăng nhập trước đó thì kiểm tra khóa sinh trắc học và theme
         if (SessionManager.isLoggedIn(this)) {
-            goToMain()
+            val userId = SessionManager.getUserId(this)
+            val username = SessionManager.getUsername(this) ?: ""
+            binding.etUsername.setText(username) // Prefill in case of biometric fallback
+            
+            lifecycleScope.launch(Dispatchers.IO) {
+                val settings = db.settingsDao().getSettingsByUser(userId)
+                val biometricEnabled = settings?.biometricEnabled ?: false
+                val darkMode = settings?.darkMode ?: true
+                withContext(Dispatchers.Main) {
+                    val targetMode = if (darkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+                    if (AppCompatDelegate.getDefaultNightMode() != targetMode) {
+                        AppCompatDelegate.setDefaultNightMode(targetMode)
+                    }
+                    if (biometricEnabled) {
+                        showBiometricPrompt()
+                    } else {
+                        goToMain()
+                    }
+                }
+            }
             return
         }
 
         setupListeners()
         playEntryAnimation()
+    }
+
+    private fun showBiometricPrompt() {
+        val executor = ContextCompat.getMainExecutor(this)
+        val biometricPrompt = BiometricPrompt(this, executor,
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                    super.onAuthenticationError(errorCode, errString)
+                    showError(getString(R.string.biometric_failed_fallback_pw))
+                    binding.etPassword.requestFocus()
+                }
+
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    goToMain()
+                }
+
+                override fun onAuthenticationFailed() {
+                    super.onAuthenticationFailed()
+                    showError(getString(R.string.biometric_failed_fallback_pw))
+                }
+            })
+
+        val promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle(getString(R.string.biometric_title))
+            .setSubtitle(getString(R.string.biometric_subtitle))
+            .setNegativeButtonText(getString(R.string.biometric_negative_button))
+            .build()
+
+        biometricPrompt.authenticate(promptInfo)
     }
 
     private fun requestHighRefreshRate() {
@@ -127,10 +180,11 @@ class LoginActivity : AppCompatActivity() {
                         username = user.username,
                         displayName = user.displayName,
                         role = user.role,
-                        avatarColor = user.avatarColor
+                        avatarColor = user.avatarColor,
+                        avatarPath = user.avatarPath
                     )
-                    // Áp dụng ngôn ngữ từ settings user
-                    applyUserLanguage(user.id)
+                    // Áp dụng cài đặt từ settings user
+                    applyUserSettings(user.id)
                     goToMain()
                 } else {
                     showError(getString(R.string.error_invalid_credentials))
@@ -140,11 +194,17 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun applyUserLanguage(userId: Long) {
+    private suspend fun applyUserSettings(userId: Long) {
         val settings = withContext(Dispatchers.IO) {
             db.settingsDao().getSettingsByUser(userId)
         }
         settings?.let {
+            withContext(Dispatchers.Main) {
+                val targetMode = if (it.darkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+                if (AppCompatDelegate.getDefaultNightMode() != targetMode) {
+                    AppCompatDelegate.setDefaultNightMode(targetMode)
+                }
+            }
             LocaleHelper.setLocale(this, it.language)
         }
     }

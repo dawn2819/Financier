@@ -37,6 +37,12 @@ class DashboardViewModel(context: Context, private val userId: Long) : ViewModel
     private val _accountName = MutableLiveData<String>()
     val accountName: LiveData<String> = _accountName
 
+    private val _currency = MutableLiveData<String>()
+    val currency: LiveData<String> = _currency
+
+    private val _accountCurrencyMap = MutableLiveData<Map<Long, String>>()
+    val accountCurrencyMap: LiveData<Map<Long, String>> = _accountCurrencyMap
+
     val recentTransactions: LiveData<List<TransactionEntity>> =
         txDao.getRecentTransactions(userId)
 
@@ -46,6 +52,12 @@ class DashboardViewModel(context: Context, private val userId: Long) : ViewModel
 
     fun loadData() {
         viewModelScope.launch(Dispatchers.IO) {
+            val settings = settingsDao.getSettingsByUser(userId)
+            val targetCurrency = settings?.currency ?: "VND"
+
+            val accounts = accountDao.getAccountsByUserSync(userId)
+            val accountCurrencyMap = accounts.associate { it.id to it.currency }
+
             val cal = Calendar.getInstance()
             val month = cal.get(Calendar.MONTH) + 1
             val yearInt = cal.get(Calendar.YEAR)
@@ -54,28 +66,72 @@ class DashboardViewModel(context: Context, private val userId: Long) : ViewModel
             val toMs = com.financier.app.common.DateFormatter.getEndOfMonth(month, yearInt)
 
             // Income / Expense tháng này
-            val income = txDao.getTotalIncomeRange(userId, fromMs, toMs)
-            val expense = txDao.getTotalExpenseRange(userId, fromMs, toMs)
+            val txList = txDao.getTransactionsInRangeSync(userId, fromMs, toMs)
+            var income = 0.0
+            var expense = 0.0
+            for (tx in txList) {
+                val accCurrency = accountCurrencyMap[tx.accountId] ?: "VND"
+                val converted = com.financier.app.common.CurrencyFormatter.convert(tx.amount, accCurrency, targetCurrency)
+                if (tx.type == "INCOME") {
+                    income += converted
+                } else {
+                    expense += converted
+                }
+            }
 
             // Balance = tổng tiền ban đầu + thu - chi
-            val accounts = accountDao.getAccountsByUserSync(userId)
-            val initialBalance = accounts.sumOf { it.initialBalance }
-            val totalBalance = initialBalance + income - expense
+            val allTxList = txDao.getAllTransactionsSync(userId)
+            val initialBalance = accounts.sumOf {
+                com.financier.app.common.CurrencyFormatter.convert(it.initialBalance, it.currency, targetCurrency)
+            }
+            var netTx = 0.0
+            for (tx in allTxList) {
+                val accCurrency = accountCurrencyMap[tx.accountId] ?: "VND"
+                val converted = com.financier.app.common.CurrencyFormatter.convert(tx.amount, accCurrency, targetCurrency)
+                if (tx.type == "INCOME") {
+                    netTx += converted
+                } else {
+                    netTx -= converted
+                }
+            }
+            val totalBalance = initialBalance + netTx
 
             // Daily spending (hôm nay)
             val todayStart = getStartOfDay()
             val todayEnd = System.currentTimeMillis()
-            val daily = txDao.getExpenseBetween(userId, todayStart, todayEnd)
+            val todayTxList = txDao.getTransactionsInRangeSync(userId, todayStart, todayEnd)
+            val daily = todayTxList.filter { it.type == "EXPENSE" }.sumOf { tx ->
+                val accCurrency = accountCurrencyMap[tx.accountId] ?: "VND"
+                com.financier.app.common.CurrencyFormatter.convert(tx.amount, accCurrency, targetCurrency)
+            }
 
             // Weekly trend (7 ngày)
-            val trendData = getWeeklyTrend()
+            val days = (0..6).map { i ->
+                val c = Calendar.getInstance()
+                c.add(Calendar.DAY_OF_YEAR, -6 + i)
+                c
+            }
+            val startWeekly = getStartOfDay(days.first())
+            val endWeekly = getEndOfDay(days.last())
+            val weeklyTxList = txDao.getTransactionsInRangeSync(userId, startWeekly, endWeekly)
+            val trendData = days.map { c ->
+                val start = getStartOfDay(c)
+                val end = getEndOfDay(c)
+                val label = com.financier.app.common.DateFormatter.formatDay(c.time).take(3)
+                val dayExpense = weeklyTxList.filter { it.type == "EXPENSE" && it.dateMs in start..end }.sumOf { tx ->
+                    val accCurrency = accountCurrencyMap[tx.accountId] ?: "VND"
+                    com.financier.app.common.CurrencyFormatter.convert(tx.amount, accCurrency, targetCurrency)
+                }
+                Pair(label, dayExpense.toFloat())
+            }
 
             // Account name
-            val settings = settingsDao.getSettingsByUser(userId)
             val selAccountId = settings?.selectedAccountId ?: -1L
             val selAccount = if (selAccountId != -1L) accountDao.getAccountById(selAccountId) else accounts.firstOrNull()
 
             withContext(Dispatchers.Main) {
+                _accountCurrencyMap.value = accountCurrencyMap
+                _currency.value = targetCurrency
                 _balance.value = totalBalance
                 _monthlyIncome.value = income
                 _monthlyExpense.value = expense
@@ -84,24 +140,6 @@ class DashboardViewModel(context: Context, private val userId: Long) : ViewModel
                 _accountName.value = selAccount?.name ?: "Tài khoản"
             }
         }
-    }
-
-    private suspend fun getWeeklyTrend(): List<Pair<String, Float>> = coroutineScope {
-        val days = (0..6).map { i ->
-            val cal = Calendar.getInstance()
-            cal.add(Calendar.DAY_OF_YEAR, -6 + i)
-            cal
-        }
-        val deferredList = days.map { cal ->
-            val start = getStartOfDay(cal)
-            val end = getEndOfDay(cal)
-            val label = com.financier.app.common.DateFormatter.formatDay(cal.time).take(3)
-            async(Dispatchers.IO) {
-                val expense = txDao.getExpenseBetween(userId, start, end).toFloat()
-                Pair(label, expense)
-            }
-        }
-        deferredList.awaitAll()
     }
 
     private fun getStartOfDay(cal: Calendar = Calendar.getInstance()): Long {

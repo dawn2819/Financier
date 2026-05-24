@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base app theme — Dark -->
-    <style name="Theme.Financier" parent="Theme.Material3.Dark.NoActionBar">
+    <!-- Base app theme — DayNight -->
+    <style name="Base.Theme.Financier" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorOnPrimary">@color/on_primary</item>
@@ -44,7 +44,6 @@
         <!-- Status bar -->
         <item name="android:statusBarColor">@color/status_bar</item>
         <item name="android:navigationBarColor">@color/surface_container_lowest</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
 
         <!-- Font -->
         <item name="android:fontFamily">sans-serif</item>
@@ -53,6 +52,10 @@
         <item name="shapeAppearanceSmallComponent">@style/ShapeSmall</item>
         <item name="shapeAppearanceMediumComponent">@style/ShapeMedium</item>
         <item name="shapeAppearanceLargeComponent">@style/ShapeLarge</item>
+    </style>
+
+    <style name="Theme.Financier" parent="Base.Theme.Financier">
+        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
     </style>
 
     <!-- Splash Screen theme -->

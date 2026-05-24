@@ -20,6 +20,8 @@ class ReportsViewModel(context: Context, private val userId: Long) : ViewModel()
  
     private val db = AppDatabase.getDatabase(context)
     private val txDao = db.transactionDao()
+    private val accountDao = db.financialAccountDao()
+    private val settingsDao = db.settingsDao()
  
     private val _filter = MutableLiveData(TimeFilter.MONTH)
     val filter: LiveData<TimeFilter> = _filter
@@ -35,6 +37,9 @@ class ReportsViewModel(context: Context, private val userId: Long) : ViewModel()
  
     private val _totalIncome = MutableLiveData<Double>()
     val totalIncome: LiveData<Double> = _totalIncome
+
+    private val _currency = MutableLiveData<String>()
+    val currency: LiveData<String> = _currency
  
     init { loadData() }
  
@@ -55,32 +60,57 @@ class ReportsViewModel(context: Context, private val userId: Long) : ViewModel()
         val currentFilter = _filter.value ?: TimeFilter.MONTH
  
         val (fromMs, toMs) = getDateRange(cal, currentFilter)
+
+        val settings = settingsDao.getSettingsByUser(userId)
+        val targetCurrency = settings?.currency ?: "VND"
+
+        val accounts = accountDao.getAccountsByUserSync(userId)
+        val accountCurrencyMap = accounts.associate { it.id to it.currency }
+
+        val txList = txDao.getTransactionsInRangeSync(userId, fromMs, toMs)
+
+        var totalExpense = 0.0
+        var totalIncome = 0.0
+        val categoryMap = mutableMapOf<String, Double>()
+
+        for (tx in txList) {
+            val accCurrency = accountCurrencyMap[tx.accountId] ?: "VND"
+            val converted = com.financier.app.common.CurrencyFormatter.convert(tx.amount, accCurrency, targetCurrency)
+            if (tx.type == "INCOME") {
+                totalIncome += converted
+            } else if (tx.type == "EXPENSE") {
+                totalExpense += converted
+                categoryMap[tx.category] = (categoryMap[tx.category] ?: 0.0) + converted
+            }
+        }
  
-        val categorySums = txDao.getExpenseByCategoryRange(userId, fromMs, toMs)
-        val spending = categorySums.filter { it.amount > 0 }.map { sum ->
-            CategorySpending(sum.category, sum.amount, 0f)
-        }.toMutableList()
-        val total = spending.sumOf { it.amount }
+        val spending = categoryMap.filter { it.value > 0 }.map { (category, amount) ->
+            CategorySpending(category, amount, 0f)
+        }
+        val total = totalExpense
  
         // Calculate percentages
         val withPercentage = spending.map {
             it.copy(percentage = if (total > 0) (it.amount / total * 100).toFloat() else 0f)
         }.sortedByDescending { it.amount }
  
-        // Total income for the period
-        val income = txDao.getIncomeBetween(userId, fromMs, toMs)
- 
         withContext(Dispatchers.Main) {
+            _currency.value = targetCurrency
             _categorySpending.value = withPercentage
             _totalExpense.value = total
-            _totalIncome.value = income
+            _totalIncome.value = totalIncome
         }
     }
  
     private suspend fun loadMonthlyComparison() = coroutineScope {
-        val result = mutableListOf<MonthlyComparison>()
         val monthNames = listOf("T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12")
  
+        val settings = settingsDao.getSettingsByUser(userId)
+        val targetCurrency = settings?.currency ?: "VND"
+
+        val accounts = accountDao.getAccountsByUserSync(userId)
+        val accountCurrencyMap = accounts.associate { it.id to it.currency }
+
         val months = (0..5).map { i ->
             val cal = Calendar.getInstance()
             cal.add(Calendar.MONTH, -5 + i)
@@ -94,8 +124,18 @@ class ReportsViewModel(context: Context, private val userId: Long) : ViewModel()
             val toMs = com.financier.app.common.DateFormatter.getEndOfMonth(month, yearInt)
             val label = monthNames[month - 1]
             async(Dispatchers.IO) {
-                val income = txDao.getTotalIncomeRange(userId, fromMs, toMs)
-                val expense = txDao.getTotalExpenseRange(userId, fromMs, toMs)
+                val txList = txDao.getTransactionsInRangeSync(userId, fromMs, toMs)
+                var income = 0.0
+                var expense = 0.0
+                for (tx in txList) {
+                    val accCurrency = accountCurrencyMap[tx.accountId] ?: "VND"
+                    val converted = com.financier.app.common.CurrencyFormatter.convert(tx.amount, accCurrency, targetCurrency)
+                    if (tx.type == "INCOME") {
+                        income += converted
+                    } else if (tx.type == "EXPENSE") {
+                        expense += converted
+                    }
+                }
                 MonthlyComparison(label, income, expense)
             }
         }

@@ -1,11 +1,13 @@
 package com.financier.app.ui.profile
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -20,12 +22,18 @@ import com.financier.app.ui.auth.LoginActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
 
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
     private var currentSettings: AppSettingsEntity? = null
     private var isLoadingSettings = true // Prevent toggle listeners firing during load
+
+    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let { handleAvatarSelected(it) }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
@@ -39,6 +47,11 @@ class ProfileFragment : Fragment() {
         // Load user info
         binding.tvDisplayName.text = SessionManager.getDisplayName(requireContext())
         binding.tvUsername.text = "@${SessionManager.getUsername(requireContext())}"
+
+        binding.ivProfileAvatar.setOnClickListener {
+            pickImageLauncher.launch("image/*")
+        }
+        loadAvatar()
 
         // Load settings (sets isLoadingSettings = false when done)
         loadSettings(userId)
@@ -140,6 +153,52 @@ class ProfileFragment : Fragment() {
             val settings = db.settingsDao().getSettingsByUser(userId)
                 ?: AppSettingsEntity(userId = userId)
             db.settingsDao().insertSettings(update(settings))
+        }
+    }
+
+    private fun loadAvatar() {
+        val path = SessionManager.getAvatarPath(requireContext())
+        if (path != null) {
+            val file = File(path)
+            if (file.exists()) {
+                binding.ivProfileAvatar.setImageURI(Uri.fromFile(file))
+            } else {
+                binding.ivProfileAvatar.setImageResource(R.drawable.ic_default_avatar)
+            }
+        } else {
+            binding.ivProfileAvatar.setImageResource(R.drawable.ic_default_avatar)
+        }
+    }
+
+    private fun handleAvatarSelected(uri: Uri) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val context = requireContext()
+                val userId = SessionManager.getUserId(context)
+                val inputStream = context.contentResolver.openInputStream(uri)
+                if (inputStream != null) {
+                    val avatarFile = File(context.filesDir, "avatar_${userId}.jpg")
+                    val outputStream = FileOutputStream(avatarFile)
+                    inputStream.copyTo(outputStream)
+                    inputStream.close()
+                    outputStream.close()
+
+                    val absolutePath = avatarFile.absolutePath
+                    SessionManager.saveAvatarPath(context, absolutePath)
+
+                    val db = AppDatabase.getDatabase(context)
+                    val user = db.userDao().getUserById(userId)
+                    if (user != null) {
+                        db.userDao().updateUser(user.copy(avatarPath = absolutePath))
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        loadAvatar()
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

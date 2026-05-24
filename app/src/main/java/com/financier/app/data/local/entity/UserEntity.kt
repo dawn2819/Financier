@@ -24,6 +24,9 @@ data class UserEntity(
     @ColumnInfo(name = "avatar_color")
     val avatarColor: String = "#78DC77", // màu avatar mặc định
 
+    @ColumnInfo(name = "avatar_path")
+    val avatarPath: String? = null,
+
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis()
 )

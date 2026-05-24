@@ -14,6 +14,12 @@ class BudgetAdapter(
     private val onDeleteClick: (BudgetItem) -> Unit
 ) : ListAdapter<BudgetItem, BudgetAdapter.ViewHolder>(DIFF) {
 
+    var currency: String = "VND"
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemBudgetBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
@@ -48,7 +54,7 @@ class BudgetAdapter(
 
             binding.ivCategoryIcon.setImageResource(iconRes)
             binding.tvCategoryName.text = name
-            binding.tvSpentOfLimit.text = "${CurrencyFormatter.formatShort(item.spent, "VND")} / ${CurrencyFormatter.formatShort(item.budget.limitAmount, "VND")}"
+            binding.tvSpentOfLimit.text = "${CurrencyFormatter.formatShort(item.spent, currency)} / ${CurrencyFormatter.formatShort(item.budget.limitAmount, currency)}"
             binding.tvPercentage.text = "${item.percentage}%"
             binding.progressBudget.progress = item.percentage
 

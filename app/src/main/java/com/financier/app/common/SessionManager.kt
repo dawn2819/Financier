@@ -15,6 +15,7 @@ object SessionManager {
     private const val KEY_DISPLAY_NAME = "display_name"
     private const val KEY_ROLE = "role"
     private const val KEY_AVATAR_COLOR = "avatar_color"
+    private const val KEY_AVATAR_PATH = "avatar_path"
     private const val KEY_IS_LOGGED_IN = "is_logged_in"
 
     private fun getPrefs(context: Context) = try {
@@ -40,7 +41,8 @@ object SessionManager {
         username: String,
         displayName: String,
         role: String,
-        avatarColor: String
+        avatarColor: String,
+        avatarPath: String? = null
     ) {
         getPrefs(context).edit().apply {
             putLong(KEY_USER_ID, userId)
@@ -48,6 +50,7 @@ object SessionManager {
             putString(KEY_DISPLAY_NAME, displayName)
             putString(KEY_ROLE, role)
             putString(KEY_AVATAR_COLOR, avatarColor)
+            putString(KEY_AVATAR_PATH, avatarPath)
             putBoolean(KEY_IS_LOGGED_IN, true)
             apply()
         }
@@ -79,5 +82,13 @@ object SessionManager {
 
     fun getAvatarColor(context: Context): String {
         return getPrefs(context).getString(KEY_AVATAR_COLOR, "#78DC77") ?: "#78DC77"
+    }
+
+    fun getAvatarPath(context: Context): String? {
+        return getPrefs(context).getString(KEY_AVATAR_PATH, null)
+    }
+
+    fun saveAvatarPath(context: Context, path: String?) {
+        getPrefs(context).edit().putString(KEY_AVATAR_PATH, path).apply()
     }
 }

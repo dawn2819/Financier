@@ -28,8 +28,13 @@ class TransactionsFragment : Fragment() {
         val userId = SessionManager.getUserId(requireContext())
         viewModel = ViewModelProvider(this, TransactionsViewModel.Factory(requireContext(), userId))[TransactionsViewModel::class.java]
 
+        val filterType = arguments?.getString("filterType") ?: "ALL"
+        viewModel.setFilterType(filterType)
+
         adapter = TransactionAdapter("VND",
-            onItemClick = {},
+            onItemClick = { tx ->
+                TransactionDetailsBottomSheet.newInstance(tx.id).show(parentFragmentManager, "tx_detail")
+            },
             onEditClick = { tx ->
                 // Open bottom sheet in edit mode
                 val sheet = AddTransactionBottomSheet()
@@ -50,6 +55,14 @@ class TransactionsFragment : Fragment() {
 
         binding.etSearch.addTextChangedListener { text ->
             viewModel.search(text.toString())
+        }
+
+        viewModel.currency.observe(viewLifecycleOwner) { targetCurrency ->
+            adapter.updateDisplayCurrency(targetCurrency)
+        }
+
+        viewModel.accountCurrencyMap.observe(viewLifecycleOwner) { map ->
+            adapter.updateAccountCurrencyMap(map)
         }
 
         viewModel.transactions.observe(viewLifecycleOwner) { list ->

@@ -17,6 +17,7 @@ class BudgetFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: BudgetViewModel
     private lateinit var adapter: BudgetAdapter
+    private var currentCurrency = "VND"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentBudgetBinding.inflate(inflater, container, false)
@@ -59,21 +60,33 @@ class BudgetFragment : Fragment() {
     }
 
     private fun observeData() {
-        val currency = "VND"
-
         viewModel.monthLabel.observe(viewLifecycleOwner) { label ->
             binding.tvMonthLabel.text = label
         }
 
+        viewModel.currency.observe(viewLifecycleOwner) { currency ->
+            currentCurrency = currency
+            adapter.currency = currency
+            viewModel.totalBudget.value?.let { total ->
+                binding.tvTotalBudget.text = CurrencyFormatter.format(total, currency)
+            }
+            viewModel.totalSpent.value?.let { spent ->
+                binding.tvSpent.text = CurrencyFormatter.format(spent, currency)
+                val total = viewModel.totalBudget.value ?: 0.0
+                val remaining = total - spent
+                binding.tvRemaining.text = CurrencyFormatter.format(remaining.coerceAtLeast(0.0), currency)
+            }
+        }
+
         viewModel.totalBudget.observe(viewLifecycleOwner) { total ->
-            binding.tvTotalBudget.text = CurrencyFormatter.format(total ?: 0.0, currency)
+            binding.tvTotalBudget.text = CurrencyFormatter.format(total ?: 0.0, currentCurrency)
         }
 
         viewModel.totalSpent.observe(viewLifecycleOwner) { spent ->
-            binding.tvSpent.text = CurrencyFormatter.format(spent ?: 0.0, currency)
+            binding.tvSpent.text = CurrencyFormatter.format(spent ?: 0.0, currentCurrency)
             val total = viewModel.totalBudget.value ?: 0.0
             val remaining = total - (spent ?: 0.0)
-            binding.tvRemaining.text = CurrencyFormatter.format(remaining.coerceAtLeast(0.0), currency)
+            binding.tvRemaining.text = CurrencyFormatter.format(remaining.coerceAtLeast(0.0), currentCurrency)
         }
 
         viewModel.overallPercentage.observe(viewLifecycleOwner) { pct ->

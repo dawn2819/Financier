@@ -177,4 +177,8 @@
     <string name="qr_amount">Số tiền</string>
     <string name="qr_description">Nội dung</string>
     <string name="no_bank_app_found">Không tìm thấy ứng dụng của ngân hàng này trên thiết bị.</string>
+    <string name="biometric_title">Đăng nhập sinh trắc học</string>
+    <string name="biometric_subtitle">Sử dụng vân tay hoặc khuôn mặt để xác thực</string>
+    <string name="biometric_negative_button">Dùng Mật Khẩu</string>
+    <string name="biometric_failed_fallback_pw">Xác thực sinh trắc học không thành công. Vui lòng nhập mật khẩu của bạn.</string>
 </resources>
