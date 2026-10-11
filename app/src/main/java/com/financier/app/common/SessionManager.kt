@@ -18,7 +18,7 @@ object SessionManager {
     private const val KEY_AVATAR_PATH = "avatar_path"
     private const val KEY_IS_LOGGED_IN = "is_logged_in"
     private const val KEY_BACKGROUNDED_AT = "backgrounded_at"
-    private const val REAUTHENTICATION_TIMEOUT_MS = 3 * 60 * 1000L
+    const val REAUTHENTICATION_TIMEOUT_MS = 3 * 60 * 1000L
 
     private fun getPrefs(context: Context) = try {
         val masterKey = MasterKey.Builder(context)

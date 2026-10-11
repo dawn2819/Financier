@@ -101,6 +101,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val inactivityHandler = android.os.Handler(android.os.Looper.getMainLooper())
+    private val inactivityRunnable = Runnable {
+        if (SessionManager.isLoggedIn(this)) {
+            SessionManager.markBackgrounded(this)
+            val intent = Intent(this, LoginActivity::class.java).apply {
+                putExtra("require_authentication", true)
+            }
+            startActivity(intent)
+            finish()
+        }
+    }
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        resetInactivityTimer()
+    }
+
+    private fun resetInactivityTimer() {
+        inactivityHandler.removeCallbacks(inactivityRunnable)
+        if (SessionManager.isLoggedIn(this)) {
+            inactivityHandler.postDelayed(inactivityRunnable, SessionManager.REAUTHENTICATION_TIMEOUT_MS)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         if (SessionManager.isLoggedIn(this) && SessionManager.requiresReauthentication(this)) {
@@ -109,10 +133,12 @@ class MainActivity : AppCompatActivity() {
             return
         }
         SessionManager.clearBackgroundedAt(this)
+        resetInactivityTimer()
         AppAudio.startMusic(this)
     }
 
     override fun onPause() {
+        inactivityHandler.removeCallbacks(inactivityRunnable)
         AppAudio.pauseMusic()
         super.onPause()
     }
@@ -125,6 +151,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        inactivityHandler.removeCallbacks(inactivityRunnable)
         if (isFinishing) AppAudio.stopMusic()
         super.onDestroy()
     }
