@@ -2,6 +2,7 @@
 <resources>
     <!-- App -->
     <string name="app_name">Financier</string>
+    <string name="anime_finance_tagline">Thêm chút sắc hoa cho mục tiêu tài chính</string>
 
     <!-- Auth -->
     <string name="login_title">Chào Mừng Trở Lại</string>
@@ -40,6 +41,13 @@
 
     <!-- Transactions -->
     <string name="search_transactions">Tìm kiếm giao dịch…</string>
+    <string name="filter_period">Thời gian</string>
+    <string name="filter_account">Tài khoản</string>
+    <string name="filter_all_time">Toàn bộ thời gian</string>
+    <string name="filter_this_month">Tháng này</string>
+    <string name="filter_last_30_days">30 ngày gần đây</string>
+    <string name="filter_all_accounts">Tất cả tài khoản</string>
+    <string name="filter_select_account">Chọn tài khoản</string>
     <string name="filter_date">Ngày</string>
     <string name="filter_category">Danh mục</string>
     <string name="filter_type">Loại</string>
@@ -81,6 +89,9 @@
     <string name="budget_title">Ngân Sách</string>
     <string name="total_monthly_budget">TỔNG NGÂN SÁCH THÁNG</string>
     <string name="spent_so_far">Đã chi</string>
+    <string name="projected_spend">Dự báo chi tiêu cuối tháng: %1$s</string>
+    <string name="projected_spend_over_budget">Dự báo có thể vượt ngân sách: %1$s</string>
+    <string name="projected_spend_unavailable">Chỉ dự báo cho tháng hiện tại</string>
     <string name="categories">Danh mục</string>
     <string name="add_new_budget">Thêm Ngân Sách</string>
     <string name="budget_insight">Gợi Ý Ngân Sách</string>
@@ -119,6 +130,8 @@
     <string name="language_label">Ngôn ngữ</string>
     <string name="security_privacy">BẢO MẬT &amp; RIÊNG TƯ</string>
     <string name="biometric_lock">Khóa sinh trắc học</string>
+    <string name="background_music">Nhạc nền</string>
+    <string name="sound_effects">Hiệu ứng âm thanh</string>
     <string name="export_data">Xuất Dữ Liệu (CSV)</string>
     <string name="support">HỖ TRỢ</string>
     <string name="help_support">Trợ Giúp &amp; Hỗ Trợ</string>
@@ -163,8 +176,33 @@
     <!-- Phase 1, 2, 3 Additions -->
     <string name="filter_day">Ngày</string>
     <string name="export_pdf">Xuất PDF</string>
+    <string name="export_csv">Xuất CSV</string>
+    <string name="csv_export_success">Đã xuất báo cáo CSV</string>
+    <string name="csv_export_failed">Xuất CSV thất bại: %1$s</string>
     <string name="bank_link_title">Liên kết SMS Ngân hàng</string>
-    <string name="sms_permission_required">Quyền SMS là bắt buộc để tự động đồng bộ giao dịch ngân hàng</string>
+    <string name="sms_permission_required">Không bắt buộc: cho phép truy cập SMS để tự động nhập biến động giao dịch ngân hàng. Các chức năng khác vẫn dùng được nếu bạn từ chối.</string>
+    <string name="sms_disclosure_title">Financier sử dụng SMS như thế nào</string>
+    <string name="sms_disclosure_message">Financier kiểm tra tin nhắn từ các ngân hàng được hỗ trợ để tìm thông báo biến động số dư và giao dịch. Tin nhắn phù hợp được xử lý trên thiết bị này. Thông tin giao dịch cùng nội dung tin nhắn khớp được lưu trong cơ sở dữ liệu ứng dụng đã mã hóa để tránh nhập trùng. Tin nhắn cũ chỉ được quét khi bạn nhấn “Quét tin nhắn cũ”. Nguyên văn SMS không được gửi tới dịch vụ AI; nếu dùng tính năng AI, nội dung bạn nhập và bản tóm tắt tài chính có thể được gửi tới Gemini. Quyền SMS là tùy chọn; bạn vẫn dùng được các chức năng khác nếu từ chối.</string>
+    <string name="sms_disclosure_continue">Tiếp tục</string>
+    <string name="nearby_places_title">ATM &amp; ngân hàng gần đây</string>
+    <string name="nearby_places_subtitle">Tìm cây ATM và chi nhánh ngân hàng quanh bạn</string>
+    <string name="nearby_places_empty_hint">Nhấn Tìm quanh tôi để tìm địa điểm gần vị trí hiện tại.</string>
+    <string name="nearby_places_found">Tìm thấy %1$d địa điểm trong bán kính 5 km, sắp xếp theo khoảng cách.</string>
+    <string name="nearby_places_location_notice">Vị trí gần đúng của bạn được gửi đến dịch vụ OpenStreetMap Overpass để tìm địa điểm lân cận. Financier không lưu vị trí. Ứng dụng chỉ xin vị trí khi bạn nhấn Tìm gần đây.</string>
+    <string name="nearby_places_find">Tìm quanh tôi</string>
+    <string name="nearby_places_loading">Đang lấy vị trí và tìm địa điểm gần đây…</string>
+    <string name="nearby_places_permission_denied">Bạn chưa cấp quyền vị trí. Hãy cho phép vị trí gần đúng để tìm ATM và ngân hàng.</string>
+    <string name="nearby_places_location_unavailable">Không lấy được vị trí. Hãy bật dịch vụ vị trí của thiết bị rồi thử lại.</string>
+    <string name="nearby_places_none">Không tìm thấy ATM hoặc chi nhánh ngân hàng trong bán kính 5 km. Dữ liệu bản đồ có thể chưa đầy đủ.</string>
+    <string name="nearby_places_error">Không tải được địa điểm gần đây. Hãy kiểm tra kết nối mạng rồi thử lại.</string>
+    <string name="nearby_places_atm">Cây ATM</string>
+    <string name="nearby_places_bank">Chi nhánh ngân hàng</string>
+    <string name="nearby_places_directions">Chỉ đường</string>
+    <string name="nearby_places_distance_m">Cách %1$d m</string>
+    <string name="nearby_places_distance_km">Cách %1$.1f km</string>
+    <string name="nearby_places_kind_distance">%1$s · %2$s</string>
+    <string name="nearby_places_address_unavailable">Chưa có địa chỉ</string>
+    <string name="nearby_places_osm_credit">Dữ liệu địa điểm © OpenStreetMap contributors · ODbL</string>
     <string name="grant_permission">Cấp quyền</string>
     <string name="scan_old_sms">Quét tin nhắn cũ</string>
     <string name="scan_old_sms_success">Đã quét hộp thư SMS thành công. Thêm được %d giao dịch.</string>
@@ -181,4 +219,6 @@
     <string name="biometric_subtitle">Sử dụng vân tay hoặc khuôn mặt để xác thực</string>
     <string name="biometric_negative_button">Dùng Mật Khẩu</string>
     <string name="biometric_failed_fallback_pw">Xác thực sinh trắc học không thành công. Vui lòng nhập mật khẩu của bạn.</string>
+    <string name="reauthentication_password_required">Phiên làm việc tạm khóa sau 3 phút không hoạt động. Vui lòng nhập mật khẩu để tiếp tục.</string>
+    <string name="reauthentication_password_prompt">Nhập mật khẩu để mở khóa ứng dụng</string>
 </resources>

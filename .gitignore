@@ -32,3 +32,6 @@ Thumbs.db
 # Misc
 *.log
 *.tmp
+.android-user/
+.apk-download/
+.gradle-user/

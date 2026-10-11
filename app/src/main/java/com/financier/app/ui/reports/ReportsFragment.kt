@@ -50,6 +50,7 @@ class ReportsFragment : Fragment() {
                         requireContext(),
                         outputStream,
                         filterText,
+                        currentCurrency,
                         income,
                         expense,
                         categories
@@ -60,6 +61,34 @@ class ReportsFragment : Fragment() {
             } catch (e: Exception) {
                 android.widget.Toast.makeText(requireContext(), "Failed to export PDF: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
             }
+        }
+    }
+
+    private val createCsvLauncher = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.CreateDocument("text/csv")
+    ) { uri ->
+        uri ?: return@registerForActivityResult
+        try {
+            val income = viewModel.totalIncome.value ?: 0.0
+            val expense = viewModel.totalExpense.value ?: 0.0
+            val categories = viewModel.categorySpending.value.orEmpty()
+            requireContext().contentResolver.openOutputStream(uri)?.use { outputStream ->
+                ReportExportHelper.exportToCsv(
+                    outputStream = outputStream,
+                    filterText = currentFilterLabel(),
+                    currency = currentCurrency,
+                    totalIncome = income,
+                    totalExpense = expense,
+                    categories = categories
+                )
+            } ?: throw IllegalStateException("Unable to open the selected file")
+            android.widget.Toast.makeText(requireContext(), R.string.csv_export_success, android.widget.Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            android.widget.Toast.makeText(
+                requireContext(),
+                getString(R.string.csv_export_failed, e.message ?: "Unknown error"),
+                android.widget.Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -84,6 +113,10 @@ class ReportsFragment : Fragment() {
             val filename = "financier_report_${sdf.format(Date())}.pdf"
             createPdfLauncher.launch(filename)
         }
+        binding.btnExportCsv.setOnClickListener {
+            val sdf = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+            createCsvLauncher.launch("financier_report_${sdf.format(Date())}.csv")
+        }
     }
 
     private fun setupCharts() {
@@ -106,7 +139,7 @@ class ReportsFragment : Fragment() {
         binding.barChart.apply {
             description.isEnabled = false
             legend.isEnabled = true
-            legend.textColor = Color.parseColor("#BECAB9")
+            legend.textColor = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.on_surface_variant)
             legend.textSize = 10f
             setDrawGridBackground(false)
             setDrawBarShadow(false)
@@ -121,12 +154,19 @@ class ReportsFragment : Fragment() {
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
                 setDrawGridLines(false)
-                textColor = Color.parseColor("#BECAB9")
+                textColor = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.on_surface_variant)
                 textSize = 10f
                 granularity = 1f
             }
             setExtraOffsets(0f, 8f, 0f, 8f)
         }
+    }
+
+    private fun currentFilterLabel(): String = when (viewModel.filter.value ?: TimeFilter.MONTH) {
+        TimeFilter.DAY -> getString(R.string.filter_day)
+        TimeFilter.WEEK -> getString(R.string.filter_week)
+        TimeFilter.MONTH -> getString(R.string.filter_month)
+        TimeFilter.YEAR -> getString(R.string.filter_year)
     }
 
     private fun setupFilters() {
@@ -179,7 +219,7 @@ class ReportsFragment : Fragment() {
         if (items.isEmpty()) {
             binding.pieChart.clear()
             binding.pieChart.centerText = "Không có dữ liệu"
-            binding.pieChart.setCenterTextColor(Color.parseColor("#BECAB9"))
+            binding.pieChart.setCenterTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.on_surface_variant))
             binding.pieChart.setCenterTextSize(14f)
             binding.pieChart.invalidate()
             return
@@ -202,7 +242,7 @@ class ReportsFragment : Fragment() {
 
         binding.pieChart.data = PieData(dataSet)
         binding.pieChart.centerText = CurrencyFormatter.formatShort(items.sumOf { it.amount }, currentCurrency)
-        binding.pieChart.setCenterTextColor(Color.WHITE)
+            binding.pieChart.setCenterTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.on_surface))
         binding.pieChart.setCenterTextSize(16f)
         binding.pieChart.animateY(800)
         binding.pieChart.invalidate()
@@ -216,11 +256,11 @@ class ReportsFragment : Fragment() {
         val labels = data.map { it.label }
 
         val incomeDataSet = BarDataSet(incomeEntries, "Thu nhập").apply {
-            color = Color.parseColor("#4CAF50")
+            color = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.cat_income)
             setDrawValues(false)
         }
         val expenseDataSet = BarDataSet(expenseEntries, "Chi tiêu").apply {
-            color = Color.parseColor("#FFB4AB")
+            color = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.error)
             setDrawValues(false)
         }
 

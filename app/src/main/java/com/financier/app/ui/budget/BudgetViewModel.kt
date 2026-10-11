@@ -35,6 +35,9 @@ class BudgetViewModel(context: Context, private val userId: Long) : ViewModel() 
     private val _totalSpent = MutableLiveData<Double>()
     val totalSpent: LiveData<Double> = _totalSpent
 
+    private val _projectedSpend = MutableLiveData<Double?>()
+    val projectedSpend: LiveData<Double?> = _projectedSpend
+
     private val _overallPercentage = MutableLiveData<Int>()
     val overallPercentage: LiveData<Int> = _overallPercentage
 
@@ -97,12 +100,20 @@ class BudgetViewModel(context: Context, private val userId: Long) : ViewModel() 
             val total = budgets.sumOf { it.limitAmount }
             val spent = items.sumOf { it.spent }
             val overallPct = if (total > 0) ((spent / total) * 100).toInt().coerceIn(0, 100) else 0
+
+            val today = Calendar.getInstance()
+            val targetMonth = month - 1
+            val isCurrentMonth = today.get(Calendar.YEAR) == year && today.get(Calendar.MONTH) == targetMonth
+            val projection = if (isCurrentMonth) {
+                spent / today.get(Calendar.DAY_OF_MONTH) * today.getActualMaximum(Calendar.DAY_OF_MONTH)
+            } else null
  
             withContext(Dispatchers.Main) {
                 _currency.value = targetCurrency
                 _budgetItems.value = items
                 _totalBudget.value = total
                 _totalSpent.value = spent
+                _projectedSpend.value = projection
                 _overallPercentage.value = overallPct
             }
         }

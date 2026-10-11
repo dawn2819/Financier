@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import com.financier.app.common.CurrencyFormatter
+import com.financier.app.R
 import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -18,6 +19,7 @@ object ReportExportHelper {
         context: Context,
         outputStream: OutputStream,
         filterText: String,
+        currency: String,
         totalIncome: Double,
         totalExpense: Double,
         categories: List<CategorySpending>
@@ -35,7 +37,7 @@ object ReportExportHelper {
         }
 
         val titlePaint = Paint().apply {
-            color = Color.parseColor("#4CAF50")
+            color = context.getColor(R.color.primary)
             textSize = 24f
             typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
             isAntiAlias = true
@@ -71,25 +73,25 @@ object ReportExportHelper {
         textPaint.textSize = 12f
         textPaint.color = Color.BLACK
         canvas.drawText("Total Income:", 40f, 175f, textPaint)
-        val incomeStr = CurrencyFormatter.format(totalIncome, "VND")
+        val incomeStr = CurrencyFormatter.format(totalIncome, currency)
         textPaint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         canvas.drawText(incomeStr, 200f, 175f, textPaint)
 
         textPaint.typeface = Typeface.DEFAULT
         canvas.drawText("Total Expenses:", 40f, 195f, textPaint)
-        val expenseStr = CurrencyFormatter.format(totalExpense, "VND")
+        val expenseStr = CurrencyFormatter.format(totalExpense, currency)
         textPaint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         canvas.drawText(expenseStr, 200f, 195f, textPaint)
 
         textPaint.typeface = Typeface.DEFAULT
         canvas.drawText("Net Balance:", 40f, 215f, textPaint)
         val netBalance = totalIncome - totalExpense
-        val netStr = CurrencyFormatter.format(netBalance, "VND")
+        val netStr = CurrencyFormatter.format(netBalance, currency)
         textPaint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         if (netBalance >= 0) {
-            textPaint.color = Color.parseColor("#4CAF50")
+            textPaint.color = context.getColor(R.color.cat_income)
         } else {
-            textPaint.color = Color.RED
+            textPaint.color = context.getColor(R.color.error)
         }
         canvas.drawText(netStr, 200f, 215f, textPaint)
 
@@ -123,7 +125,7 @@ object ReportExportHelper {
             canvas.drawLine(40f, y, 555f, y, paint)
 
             canvas.drawText(item.category.replaceFirstChar { it.uppercase() }, 50f, y + 20f, textPaint)
-            val amtStr = CurrencyFormatter.format(item.amount, "VND")
+            val amtStr = CurrencyFormatter.format(item.amount, currency)
             canvas.drawText(amtStr, 300f, y + 20f, textPaint)
             canvas.drawText(String.format(Locale.getDefault(), "%.1f%%", item.percentage), 450f, y + 20f, textPaint)
 
@@ -134,5 +136,35 @@ object ReportExportHelper {
         pdfDocument.finishPage(page)
         pdfDocument.writeTo(outputStream)
         pdfDocument.close()
+    }
+
+    fun exportToCsv(
+        outputStream: OutputStream,
+        filterText: String,
+        currency: String,
+        totalIncome: Double,
+        totalExpense: Double,
+        categories: List<CategorySpending>
+    ) {
+        val writer = outputStream.writer(Charsets.UTF_8)
+        writer.write("\uFEFF")
+        fun row(vararg values: String) {
+            writer.write(values.joinToString(",") { value ->
+                "\"${value.replace("\"", "\"\"")}\""
+            })
+            writer.write("\r\n")
+        }
+
+        row("Financier report", filterText)
+        row("Currency", currency)
+        row("Total income", totalIncome.toString())
+        row("Total expenses", totalExpense.toString())
+        row("Net balance", (totalIncome - totalExpense).toString())
+        row()
+        row("Category", "Amount", "Percentage")
+        categories.forEach { item ->
+            row(item.category, item.amount.toString(), String.format(Locale.US, "%.1f", item.percentage))
+        }
+        writer.flush()
     }
 }

@@ -2,6 +2,7 @@
 <resources>
     <!-- App -->
     <string name="app_name">Financier</string>
+    <string name="anime_finance_tagline">A little sakura for your money goals</string>
 
     <!-- Auth -->
     <string name="login_title">Welcome Back</string>
@@ -40,6 +41,13 @@
 
     <!-- Transactions -->
     <string name="search_transactions">Search transactions…</string>
+    <string name="filter_period">Period</string>
+    <string name="filter_account">Account</string>
+    <string name="filter_all_time">All time</string>
+    <string name="filter_this_month">This month</string>
+    <string name="filter_last_30_days">Last 30 days</string>
+    <string name="filter_all_accounts">All accounts</string>
+    <string name="filter_select_account">Select account</string>
     <string name="filter_date">Date</string>
     <string name="filter_category">Category</string>
     <string name="filter_type">Type</string>
@@ -81,6 +89,9 @@
     <string name="budget_title">Budget</string>
     <string name="total_monthly_budget">TOTAL MONTHLY BUDGET</string>
     <string name="spent_so_far">Spent so far</string>
+    <string name="projected_spend">Estimated end-of-month spending: %1$s</string>
+    <string name="projected_spend_over_budget">Estimated spending may exceed budget: %1$s</string>
+    <string name="projected_spend_unavailable">Forecast is available for the current month only</string>
     <string name="categories">Categories</string>
     <string name="add_new_budget">Add New Budget</string>
     <string name="budget_insight">Budget Insight</string>
@@ -119,6 +130,8 @@
     <string name="language_label">Language</string>
     <string name="security_privacy">SECURITY &amp; PRIVACY</string>
     <string name="biometric_lock">Biometric Lock</string>
+    <string name="background_music">Background music</string>
+    <string name="sound_effects">Sound effects</string>
     <string name="export_data">Export Data (CSV)</string>
     <string name="support">SUPPORT</string>
     <string name="help_support">Help &amp; Support</string>
@@ -163,8 +176,33 @@
     <!-- Phase 1, 2, 3 Additions -->
     <string name="filter_day">Day</string>
     <string name="export_pdf">Export PDF</string>
+    <string name="export_csv">Export CSV</string>
+    <string name="csv_export_success">CSV report exported</string>
+    <string name="csv_export_failed">CSV export failed: %1$s</string>
     <string name="bank_link_title">Bank SMS Link</string>
-    <string name="sms_permission_required">SMS Permission is required to parse transactions</string>
+    <string name="sms_permission_required">Optional: allow SMS access to import bank transaction alerts automatically. Other app features remain available if you decline.</string>
+    <string name="sms_disclosure_title">How Financier uses SMS</string>
+    <string name="sms_disclosure_message">Financier checks messages from supported banks for balance and transaction alerts. Matching messages are processed on this device. Transaction details and the matching message text are stored in the encrypted app database to prevent duplicates. Old messages are scanned only when you tap Scan Old SMS. The original SMS text is not sent to the AI service; if you use AI features, financial summaries and your prompts may be sent to Gemini. SMS access is optional, and other app features work if you decline.</string>
+    <string name="sms_disclosure_continue">Continue</string>
+    <string name="nearby_places_title">Nearby ATMs &amp; bank branches</string>
+    <string name="nearby_places_subtitle">Find cash machines and bank branches around you</string>
+    <string name="nearby_places_empty_hint">Tap Find nearby to search around your current location.</string>
+    <string name="nearby_places_found">%1$d places found within 5 km, sorted by distance.</string>
+    <string name="nearby_places_location_notice">Your approximate location is sent to the OpenStreetMap Overpass service to search nearby places. Financier does not save your location. Location is requested only when you tap Find nearby.</string>
+    <string name="nearby_places_find">Find nearby</string>
+    <string name="nearby_places_loading">Getting your location and searching nearby places…</string>
+    <string name="nearby_places_permission_denied">Location permission was not granted. Allow approximate location to find nearby ATMs and banks.</string>
+    <string name="nearby_places_location_unavailable">Could not get your location. Turn on device location and try again.</string>
+    <string name="nearby_places_none">No ATMs or bank branches were found within 5 km. Map coverage may be incomplete.</string>
+    <string name="nearby_places_error">Could not load nearby places. Check your internet connection and try again.</string>
+    <string name="nearby_places_atm">ATM</string>
+    <string name="nearby_places_bank">Bank branch</string>
+    <string name="nearby_places_directions">Directions</string>
+    <string name="nearby_places_distance_m">%1$d m away</string>
+    <string name="nearby_places_distance_km">%1$.1f km away</string>
+    <string name="nearby_places_kind_distance">%1$s · %2$s</string>
+    <string name="nearby_places_address_unavailable">Address not available</string>
+    <string name="nearby_places_osm_credit">Map and place data © OpenStreetMap contributors · ODbL</string>
     <string name="grant_permission">Grant Permission</string>
     <string name="scan_old_sms">Scan Old SMS</string>
     <string name="scan_old_sms_success">Successfully scanned SMS inbox. Parsed %d transactions.</string>
@@ -181,4 +219,6 @@
     <string name="biometric_subtitle">Use your fingerprint or face to authenticate</string>
     <string name="biometric_negative_button">Use Password</string>
     <string name="biometric_failed_fallback_pw">Biometric verification failed. Please enter your password.</string>
+    <string name="reauthentication_password_required">Session timed out after 3 minutes of inactivity. Please enter your password to continue.</string>
+    <string name="reauthentication_password_prompt">Enter your password to unlock</string>
 </resources>

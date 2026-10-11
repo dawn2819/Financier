@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.core.content.ContextCompat
 import com.financier.app.R
 import com.financier.app.common.CurrencyFormatter
 import com.financier.app.data.local.entity.TransactionEntity
@@ -87,9 +88,9 @@ class TransactionAdapter(
             val isIncome = item.type == "INCOME"
             val prefix = if (isIncome) "+" else "-"
             val amountColor = if (isIncome)
-                getCachedColor("#78DC77")
+                ContextCompat.getColor(ctx, R.color.cat_income)
             else
-                getCachedColor("#FFB4AB")
+                ContextCompat.getColor(ctx, R.color.error)
 
             // Convert amount dynamically to the display currency
             val accountCurrency = accountCurrencyMap[item.accountId] ?: "VND"
@@ -115,23 +116,26 @@ class TransactionAdapter(
         }
 
         fun getCategoryInfo(ctx: android.content.Context, category: String): Triple<Int, String, String> {
-            return when (category.lowercase()) {
-                "food" -> Triple(R.drawable.ic_cat_food, ctx.getString(R.string.cat_food), "#4CAF50")
-                "transport" -> Triple(R.drawable.ic_cat_transport, ctx.getString(R.string.cat_transport), "#2196F3")
-                "shopping" -> Triple(R.drawable.ic_cat_shopping, ctx.getString(R.string.cat_shopping), "#FF9800")
-                "health" -> Triple(R.drawable.ic_cat_health, ctx.getString(R.string.cat_health), "#F44336")
-                "entertainment" -> Triple(R.drawable.ic_cat_entertainment, ctx.getString(R.string.cat_entertainment), "#9C27B0")
-                "housing" -> Triple(R.drawable.ic_cat_housing, ctx.getString(R.string.cat_housing), "#795548")
-                "education" -> Triple(R.drawable.ic_cat_education, ctx.getString(R.string.cat_education), "#00BCD4")
-                "gym" -> Triple(R.drawable.ic_cat_gym, ctx.getString(R.string.cat_gym), "#E91E63")
-                "bills" -> Triple(R.drawable.ic_cat_bills, ctx.getString(R.string.cat_bills), "#FF5722")
-                "travel" -> Triple(R.drawable.ic_cat_travel, ctx.getString(R.string.cat_travel), "#03A9F4")
-                "pets" -> Triple(R.drawable.ic_cat_pets, ctx.getString(R.string.cat_pets), "#8BC34A")
-                "salary", "income" -> Triple(R.drawable.ic_cat_income, ctx.getString(R.string.cat_salary), "#78DC77")
-                "freelance" -> Triple(R.drawable.ic_cat_income, ctx.getString(R.string.cat_freelance), "#78DC77")
-                "gift" -> Triple(R.drawable.ic_cat_income, ctx.getString(R.string.cat_gift), "#FFB1C7")
-                else -> Triple(R.drawable.ic_cat_others, ctx.getString(R.string.cat_others), "#607D8B")
+            val (icon, nameRes, colorRes) = when (category.lowercase()) {
+                "food" -> Triple(R.drawable.ic_cat_food, R.string.cat_food, R.color.cat_food)
+                "transport" -> Triple(R.drawable.ic_cat_transport, R.string.cat_transport, R.color.cat_transport)
+                "shopping" -> Triple(R.drawable.ic_cat_shopping, R.string.cat_shopping, R.color.cat_shopping)
+                "health" -> Triple(R.drawable.ic_cat_health, R.string.cat_health, R.color.cat_health)
+                "entertainment" -> Triple(R.drawable.ic_cat_entertainment, R.string.cat_entertainment, R.color.cat_entertainment)
+                "housing" -> Triple(R.drawable.ic_cat_housing, R.string.cat_housing, R.color.cat_housing)
+                "education" -> Triple(R.drawable.ic_cat_education, R.string.cat_education, R.color.cat_education)
+                "gym" -> Triple(R.drawable.ic_cat_gym, R.string.cat_gym, R.color.cat_gym)
+                "bills" -> Triple(R.drawable.ic_cat_bills, R.string.cat_bills, R.color.cat_bills)
+                "travel" -> Triple(R.drawable.ic_cat_travel, R.string.cat_travel, R.color.cat_travel)
+                "pets" -> Triple(R.drawable.ic_cat_pets, R.string.cat_pets, R.color.cat_pets)
+                "salary", "income" -> Triple(R.drawable.ic_cat_income, R.string.cat_salary, R.color.cat_income)
+                "freelance" -> Triple(R.drawable.ic_cat_income, R.string.cat_freelance, R.color.cat_income)
+                "gift" -> Triple(R.drawable.ic_cat_income, R.string.cat_gift, R.color.secondary)
+                else -> Triple(R.drawable.ic_cat_others, R.string.cat_others, R.color.cat_others)
             }
+            val color = ContextCompat.getColor(ctx, colorRes)
+            val colorHex = String.format(Locale.US, "#%06X", 0xFFFFFF and color)
+            return Triple(icon, ctx.getString(nameRes), colorHex)
         }
 
         fun formatTime(ms: Long): String {

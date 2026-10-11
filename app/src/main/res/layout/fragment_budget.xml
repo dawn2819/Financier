@@ -162,6 +162,15 @@
                             android:textColor="@color/primary"/>
                     </LinearLayout>
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_projected_spend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="@string/projected_spend_unavailable"
+                    android:textSize="13sp"
+                    android:textColor="@color/on_surface_variant" />
             </LinearLayout>
 
             <!-- Green left accent -->

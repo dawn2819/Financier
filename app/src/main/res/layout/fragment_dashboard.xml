@@ -48,6 +48,13 @@
                     android:textStyle="bold"
                     android:textColor="@color/primary"
                     android:letterSpacing="-0.02"/>
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/ic_sakura"
+                    android:importantForAccessibility="no" />
             </LinearLayout>
 
             <!-- Toolbar Action Buttons -->
@@ -113,8 +120,8 @@
                 android:id="@+id/card_balance"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                app:cardBackgroundColor="@color/surface_container"
-                app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="@color/primary_container"
+                app:cardCornerRadius="28dp"
                 app:cardElevation="0dp"
                 android:layout_marginBottom="12dp">
 
@@ -190,7 +197,7 @@
                             <com.google.android.material.card.MaterialCardView
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
-                                app:cardBackgroundColor="#1A78DC77"
+                                app:cardBackgroundColor="@color/primary_container"
                                 app:cardCornerRadius="16dp"
                                 app:cardElevation="0dp"
                                 android:layout_marginEnd="8dp">
@@ -238,7 +245,7 @@
                             <com.google.android.material.card.MaterialCardView
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
-                                app:cardBackgroundColor="#1AFFB4AB"
+                                app:cardBackgroundColor="@color/error_container"
                                 app:cardCornerRadius="16dp"
                                 app:cardElevation="0dp"
                                 android:layout_marginEnd="8dp">
@@ -307,7 +314,7 @@
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="44dp"
                             android:layout_height="44dp"
-                            app:cardBackgroundColor="#1A9ECAFF"
+                            app:cardBackgroundColor="@color/secondary_container"
                             app:cardCornerRadius="12dp"
                             app:cardElevation="0dp"
                             android:layout_marginEnd="10dp">

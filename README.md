@@ -1,11 +1,12 @@
 # 💰 Financier — Smart Finance Management
 
-A premium dark-themed Android financial management app built with Kotlin, featuring AI-powered financial advice via Gemini API.
+A finance management app for Android built with Kotlin, featuring a sakura-inspired anime visual theme and AI-powered financial advice via Gemini API.
 
 ## ✨ Features
 
 ### 📊 Dashboard
 - Real-time balance, income & expense tracking
+- Filter dashboard totals and recent transactions by account or view all accounts
 - 7-day spending trend chart (MPAndroidChart)
 - Quick access to recent transactions
 
@@ -14,12 +15,14 @@ A premium dark-themed Android financial management app built with Kotlin, featur
 - 12 expense categories with icons
 - Custom numpad with thousands separator
 - Search & filter by note/category
+- Filter by account, current month, or last 30 days
 - Date picker for each transaction
 
 ### 📋 Budget
 - Monthly budget per category with progress bars
 - Color-coded indicators (🟢 <70% 🟠 70-90% 🔴 >90%)
 - Month navigation (prev/next)
+- Current-month spending forecast based on average daily spend, with an over-budget warning
 - Add/delete budgets
 
 ### 📈 Reports
@@ -27,10 +30,12 @@ A premium dark-themed Android financial management app built with Kotlin, featur
 - **BarChart** — 6-month income vs expense comparison
 - Time filter: Week / Month / Year
 - Category breakdown list with percentages
+- Export reports to PDF or UTF-8 CSV
 
 ### 🤖 AI Chat (Gemini)
 - Financial advice powered by Google Gemini 1.5 Flash
 - Context-aware — injects user's real financial data
+- Uses account-currency converted balance, monthly totals, and top spending categories
 - Offline fallback with keyword-based responses
 - Quick action chips
 

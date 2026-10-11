@@ -4,8 +4,17 @@ import android.content.Context
 import androidx.lifecycle.*
 import com.financier.app.data.local.AppDatabase
 import com.financier.app.data.local.entity.TransactionEntity
+import com.financier.app.data.local.entity.FinancialAccountEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Calendar
+
+private data class TransactionFilters(
+    val query: String = "",
+    val type: String = "ALL",
+    val accountId: Long = -1L,
+    val period: String = "ALL"
+)
 
 class TransactionsViewModel(context: Context, private val userId: Long) : ViewModel() {
     private val db = AppDatabase.getDatabase(context)
@@ -15,25 +24,43 @@ class TransactionsViewModel(context: Context, private val userId: Long) : ViewMo
 
     private val _searchQuery = MutableLiveData("")
     private val _filterType = MutableLiveData("ALL")
+    private val _filterAccountId = MutableLiveData(-1L)
+    private val _filterPeriod = MutableLiveData("ALL")
 
     val currency = MutableLiveData<String>()
     val accountCurrencyMap = MutableLiveData<Map<Long, String>>()
+    val accounts: LiveData<List<FinancialAccountEntity>> = accountDao.getAccountsByUser(userId)
 
-    private val _filterParams = MediatorLiveData<Pair<String, String>>().apply {
-        var query = ""
-        var type = "ALL"
-        addSource(_searchQuery) { query = it ?: ""; value = Pair(query, type) }
-        addSource(_filterType) { type = it ?: "ALL"; value = Pair(query, type) }
+    private val _filterParams = MediatorLiveData<TransactionFilters>().apply {
+        fun update() {
+            value = TransactionFilters(
+                query = _searchQuery.value.orEmpty(),
+                type = _filterType.value ?: "ALL",
+                accountId = _filterAccountId.value ?: -1L,
+                period = _filterPeriod.value ?: "ALL"
+            )
+        }
+        addSource(_searchQuery) { update() }
+        addSource(_filterType) { update() }
+        addSource(_filterAccountId) { update() }
+        addSource(_filterPeriod) { update() }
     }
 
-    val transactions: LiveData<List<TransactionEntity>> = _filterParams.switchMap { (query, type) ->
-        val source = if (query.isBlank()) {
+    val transactions: LiveData<List<TransactionEntity>> = _filterParams.switchMap { filters ->
+        val source = if (filters.query.isBlank()) {
             txDao.getAllTransactions(userId)
         } else {
-            txDao.searchTransactions(userId, query)
+            txDao.searchTransactions(userId, filters.query)
         }
         source.map { list ->
-            if (type == "ALL") list else list.filter { it.type.equals(type, ignoreCase = true) }
+            val startMs = getPeriodStart(filters.period)
+            val endMs = if (filters.period == "ALL") null else System.currentTimeMillis()
+            list.filter { transaction ->
+                (filters.type == "ALL" || transaction.type.equals(filters.type, ignoreCase = true)) &&
+                    (filters.accountId == -1L || transaction.accountId == filters.accountId) &&
+                    (startMs == null || transaction.dateMs >= startMs) &&
+                    (endMs == null || transaction.dateMs <= endMs)
+            }
         }
     }
 
@@ -64,6 +91,37 @@ class TransactionsViewModel(context: Context, private val userId: Long) : ViewMo
 
     fun setFilterType(type: String) {
         _filterType.value = type
+    }
+
+    fun setFilterAccount(accountId: Long) {
+        _filterAccountId.value = accountId
+    }
+
+    fun setFilterPeriod(period: String) {
+        _filterPeriod.value = period
+    }
+
+    private fun getPeriodStart(period: String): Long? {
+        val calendar = Calendar.getInstance()
+        return when (period) {
+            "MONTH" -> {
+                calendar.set(Calendar.DAY_OF_MONTH, 1)
+                calendar.set(Calendar.HOUR_OF_DAY, 0)
+                calendar.set(Calendar.MINUTE, 0)
+                calendar.set(Calendar.SECOND, 0)
+                calendar.set(Calendar.MILLISECOND, 0)
+                calendar.timeInMillis
+            }
+            "30_DAYS" -> {
+                calendar.add(Calendar.DAY_OF_YEAR, -29)
+                calendar.set(Calendar.HOUR_OF_DAY, 0)
+                calendar.set(Calendar.MINUTE, 0)
+                calendar.set(Calendar.SECOND, 0)
+                calendar.set(Calendar.MILLISECOND, 0)
+                calendar.timeInMillis
+            }
+            else -> null
+        }
     }
 
     class Factory(private val ctx: Context, private val userId: Long) : ViewModelProvider.Factory {

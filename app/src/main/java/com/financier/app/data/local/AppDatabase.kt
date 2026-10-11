@@ -80,7 +80,7 @@ abstract class AppDatabase : RoomDatabase() {
                     displayName = "Dawn",
                     passwordHash = passwordHash,
                     role = "admin",
-                    avatarColor = "#78DC77"
+                    avatarColor = "#7046D2"
                 )
                 val userId = db.userDao().insertUser(dawnUser)
 
@@ -101,7 +101,7 @@ abstract class AppDatabase : RoomDatabase() {
                     accountType = "CASH",
                     initialBalance = 0.0,
                     currency = "VND",
-                    colorHex = "#78DC77",
+                    colorHex = "#7046D2",
                     icon = "account_balance_wallet"
                 )
                 val cashId = db.financialAccountDao().insertAccount(cashAccount)
@@ -112,7 +112,7 @@ abstract class AppDatabase : RoomDatabase() {
                     accountType = "BANK",
                     initialBalance = 0.0,
                     currency = "VND",
-                    colorHex = "#9ECAFF",
+                    colorHex = "#659CEB",
                     icon = "account_balance"
                 )
                 db.financialAccountDao().insertAccount(bankAccount)

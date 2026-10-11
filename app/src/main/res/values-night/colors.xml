@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Primary — Finance Green -->
-    <color name="primary">#78DC77</color>
-    <color name="on_primary">#00390A</color>
-    <color name="primary_container">#4CAF50</color>
-    <color name="on_primary_container">#003C0B</color>
-    <color name="primary_fixed">#94F990</color>
-    <color name="primary_fixed_dim">#78DC77</color>
+    <!-- Primary — anime lavender -->
+    <color name="primary">#D0BCFF</color>
+    <color name="on_primary">#351675</color>
+    <color name="primary_container">#7045C5</color>
+    <color name="on_primary_container">#F3EBFF</color>
+    <color name="primary_fixed">#E8DDFF</color>
+    <color name="primary_fixed_dim">#C8B0FF</color>
 
     <!-- Secondary — Blue -->
-    <color name="secondary">#9ECAFF</color>
-    <color name="on_secondary">#003258</color>
-    <color name="secondary_container">#1E95F2</color>
-    <color name="on_secondary_container">#002B4D</color>
+    <color name="secondary">#FFB4D0</color>
+    <color name="on_secondary">#5C1737</color>
+    <color name="secondary_container">#8C3A60</color>
+    <color name="on_secondary_container">#FFE9F1</color>
 
     <!-- Tertiary — Pink -->
-    <color name="tertiary">#FFB1C7</color>
-    <color name="on_tertiary">#650032</color>
-    <color name="tertiary_container">#F26F9D</color>
-    <color name="on_tertiary_container">#690034</color>
+    <color name="tertiary">#82DED0</color>
+    <color name="on_tertiary">#003A35</color>
+    <color name="tertiary_container">#146B64</color>
+    <color name="on_tertiary_container">#C2F5EA</color>
 
     <!-- Error -->
     <color name="error">#FFB4AB</color>
@@ -27,54 +27,54 @@
     <color name="on_error_container">#FFDAD6</color>
 
     <!-- Background & Surface — Dark Mode -->
-    <color name="background">#0F150E</color>
-    <color name="on_background">#DEE4D9</color>
-    <color name="surface">#0F150E</color>
-    <color name="surface_dim">#0F150E</color>
-    <color name="surface_bright">#353B33</color>
-    <color name="on_surface">#DEE4D9</color>
-    <color name="on_surface_variant">#BECAB9</color>
+    <color name="background">#100D18</color>
+    <color name="on_background">#F0EAF6</color>
+    <color name="surface">#100D18</color>
+    <color name="surface_dim">#100D18</color>
+    <color name="surface_bright">#393245</color>
+    <color name="on_surface">#F0EAF6</color>
+    <color name="on_surface_variant">#C8BFD1</color>
 
     <!-- Surface Containers -->
-    <color name="surface_container_lowest">#0A1009</color>
-    <color name="surface_container_low">#171D16</color>
-    <color name="surface_container">#1B211A</color>
-    <color name="surface_container_high">#262C24</color>
-    <color name="surface_container_highest">#30362E</color>
+    <color name="surface_container_lowest">#0C0913</color>
+    <color name="surface_container_low">#171320</color>
+    <color name="surface_container">#1D1828</color>
+    <color name="surface_container_high">#282235</color>
+    <color name="surface_container_highest">#342D43</color>
 
     <!-- Card background (semi-transparent glass effect base) -->
-    <color name="card_glass">#801E293B</color>
+    <color name="card_glass">#80251C37</color>
 
     <!-- Outline -->
-    <color name="outline">#899484</color>
-    <color name="outline_variant">#3F4A3C</color>
+    <color name="outline">#968AA5</color>
+    <color name="outline_variant">#494157</color>
 
     <!-- Inverse -->
-    <color name="inverse_surface">#DEE4D9</color>
-    <color name="inverse_on_surface">#2C322A</color>
-    <color name="inverse_primary">#006E1C</color>
+    <color name="inverse_surface">#F0EAF6</color>
+    <color name="inverse_on_surface">#302A3B</color>
+    <color name="inverse_primary">#7046D2</color>
 
     <!-- Surface tint -->
-    <color name="surface_tint">#78DC77</color>
+    <color name="surface_tint">#D0BCFF</color>
 
     <!-- Transparent -->
     <color name="transparent">#00000000</color>
 
     <!-- Status bar -->
-    <color name="status_bar">#0A1009</color>
+    <color name="status_bar">#0C0913</color>
 
     <!-- Category colors -->
-    <color name="cat_food">#4CAF50</color>
-    <color name="cat_transport">#2196F3</color>
-    <color name="cat_shopping">#FF9800</color>
-    <color name="cat_health">#F44336</color>
-    <color name="cat_entertainment">#9C27B0</color>
-    <color name="cat_housing">#795548</color>
-    <color name="cat_education">#00BCD4</color>
-    <color name="cat_gym">#E91E63</color>
-    <color name="cat_bills">#FF5722</color>
-    <color name="cat_travel">#03A9F4</color>
-    <color name="cat_pets">#8BC34A</color>
-    <color name="cat_others">#607D8B</color>
-    <color name="cat_income">#78DC77</color>
+    <color name="cat_food">#F39AB4</color>
+    <color name="cat_transport">#8AB8FF</color>
+    <color name="cat_shopping">#FFC47C</color>
+    <color name="cat_health">#FF929A</color>
+    <color name="cat_entertainment">#C6A6FF</color>
+    <color name="cat_housing">#D3A38D</color>
+    <color name="cat_education">#72D2D8</color>
+    <color name="cat_gym">#F08BBC</color>
+    <color name="cat_bills">#F49A7C</color>
+    <color name="cat_travel">#79C8F0</color>
+    <color name="cat_pets">#A6D985</color>
+    <color name="cat_others">#A6AFBF</color>
+    <color name="cat_income">#75D6B8</color>
 </resources>

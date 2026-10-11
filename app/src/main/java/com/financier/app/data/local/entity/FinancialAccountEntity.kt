@@ -38,7 +38,7 @@ data class FinancialAccountEntity(
     val currency: String = "VND", // VND | USD
 
     @ColumnInfo(name = "color_hex")
-    val colorHex: String = "#78DC77",
+    val colorHex: String = "#7046D2",
 
     @ColumnInfo(name = "icon")
     val icon: String = "account_balance_wallet",

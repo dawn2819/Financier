@@ -1,7 +1,5 @@
 package com.financier.app.ui.transactions
 
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -93,7 +91,10 @@ class TransactionDetailsBottomSheet : BottomSheetDialogFragment() {
     ) {
         val isIncome = tx.type == "INCOME"
         val prefix = if (isIncome) "+" else "-"
-        val color = if (isIncome) Color.parseColor("#78DC77") else Color.parseColor("#FFB4AB")
+        val color = androidx.core.content.ContextCompat.getColor(
+            requireContext(),
+            if (isIncome) R.color.cat_income else R.color.error
+        )
 
         // Format amount in account's original currency
         binding.tvDetailAmount.text = "$prefix${CurrencyFormatter.format(tx.amount, accountCurrency)}"

@@ -20,19 +20,19 @@ object Constants {
 
     // Colors for categories
     val CATEGORY_COLORS = mapOf(
-        "food" to "#4CAF50",
-        "transport" to "#2196F3",
-        "shopping" to "#FF9800",
-        "health" to "#F44336",
-        "entertainment" to "#9C27B0",
-        "housing" to "#795548",
-        "education" to "#00BCD4",
-        "gym" to "#E91E63",
-        "bills" to "#FF5722",
-        "travel" to "#03A9F4",
-        "pets" to "#8BC34A",
-        "income" to "#78DC77",
-        "salary" to "#78DC77",
-        "others" to "#607D8B"
+        "food" to "#E9789A",
+        "transport" to "#659CEB",
+        "shopping" to "#E7A14B",
+        "health" to "#E66D78",
+        "entertainment" to "#9B78D4",
+        "housing" to "#A97965",
+        "education" to "#42AEB8",
+        "gym" to "#CF5D98",
+        "bills" to "#DA7759",
+        "travel" to "#4E9EC9",
+        "pets" to "#77A95A",
+        "income" to "#188B76",
+        "salary" to "#188B76",
+        "others" to "#788397"
     )
 }

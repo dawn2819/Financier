@@ -21,6 +21,7 @@ import com.financier.app.data.local.AppDatabase
 import com.financier.app.data.local.entity.BankSmsLogEntity
 import com.financier.app.data.local.entity.TransactionEntity
 import com.financier.app.databinding.FragmentBankLinkBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -61,9 +62,7 @@ class BankLinkFragment : Fragment() {
         }
 
         binding.btnGrantPermission.setOnClickListener {
-            requestPermissionLauncher.launch(
-                arrayOf(Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS)
-            )
+            showSmsDisclosure()
         }
 
         binding.btnScanHistory.setOnClickListener {
@@ -82,6 +81,19 @@ class BankLinkFragment : Fragment() {
         ) == PackageManager.PERMISSION_GRANTED
 
         updateUiState(receiveGranted && readGranted)
+    }
+
+    private fun showSmsDisclosure() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.sms_disclosure_title)
+            .setMessage(R.string.sms_disclosure_message)
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton(R.string.sms_disclosure_continue) { _, _ ->
+                requestPermissionLauncher.launch(
+                    arrayOf(Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS)
+                )
+            }
+            .show()
     }
 
     private fun updateUiState(isGranted: Boolean) {

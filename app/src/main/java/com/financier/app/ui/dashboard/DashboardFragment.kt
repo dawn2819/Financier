@@ -10,6 +10,7 @@ import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.financier.app.R
@@ -101,7 +102,7 @@ class DashboardFragment : Fragment() {
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
                 setDrawGridLines(false)
-                textColor = Color.parseColor("#BECAB9")
+                textColor = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.on_surface_variant)
                 textSize = 10f
                 granularity = 1f
             }
@@ -115,7 +116,22 @@ class DashboardFragment : Fragment() {
         }
 
         binding.chipAccountSelector.setOnClickListener {
-            // TODO: show account picker dialog
+            val accounts = viewModel.accounts.value.orEmpty()
+            val names = arrayOf(
+                getString(R.string.filter_all_accounts),
+                *accounts.map { it.name }.toTypedArray()
+            )
+            val selectedId = viewModel.selectedAccountId.value ?: -1L
+            val selected = if (selectedId == -1L) 0 else
+                accounts.indexOfFirst { it.id == selectedId }.let { if (it < 0) 0 else it + 1 }
+            AlertDialog.Builder(requireContext())
+                .setTitle("Chọn tài khoản")
+                .setSingleChoiceItems(names, selected) { dialog, which ->
+                    viewModel.selectAccount(if (which == 0) -1L else accounts[which - 1].id)
+                    dialog.dismiss()
+                }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
         }
 
         // Avatar click → navigate to Profile
@@ -193,7 +209,9 @@ class DashboardFragment : Fragment() {
         }
 
         viewModel.accountName.observe(viewLifecycleOwner) { name ->
-            binding.chipAccountSelector.text = name ?: "Tài khoản"
+            binding.chipAccountSelector.text = if (name.isNullOrBlank()) {
+                getString(R.string.filter_all_accounts)
+            } else name
         }
     }
 
@@ -218,9 +236,9 @@ class DashboardFragment : Fragment() {
         val labels = data.map { it.first }
 
         val dataSet = BarDataSet(entries, "").apply {
-            color = Color.parseColor("#4CAF50")
+            color = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.primary)
             setDrawValues(false)
-            highLightColor = Color.parseColor("#78DC77")
+            highLightColor = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.primary_fixed_dim)
         }
 
         binding.chartTrend.apply {

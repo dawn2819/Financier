@@ -37,7 +37,7 @@ class ManageAccountsFragment : Fragment() {
 
         binding.fabAddAccount.setOnClickListener {
             AddAccountDialog { name, type, currency, cardNumber, cardExpiry, cardPin, isLinked, walletType ->
-                val colors = listOf("#78DC77", "#9ECAFF", "#FFB4AB", "#FFD700", "#E040FB", "#00BCD4")
+                val colors = listOf("#7046D2", "#E9789A", "#659CEB", "#E7A14B", "#42AEB8", "#9B78D4")
                 val color = colors.random()
                 viewModel.addAccount(name, type, currency, color, cardNumber, cardExpiry, cardPin, isLinked, walletType)
             }.show(parentFragmentManager, "add_account")

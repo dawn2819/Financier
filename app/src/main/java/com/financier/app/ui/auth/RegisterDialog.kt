@@ -74,7 +74,7 @@ class RegisterDialog : BottomSheetDialogFragment() {
                     displayName = displayName,
                     passwordHash = SecurityUtils.hashPassword(password),
                     role = "user",
-                    avatarColor = "#9ECAFF"
+                    avatarColor = "#E9789A"
                 )
                 val userId = db.userDao().insertUser(user)
 
@@ -86,7 +86,7 @@ class RegisterDialog : BottomSheetDialogFragment() {
                     userId = userId,
                     name = "Tiền mặt",
                     accountType = "CASH",
-                    colorHex = "#78DC77"
+                    colorHex = "#7046D2"
                 )
                 val cashId = db.financialAccountDao().insertAccount(cashAccount)
                 db.settingsDao().updateSettings(
@@ -95,6 +95,7 @@ class RegisterDialog : BottomSheetDialogFragment() {
 
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Đăng ký thành công! Hãy đăng nhập.", Toast.LENGTH_SHORT).show()
+                    (activity as? LoginActivity)?.onRegisterSuccess(username)
                     dismiss()
                 }
             }

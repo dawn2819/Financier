@@ -27,6 +27,9 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions WHERE user_id = :userId ORDER BY date_ms DESC LIMIT 5")
     fun getRecentTransactions(userId: Long): LiveData<List<TransactionEntity>>
 
+    @Query("SELECT * FROM transactions WHERE user_id = :userId AND account_id = :accountId ORDER BY date_ms DESC LIMIT 5")
+    fun getRecentTransactionsByAccount(userId: Long, accountId: Long): LiveData<List<TransactionEntity>>
+
     // Giao dịch theo tháng/năm
     @Query("""
         SELECT * FROM transactions 

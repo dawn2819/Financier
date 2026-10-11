@@ -17,6 +17,8 @@ object SessionManager {
     private const val KEY_AVATAR_COLOR = "avatar_color"
     private const val KEY_AVATAR_PATH = "avatar_path"
     private const val KEY_IS_LOGGED_IN = "is_logged_in"
+    private const val KEY_BACKGROUNDED_AT = "backgrounded_at"
+    private const val REAUTHENTICATION_TIMEOUT_MS = 3 * 60 * 1000L
 
     private fun getPrefs(context: Context) = try {
         val masterKey = MasterKey.Builder(context)
@@ -52,12 +54,31 @@ object SessionManager {
             putString(KEY_AVATAR_COLOR, avatarColor)
             putString(KEY_AVATAR_PATH, avatarPath)
             putBoolean(KEY_IS_LOGGED_IN, true)
+            remove(KEY_BACKGROUNDED_AT)
             apply()
         }
     }
 
     fun clearSession(context: Context) {
         getPrefs(context).edit().clear().apply()
+    }
+
+    fun markBackgrounded(context: Context) {
+        if (isLoggedIn(context)) {
+            getPrefs(context).edit().putLong(KEY_BACKGROUNDED_AT, System.currentTimeMillis()).apply()
+        }
+    }
+
+    fun requiresReauthentication(context: Context): Boolean {
+        if (!isLoggedIn(context)) return false
+        val backgroundedAt = getPrefs(context).getLong(KEY_BACKGROUNDED_AT, 0L)
+        if (backgroundedAt == 0L) return false
+        val elapsed = System.currentTimeMillis() - backgroundedAt
+        return elapsed < 0L || elapsed >= REAUTHENTICATION_TIMEOUT_MS
+    }
+
+    fun clearBackgroundedAt(context: Context) {
+        getPrefs(context).edit().remove(KEY_BACKGROUNDED_AT).apply()
     }
 
     fun isLoggedIn(context: Context): Boolean {
@@ -81,7 +102,7 @@ object SessionManager {
     }
 
     fun getAvatarColor(context: Context): String {
-        return getPrefs(context).getString(KEY_AVATAR_COLOR, "#78DC77") ?: "#78DC77"
+        return getPrefs(context).getString(KEY_AVATAR_COLOR, "#7046D2") ?: "#7046D2"
     }
 
     fun getAvatarPath(context: Context): String? {

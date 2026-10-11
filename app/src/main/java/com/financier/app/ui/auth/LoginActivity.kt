@@ -6,10 +6,13 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.biometric.BiometricPrompt
+import androidx.biometric.BiometricManager
 import androidx.core.content.ContextCompat
+import androidx.core.widget.doAfterTextChanged
 import java.util.concurrent.Executor
 import androidx.appcompat.app.AppCompatDelegate
 import com.financier.app.MainActivity
@@ -42,11 +45,15 @@ class LoginActivity : AppCompatActivity() {
 
         db = AppDatabase.getDatabase(this)
 
+        setupListeners()
+
         // Nếu đã đăng nhập trước đó thì kiểm tra khóa sinh trắc học và theme
         if (SessionManager.isLoggedIn(this)) {
             val userId = SessionManager.getUserId(this)
-            val username = SessionManager.getUsername(this) ?: ""
+            val username = SessionManager.getUsername(this)
             binding.etUsername.setText(username) // Prefill in case of biometric fallback
+            val requiresAuthentication = intent.getBooleanExtra("require_authentication", false) ||
+                SessionManager.requiresReauthentication(this)
             
             lifecycleScope.launch(Dispatchers.IO) {
                 val settings = db.settingsDao().getSettingsByUser(userId)
@@ -57,19 +64,37 @@ class LoginActivity : AppCompatActivity() {
                     if (AppCompatDelegate.getDefaultNightMode() != targetMode) {
                         AppCompatDelegate.setDefaultNightMode(targetMode)
                     }
-                    if (biometricEnabled) {
-                        showBiometricPrompt()
-                    } else {
+                    if (!requiresAuthentication) {
+                        SessionManager.clearBackgroundedAt(this@LoginActivity)
                         goToMain()
+                    } else {
+                        // Phiên làm việc tạm khóa sau 3 phút chạy nền: yêu cầu xác thực lại
+                        binding.tvError.visibility = View.GONE
+                        binding.tvLoginSubtitle.text = getString(R.string.reauthentication_password_prompt)
+                        playEntryAnimation()
+
+                        if (biometricEnabled && canAuthenticateBiometric()) {
+                            showBiometricPrompt()
+                        } else {
+                            // Tắt sinh trắc học hoặc không hỗ trợ: yêu cầu nhập mật khẩu bình thường (không báo lỗi đỏ)
+                            binding.etPassword.post {
+                                binding.etPassword.requestFocus()
+                                val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+                                imm?.showSoftInput(binding.etPassword, InputMethodManager.SHOW_IMPLICIT)
+                            }
+                        }
                     }
                 }
             }
             return
         }
 
-        setupListeners()
         playEntryAnimation()
     }
+
+    private fun canAuthenticateBiometric(): Boolean =
+        BiometricManager.from(this).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) ==
+            BiometricManager.BIOMETRIC_SUCCESS
 
     private fun showBiometricPrompt() {
         val executor = ContextCompat.getMainExecutor(this)
@@ -77,12 +102,21 @@ class LoginActivity : AppCompatActivity() {
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-                    showError(getString(R.string.biometric_failed_fallback_pw))
-                    binding.etPassword.requestFocus()
+                    // Nếu người dùng chủ động chọn "Dùng Mật Khẩu" hoặc hủy, không hiện thông báo lỗi đỏ
+                    if (errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON &&
+                        errorCode != BiometricPrompt.ERROR_USER_CANCELED) {
+                        showError(getString(R.string.biometric_failed_fallback_pw))
+                    }
+                    binding.etPassword.post {
+                        binding.etPassword.requestFocus()
+                        val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+                        imm?.showSoftInput(binding.etPassword, InputMethodManager.SHOW_IMPLICIT)
+                    }
                 }
 
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
+                    SessionManager.clearBackgroundedAt(this@LoginActivity)
                     goToMain()
                 }
 
@@ -96,9 +130,24 @@ class LoginActivity : AppCompatActivity() {
             .setTitle(getString(R.string.biometric_title))
             .setSubtitle(getString(R.string.biometric_subtitle))
             .setNegativeButtonText(getString(R.string.biometric_negative_button))
+            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK)
             .build()
 
-        biometricPrompt.authenticate(promptInfo)
+        try {
+            biometricPrompt.authenticate(promptInfo)
+        } catch (_: IllegalArgumentException) {
+            binding.etPassword.post {
+                binding.etPassword.requestFocus()
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.showSoftInput(binding.etPassword, InputMethodManager.SHOW_IMPLICIT)
+            }
+        } catch (_: SecurityException) {
+            binding.etPassword.post {
+                binding.etPassword.requestFocus()
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.showSoftInput(binding.etPassword, InputMethodManager.SHOW_IMPLICIT)
+            }
+        }
     }
 
     private fun requestHighRefreshRate() {
@@ -125,7 +174,6 @@ class LoginActivity : AppCompatActivity() {
     private fun playEntryAnimation() {
         // Fade in + slide up the login card
         binding.root.post {
-            val views = listOf(binding.tvAppName, binding.btnLogin)
             // Animate the entire scroll content with a fade-in
             binding.root.alpha = 0f
             ObjectAnimator.ofFloat(binding.root, "alpha", 0f, 1f).apply {
@@ -137,6 +185,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
+        // Clear error text when user starts typing
+        binding.etUsername.doAfterTextChanged { binding.tvError.visibility = View.GONE }
+        binding.etPassword.doAfterTextChanged { binding.tvError.visibility = View.GONE }
+
         // Enter trên password field → đăng nhập
         binding.etPassword.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -153,8 +205,19 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    fun onRegisterSuccess(registeredUsername: String) {
+        binding.etUsername.setText(registeredUsername)
+        binding.etPassword.setText("")
+        binding.tvError.visibility = View.GONE
+        binding.etPassword.post {
+            binding.etPassword.requestFocus()
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.showSoftInput(binding.etPassword, InputMethodManager.SHOW_IMPLICIT)
+        }
+    }
+
     private fun attemptLogin() {
-        val username = binding.etUsername.text.toString().trim()
+        val username = binding.etUsername.text.toString().trim().lowercase()
         val password = binding.etPassword.text.toString()
 
         // Validate
@@ -168,6 +231,9 @@ class LoginActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             val user = db.userDao().getUserByUsername(username)
+                ?: if (SessionManager.isLoggedIn(this@LoginActivity)) {
+                    db.userDao().getUserById(SessionManager.getUserId(this@LoginActivity))
+                } else null
 
             withContext(Dispatchers.Main) {
                 setLoading(false)
@@ -183,6 +249,7 @@ class LoginActivity : AppCompatActivity() {
                         avatarColor = user.avatarColor,
                         avatarPath = user.avatarPath
                     )
+                    SessionManager.clearBackgroundedAt(this@LoginActivity)
                     // Áp dụng cài đặt từ settings user
                     applyUserSettings(user.id)
                     goToMain()
@@ -229,6 +296,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun goToMain() {
+        SessionManager.clearBackgroundedAt(this)
         startActivity(Intent(this, MainActivity::class.java))
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         finish()

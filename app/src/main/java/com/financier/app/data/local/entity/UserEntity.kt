@@ -22,7 +22,7 @@ data class UserEntity(
     val role: String = "user", // "admin" | "user"
 
     @ColumnInfo(name = "avatar_color")
-    val avatarColor: String = "#78DC77", // màu avatar mặc định
+    val avatarColor: String = "#7046D2", // màu avatar mặc định
 
     @ColumnInfo(name = "avatar_path")
     val avatarPath: String? = null,

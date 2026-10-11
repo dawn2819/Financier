@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.financier.app.data.local.AppDatabase
 import com.financier.app.common.LocaleHelper
+import com.financier.app.common.AppAudio
 import com.financier.app.common.SessionManager
 import com.financier.app.databinding.ActivityMainBinding
 import com.financier.app.ui.auth.LoginActivity
@@ -84,6 +85,12 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNav.setupWithNavController(navController)
 
+        var hasSeenDestination = false
+        navController.addOnDestinationChangedListener { _, _, _ ->
+            if (hasSeenDestination) AppAudio.playClick(this)
+            hasSeenDestination = true
+        }
+
         // Ẩn bottom nav khi vào profile/accounts (optional)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
@@ -92,5 +99,33 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (SessionManager.isLoggedIn(this) && SessionManager.requiresReauthentication(this)) {
+            startActivity(Intent(this, LoginActivity::class.java).putExtra("require_authentication", true))
+            finish()
+            return
+        }
+        SessionManager.clearBackgroundedAt(this)
+        AppAudio.startMusic(this)
+    }
+
+    override fun onPause() {
+        AppAudio.pauseMusic()
+        super.onPause()
+    }
+
+    override fun onStop() {
+        if (!isChangingConfigurations && SessionManager.isLoggedIn(this)) {
+            SessionManager.markBackgrounded(this)
+        }
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        if (isFinishing) AppAudio.stopMusic()
+        super.onDestroy()
     }
 }

@@ -16,6 +16,7 @@ import com.financier.app.databinding.BottomsheetAddTransactionBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -287,12 +288,27 @@ class AddTransactionBottomSheet : BottomSheetDialogFragment() {
                 dateMs = selectedDateMs
             )
 
+            val db = AppDatabase.getDatabase(requireContext())
             lifecycleScope.launch(Dispatchers.IO) {
-                val dao = AppDatabase.getDatabase(requireContext()).transactionDao()
+                // Resolve the default account at save time; the async screen load may not have finished.
+                val accountId = if (selectedAccountId > 0L) selectedAccountId else {
+                    val settings = db.settingsDao().getSettingsByUser(userId)
+                    settings?.selectedAccountId?.takeIf { it > 0L }
+                        ?: db.financialAccountDao().getAccountsByUserSync(userId).firstOrNull()?.id
+                        ?: -1L
+                }
+                if (accountId <= 0L) {
+                    withContext(kotlinx.coroutines.Dispatchers.Main) {
+                        Toast.makeText(context, "Chưa có tài khoản!", Toast.LENGTH_SHORT).show()
+                    }
+                    return@launch
+                }
+                val transactionToSave = transaction.copy(accountId = accountId)
+                val dao = db.transactionDao()
                 if (editTransaction != null) {
-                    dao.updateTransaction(transaction)
+                    dao.updateTransaction(transactionToSave)
                 } else {
-                    dao.insertTransaction(transaction)
+                    dao.insertTransaction(transactionToSave)
                 }
 
                 kotlinx.coroutines.withContext(Dispatchers.Main) {

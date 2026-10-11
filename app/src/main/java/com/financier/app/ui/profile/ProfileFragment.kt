@@ -9,11 +9,13 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.biometric.BiometricManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.financier.app.R
 import com.financier.app.common.LocaleHelper
+import com.financier.app.common.AppAudio
 import com.financier.app.common.SessionManager
 import com.financier.app.data.local.AppDatabase
 import com.financier.app.data.local.entity.AppSettingsEntity
@@ -57,10 +59,10 @@ class ProfileFragment : Fragment() {
         loadSettings(userId)
 
         // Language switcher
-        binding.rowLanguage.setOnClickListener { showLanguageDialog() }
+        binding.rowLanguage.setOnClickListener { AppAudio.playClick(requireContext()); showLanguageDialog() }
 
         // Currency switcher
-        binding.rowCurrency.setOnClickListener { showCurrencyDialog() }
+        binding.rowCurrency.setOnClickListener { AppAudio.playClick(requireContext()); showCurrencyDialog() }
 
         // Manage accounts — navigate to ManageAccountsFragment
         binding.rowManageAccounts.setOnClickListener {
@@ -72,8 +74,13 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(R.id.action_profile_to_bank_link)
         }
 
+        binding.rowNearbyAtms.setOnClickListener {
+            findNavController().navigate(R.id.action_profile_to_nearby_places)
+        }
+
         // Sign out
         binding.btnSignOut.setOnClickListener {
+            AppAudio.playClick(requireContext())
             SessionManager.clearSession(requireContext())
             startActivity(Intent(requireContext(), LoginActivity::class.java))
             requireActivity().finish()
@@ -97,7 +104,34 @@ class ProfileFragment : Fragment() {
 
         // Biometric toggle
         binding.switchBiometric.setOnCheckedChangeListener { _, checked ->
-            if (!isLoadingSettings) saveSettings { it.copy(biometricEnabled = checked) }
+            if (!isLoadingSettings) {
+                if (checked && BiometricManager.from(requireContext()).canAuthenticate(
+                        BiometricManager.Authenticators.BIOMETRIC_WEAK
+                    ) != BiometricManager.BIOMETRIC_SUCCESS
+                ) {
+                    binding.switchBiometric.isChecked = false
+                    android.widget.Toast.makeText(
+                        requireContext(), R.string.biometric_failed_fallback_pw, android.widget.Toast.LENGTH_LONG
+                    ).show()
+                    return@setOnCheckedChangeListener
+                }
+                saveSettings { it.copy(biometricEnabled = checked) }
+            }
+        }
+
+        binding.switchBackgroundMusic.setOnCheckedChangeListener { _, checked ->
+            if (!isLoadingSettings) {
+                AppAudio.playClick(requireContext())
+                AppAudio.setMusicEnabled(requireContext(), checked)
+                if (checked) AppAudio.startMusic(requireContext()) else AppAudio.pauseMusic()
+            }
+        }
+
+        binding.switchSoundEffects.setOnCheckedChangeListener { _, checked ->
+            if (!isLoadingSettings) {
+                AppAudio.playClick(requireContext())
+                AppAudio.setSoundEffectsEnabled(requireContext(), checked)
+            }
         }
     }
 
@@ -108,6 +142,8 @@ class ProfileFragment : Fragment() {
             val settings = db.settingsDao().getSettingsByUser(userId)
             withContext(Dispatchers.Main) {
                 currentSettings = settings
+                binding.switchBackgroundMusic.isChecked = AppAudio.isMusicEnabled(requireContext())
+                binding.switchSoundEffects.isChecked = AppAudio.areSoundEffectsEnabled(requireContext())
                 settings?.let {
                     binding.switchNotifications.isChecked = it.notificationsOn
                     binding.switchDarkMode.isChecked = it.darkMode

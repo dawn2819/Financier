@@ -46,18 +46,7 @@ class AiRepository {
         }
 
         if (localResponse != null) {
-            chatHistory.add(
-                GeminiContent(
-                    role = "user",
-                    parts = listOf(GeminiPart(userMessage))
-                )
-            )
-            chatHistory.add(
-                GeminiContent(
-                    role = "model",
-                    parts = listOf(GeminiPart(localResponse))
-                )
-            )
+            appendExchange(userMessage, localResponse)
             return Result.success(localResponse)
         }
 
@@ -67,16 +56,13 @@ class AiRepository {
                 totalBalance, monthlyIncome, monthlyExpense, currency, topCategories
             )
 
-            // Thêm tin nhắn user vào history
-            chatHistory.add(
-                GeminiContent(
-                    role = "user",
-                    parts = listOf(GeminiPart(userMessage))
-                )
+            val userContent = GeminiContent(
+                role = "user",
+                parts = listOf(GeminiPart(userMessage))
             )
 
             val request = GeminiRequest(
-                contents = chatHistory.toList(),
+                contents = (chatHistory + userContent).takeLast(maxHistoryMessages),
                 systemInstruction = GeminiSystemInstruction(
                     parts = listOf(GeminiPart(systemPrompt))
                 )
@@ -92,23 +78,18 @@ class AiRepository {
                 val aiText = body?.candidates?.firstOrNull()
                     ?.content?.parts?.firstOrNull()?.text
                     ?: getDefaultResponse(userMessage)
-
-                // Thêm response AI vào history
-                chatHistory.add(
-                    GeminiContent(
-                        role = "model",
-                        parts = listOf(GeminiPart(aiText))
-                    )
-                )
+                appendExchange(userMessage, aiText)
 
                 Result.success(aiText)
             } else {
                 val fallback = getDefaultResponse(userMessage)
+                appendExchange(userMessage, fallback)
                 Result.success(fallback)
             }
         } catch (e: Exception) {
             // Fallback nếu không có internet hoặc API lỗi
             val fallback = getDefaultResponse(userMessage)
+            appendExchange(userMessage, fallback)
             Result.success(fallback)
         }
     }
@@ -116,6 +97,16 @@ class AiRepository {
     fun clearHistory() {
         chatHistory.clear()
     }
+
+    private fun appendExchange(userMessage: String, assistantMessage: String) {
+        chatHistory.add(GeminiContent("user", listOf(GeminiPart(userMessage))))
+        chatHistory.add(GeminiContent("model", listOf(GeminiPart(assistantMessage))))
+        if (chatHistory.size > maxHistoryMessages) {
+            chatHistory.subList(0, chatHistory.size - maxHistoryMessages).clear()
+        }
+    }
+
+    private val maxHistoryMessages = 40
 
     private fun buildSystemPrompt(
         balance: Double, income: Double, expense: Double,

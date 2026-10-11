@@ -70,6 +70,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_profile_to_nearby_places"
+            app:destination="@id/nearbyPlacesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
@@ -81,6 +88,11 @@
         android:id="@+id/bankLinkFragment"
         android:name="com.financier.app.ui.profile.BankLinkFragment"
         android:label="Bank SMS Link"/>
+
+    <fragment
+        android:id="@+id/nearbyPlacesFragment"
+        android:name="com.financier.app.ui.nearby.NearbyPlacesFragment"
+        android:label="Nearby ATMs and Banks"/>
 
     <fragment
         android:id="@+id/qrScanFragment"

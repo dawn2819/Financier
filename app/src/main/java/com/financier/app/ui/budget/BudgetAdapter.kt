@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import com.financier.app.R
 import com.financier.app.common.CurrencyFormatter
 import com.financier.app.databinding.ItemBudgetBinding
 import com.financier.app.ui.transactions.TransactionAdapter
@@ -60,9 +62,9 @@ class BudgetAdapter(
 
             // Color based on percentage
             val indicatorColor = when {
-                item.percentage >= 90 -> getCachedColor("#F44336") // Red
-                item.percentage >= 70 -> getCachedColor("#FF9800") // Orange
-                else -> getCachedColor("#4CAF50") // Green
+                item.percentage >= 90 -> ContextCompat.getColor(ctx, R.color.error)
+                item.percentage >= 70 -> ContextCompat.getColor(ctx, R.color.cat_shopping)
+                else -> ContextCompat.getColor(ctx, R.color.cat_income)
             }
             binding.progressBudget.setIndicatorColor(indicatorColor)
             binding.tvPercentage.setTextColor(indicatorColor)

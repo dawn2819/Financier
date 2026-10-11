@@ -36,6 +36,14 @@
                 app:icon="@drawable/ic_export"
                 android:textColor="@color/primary"
                 app:iconTint="@color/primary"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_export_csv"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/export_csv"
+                android:textColor="@color/primary" />
         </LinearLayout>
 
         <!-- Time Filter Chips -->

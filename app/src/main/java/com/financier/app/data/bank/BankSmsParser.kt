@@ -12,6 +12,18 @@ data class ParsedBankTransaction(
 )
 
 object BankSmsParser {
+    private val bankSenderPatterns = listOf(
+        Regex("(^|[^A-Z0-9])(VCB|VIETCOMBANK)([^A-Z0-9]|$)"),
+        Regex("(^|[^A-Z0-9])(TCB|TECHCOMBANK)([^A-Z0-9]|$)"),
+        Regex("(^|[^A-Z0-9])(MB|MBBANK)([^A-Z0-9]|$)"),
+        Regex("(^|[^A-Z0-9])ACB([^A-Z0-9]|$)"),
+        Regex("(^|[^A-Z0-9])(VPB|VPBANK)([^A-Z0-9]|$)"),
+        Regex("(^|[^A-Z0-9])BIDV([^A-Z0-9]|$)"),
+        Regex("(^|[^A-Z0-9])(AGR|AGRIBANK)([^A-Z0-9]|$)"),
+        Regex("(^|[^A-Z0-9])(VTB|VIETINBANK)([^A-Z0-9]|$)"),
+        Regex("(^|[^A-Z0-9])(TPB|TPBANK)([^A-Z0-9]|$)")
+    )
+
     fun parse(sender: String, body: String): ParsedBankTransaction? {
         val cleanBody = body.replace("\n", " ").trim()
         val normalizedSender = sender.uppercase()
@@ -88,10 +100,6 @@ object BankSmsParser {
     // Helper to check if a sender represents a bank
     fun isBankSender(sender: String): Boolean {
         val normalized = sender.uppercase()
-        val bankKeywords = listOf(
-            "VCB", "VIETCOMBANK", "TCB", "TECHCOMBANK", "MB", "MBBANK", "ACB", 
-            "VPB", "VPBANK", "BIDV", "AGR", "AGRIBANK", "VTB", "VIETINBANK", "TPB", "TPBANK"
-        )
-        return bankKeywords.any { normalized.contains(it) }
+        return bankSenderPatterns.any { it.containsMatchIn(normalized) }
     }
 }

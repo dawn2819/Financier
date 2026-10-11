@@ -93,6 +93,29 @@ class BudgetFragment : Fragment() {
             binding.progressOverall.progress = pct ?: 0
         }
 
+        viewModel.projectedSpend.observe(viewLifecycleOwner) { projected ->
+            if (projected == null) {
+                binding.tvProjectedSpend.setText(com.financier.app.R.string.projected_spend_unavailable)
+                binding.tvProjectedSpend.setTextColor(resources.getColor(com.financier.app.R.color.on_surface_variant, null))
+                return@observe
+            }
+            val estimate = projected
+            val budget = viewModel.totalBudget.value ?: 0.0
+            val text = if (budget > 0.0 && estimate > budget) {
+                getString(com.financier.app.R.string.projected_spend_over_budget, CurrencyFormatter.format(estimate, currentCurrency))
+            } else {
+                getString(com.financier.app.R.string.projected_spend, CurrencyFormatter.format(estimate, currentCurrency))
+            }
+            binding.tvProjectedSpend.text = text
+            binding.tvProjectedSpend.setTextColor(
+                resources.getColor(
+                    if (budget > 0.0 && estimate > budget) com.financier.app.R.color.error
+                    else com.financier.app.R.color.on_surface_variant,
+                    null
+                )
+            )
+        }
+
         viewModel.budgetItems.observe(viewLifecycleOwner) { items ->
             adapter.submitList(items)
             binding.tvEmpty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE

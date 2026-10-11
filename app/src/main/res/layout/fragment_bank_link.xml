@@ -154,7 +154,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1. Không thu thập thông tin: Việc phân tích tin nhắn diễn ra hoàn toàn cục bộ trên thiết bị của bạn.\n2. Chỉ giám sát: Ứng dụng chỉ đọc số tiền biến động để lập lịch sử giao dịch và KHÔNG có quyền hạn chi tiêu hay can thiệp tài sản.\n3. Mã hóa dữ liệu: Cơ sở dữ liệu của ứng dụng được bảo mật bằng SQLCipher mã hóa cấp độ quân đội."
+                    android:text="1. Chỉ xử lý tin nhắn từ ngân hàng được hỗ trợ để nhận diện giao dịch; quét SMS cũ chỉ diễn ra khi bạn chủ động nhấn nút.\n2. SMS khớp và thông tin giao dịch được lưu trong cơ sở dữ liệu SQLCipher trên thiết bị để chống nhập trùng; cơ sở dữ liệu không được đưa vào bản sao lưu ứng dụng.\n3. Nguyên văn SMS không gửi tới AI. Nếu bạn dùng tính năng AI, câu hỏi và một số dữ liệu tài chính tóm tắt có thể được gửi tới Gemini."
                     android:textSize="12sp"
                     android:lineSpacingMultiplier="1.2"
                     android:textColor="@color/on_surface_variant"/>

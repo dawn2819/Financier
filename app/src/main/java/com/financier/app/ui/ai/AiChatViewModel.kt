@@ -8,6 +8,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Calendar
+import com.financier.app.common.CurrencyFormatter
+import com.financier.app.common.DateFormatter
 
 data class ChatMessage(
     val text: String,
@@ -38,22 +40,64 @@ class AiChatViewModel(private val context: Context, private val userId: Long) : 
 
         viewModelScope.launch(Dispatchers.IO) {
             // Lấy dữ liệu tài chính để đưa vào context
-            val cal = Calendar.getInstance()
-            val month = cal.get(Calendar.MONTH) + 1
-            val year = cal.get(Calendar.YEAR).toString()
-
-            val income = db.transactionDao().getTotalIncome(userId, month, year)
-            val expense = db.transactionDao().getTotalExpense(userId, month, year)
             val settings = db.settingsDao().getSettingsByUser(userId)
             val currency = settings?.currency ?: "VND"
-            val balance = income - expense
+            val accounts = db.financialAccountDao().getAccountsByUserSync(userId)
+            val accountCurrencies = accounts.associate { it.id to it.currency }
+            val now = Calendar.getInstance()
+            val month = now.get(Calendar.MONTH) + 1
+            val year = now.get(Calendar.YEAR)
+            val fromMs = DateFormatter.getStartOfMonth(month, year)
+            val toMs = DateFormatter.getEndOfMonth(month, year)
+
+            val allTransactions = db.transactionDao().getAllTransactionsSync(userId)
+            val monthlyTransactions = allTransactions.filter { it.dateMs in fromMs..toMs }
+            var income = 0.0
+            var expense = 0.0
+            val expensesByCategory = mutableMapOf<String, Double>()
+            for (transaction in monthlyTransactions) {
+                val fromCurrency = accountCurrencies[transaction.accountId] ?: "VND"
+                val amount = CurrencyFormatter.convert(transaction.amount, fromCurrency, currency)
+                when (transaction.type) {
+                    "INCOME" -> income += amount
+                    "EXPENSE" -> {
+                        expense += amount
+                        expensesByCategory[transaction.category] =
+                            (expensesByCategory[transaction.category] ?: 0.0) + amount
+                    }
+                }
+            }
+
+            val initialBalance = accounts.sumOf {
+                CurrencyFormatter.convert(it.initialBalance, it.currency, currency)
+            }
+            val lifetimeNet = allTransactions.sumOf { transaction ->
+                val fromCurrency = accountCurrencies[transaction.accountId] ?: "VND"
+                val amount = CurrencyFormatter.convert(transaction.amount, fromCurrency, currency)
+                when (transaction.type) {
+                    "INCOME" -> amount
+                    "EXPENSE" -> -amount
+                    else -> 0.0
+                }
+            }
+            val balance = initialBalance + lifetimeNet
+            val topCategories = if (expense > 0.0) {
+                expensesByCategory.entries
+                    .sortedByDescending { it.value }
+                    .take(3)
+                    .joinToString(", ") { (category, amount) ->
+                        val share = amount / expense * 100.0
+                        "$category (${String.format(java.util.Locale.getDefault(), "%.0f", share)}%)"
+                    }
+            } else ""
 
             val result = aiRepo.sendMessage(
                 userMessage = userText,
                 totalBalance = balance,
                 monthlyIncome = income,
                 monthlyExpense = expense,
-                currency = currency
+                currency = currency,
+                topCategories = topCategories
             )
 
             withContext(Dispatchers.Main) {

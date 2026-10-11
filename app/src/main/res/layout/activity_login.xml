@@ -13,7 +13,16 @@
         android:padding="24dp"
         android:gravity="center">
 
-        <!-- Logo / App Icon placeholder -->
+        <ImageView
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/ic_sakura"
+            android:contentDescription="@string/app_name"
+            android:importantForAccessibility="no" />
+
+        <!-- App name -->
         <TextView
             android:id="@+id/tv_app_name"
             android:layout_width="wrap_content"
@@ -23,13 +32,13 @@
             android:textStyle="bold"
             android:textColor="@color/primary"
             android:fontFamily="sans-serif"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="4dp"
             android:letterSpacing="-0.02"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Smart Finance Management"
+            android:text="@string/anime_finance_tagline"
             android:textSize="13sp"
             android:textColor="@color/on_surface_variant"
             android:layout_marginTop="4dp"
@@ -60,6 +69,7 @@
                     android:layout_marginBottom="4dp"/>
 
                 <TextView
+                    android:id="@+id/tv_login_subtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/login_subtitle"
