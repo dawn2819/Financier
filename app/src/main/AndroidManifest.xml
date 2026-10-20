@@ -32,6 +32,17 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".widget.FinanceWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/finance_widget_info" />
+        </receiver>
+
         <!-- Login Activity — LAUNCHER (first screen) -->
         <activity
             android:name=".ui.auth.LoginActivity"

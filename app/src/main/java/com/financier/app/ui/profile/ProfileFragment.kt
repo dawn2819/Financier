@@ -78,6 +78,10 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(R.id.action_profile_to_nearby_places)
         }
 
+        binding.rowCryptoWallet.setOnClickListener {
+            findNavController().navigate(R.id.action_profile_to_crypto)
+        }
+
         // Sign out
         binding.btnSignOut.setOnClickListener {
             AppAudio.playClick(requireContext())

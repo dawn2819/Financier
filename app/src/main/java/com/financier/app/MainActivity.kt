@@ -17,6 +17,7 @@ import com.financier.app.common.AppAudio
 import com.financier.app.common.SessionManager
 import com.financier.app.databinding.ActivityMainBinding
 import com.financier.app.ui.auth.LoginActivity
+import com.financier.app.widget.FinanceWidgetProvider
 
 class MainActivity : AppCompatActivity() {
 
@@ -134,6 +135,7 @@ class MainActivity : AppCompatActivity() {
         }
         SessionManager.clearBackgroundedAt(this)
         resetInactivityTimer()
+        FinanceWidgetProvider.updateAll(this)
         AppAudio.startMusic(this)
     }
 

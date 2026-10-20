@@ -77,6 +77,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_profile_to_crypto"
+            app:destination="@id/cryptoWalletFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
@@ -93,6 +100,11 @@
         android:id="@+id/nearbyPlacesFragment"
         android:name="com.financier.app.ui.nearby.NearbyPlacesFragment"
         android:label="Nearby ATMs and Banks"/>
+
+    <fragment
+        android:id="@+id/cryptoWalletFragment"
+        android:name="com.financier.app.ui.crypto.CryptoWalletFragment"
+        android:label="Crypto wallet"/>
 
     <fragment
         android:id="@+id/qrScanFragment"
