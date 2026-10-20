@@ -64,11 +64,14 @@ class LoginActivity : AppCompatActivity() {
                     if (AppCompatDelegate.getDefaultNightMode() != targetMode) {
                         AppCompatDelegate.setDefaultNightMode(targetMode)
                     }
-                    if (!requiresAuthentication) {
+                    // Khi sinh trắc học đã tắt, không tự bỏ qua màn hình đăng nhập.
+                    // Người dùng phải xác thực lại bằng mật khẩu đã đăng ký.
+                    val shouldAuthenticate = requiresAuthentication || !biometricEnabled
+                    if (!shouldAuthenticate) {
                         SessionManager.clearBackgroundedAt(this@LoginActivity)
                         goToMain()
                     } else {
-                        // Phiên làm việc tạm khóa sau 3 phút chạy nền: yêu cầu xác thực lại
+                        // Phiên hết hạn hoặc đã tắt sinh trắc học: yêu cầu xác thực lại.
                         binding.tvError.visibility = View.GONE
                         binding.tvLoginSubtitle.text = getString(R.string.reauthentication_password_prompt)
                         playEntryAnimation()
@@ -302,3 +305,4 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 }
+
