@@ -37,11 +37,13 @@ class BudgetFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = BudgetAdapter(onDeleteClick = { item ->
+            val categoryName = com.financier.app.ui.transactions.TransactionAdapter
+                .getCategoryInfo(requireContext(), item.budget.category).second
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Xóa ngân sách")
-                .setMessage("Bạn có muốn xóa ngân sách \"${item.budget.category}\"?")
-                .setPositiveButton("Xóa") { _, _ -> viewModel.deleteBudget(item.budget) }
-                .setNegativeButton("Hủy", null)
+                .setTitle(com.financier.app.R.string.delete_budget_title)
+                .setMessage(getString(com.financier.app.R.string.delete_budget_message, categoryName))
+                .setPositiveButton(com.financier.app.R.string.delete) { _, _ -> viewModel.deleteBudget(item.budget) }
+                .setNegativeButton(com.financier.app.R.string.cancel, null)
                 .show()
         })
         binding.rvBudgets.layoutManager = LinearLayoutManager(requireContext())
@@ -90,7 +92,14 @@ class BudgetFragment : Fragment() {
         }
 
         viewModel.overallPercentage.observe(viewLifecycleOwner) { pct ->
-            binding.progressOverall.progress = pct ?: 0
+            val percent = pct ?: 0
+            binding.progressOverall.progress = percent
+            val stateColor = when {
+                percent >= 90 -> com.financier.app.R.color.error
+                percent >= 70 -> com.financier.app.R.color.warning
+                else -> com.financier.app.R.color.finance_income
+            }
+            binding.progressOverall.setIndicatorColor(resources.getColor(stateColor, null))
         }
 
         viewModel.projectedSpend.observe(viewLifecycleOwner) { projected ->

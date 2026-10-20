@@ -47,10 +47,10 @@ class TransactionsFragment : Fragment() {
             },
             onDeleteClick = { tx ->
                 MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Xóa giao dịch")
-                    .setMessage("Bạn có chắc muốn xóa giao dịch này?")
-                    .setPositiveButton("Xóa") { _, _ -> viewModel.deleteTransaction(tx) }
-                    .setNegativeButton("Hủy", null)
+                    .setTitle(com.financier.app.R.string.delete_transaction_title)
+                    .setMessage(com.financier.app.R.string.delete_transaction_message)
+                    .setPositiveButton(com.financier.app.R.string.delete) { _, _ -> viewModel.deleteTransaction(tx) }
+                    .setNegativeButton(com.financier.app.R.string.cancel, null)
                     .show()
             }
         )

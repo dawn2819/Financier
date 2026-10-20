@@ -10,23 +10,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="@dimen/screen_margin"
         android:paddingBottom="100dp">
 
         <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:gravity="center_vertical">
             <TextView
-                android:layout_width="0dp"
+                style="@style/TextAppearance.Financier.ScreenTitle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/budget_title"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="@color/on_surface"/>
+                android:text="@string/budget_title" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="@string/budget_subtitle"
+                android:textSize="13sp"
+                android:textColor="@color/on_surface_variant" />
         </LinearLayout>
 
         <!-- Month Selector -->
@@ -39,12 +43,13 @@
 
             <ImageButton
                 android:id="@+id/btn_prev_month"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:src="@drawable/ic_arrow_back"
                 android:tint="@color/on_surface_variant"
                 android:background="@drawable/bg_circle_transparent"
-                android:padding="10dp"/>
+                android:padding="12dp"
+                android:contentDescription="@string/previous_month" />
 
             <TextView
                 android:id="@+id/tv_month_label"
@@ -59,12 +64,13 @@
 
             <ImageButton
                 android:id="@+id/btn_next_month"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:src="@drawable/ic_chevron_right"
                 android:tint="@color/on_surface_variant"
                 android:background="@drawable/bg_circle_transparent"
-                android:padding="10dp"/>
+                android:padding="12dp"
+                android:contentDescription="@string/next_month" />
         </LinearLayout>
 
         <!-- Overview Card -->
@@ -72,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/surface_container"
-            app:cardCornerRadius="20dp"
+            app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
             android:layout_marginBottom="16dp">
 
@@ -159,7 +165,7 @@
                             android:text="0 ₫"
                             android:textSize="16sp"
                             android:textStyle="bold"
-                            android:textColor="@color/primary"/>
+                            android:textColor="@color/finance_income"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -214,7 +220,7 @@
             android:id="@+id/tv_empty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Chưa có ngân sách nào.\nNhấn + để thêm mới."
+            android:text="@string/budget_empty_hint"
             android:textSize="15sp"
             android:textColor="@color/on_surface_variant"
             android:gravity="center"

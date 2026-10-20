@@ -19,6 +19,7 @@ import com.financier.app.common.SessionManager
 import com.financier.app.databinding.FragmentDashboardBinding
 import com.financier.app.ui.transactions.TransactionAdapter
 import com.financier.app.ui.transactions.TransactionDetailsBottomSheet
+import com.financier.app.ui.transactions.AddTransactionBottomSheet
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -115,6 +116,10 @@ class DashboardFragment : Fragment() {
             findNavController().navigate(R.id.transactionsFragment)
         }
 
+        binding.btnQuickAddTransaction.setOnClickListener {
+            AddTransactionBottomSheet().show(parentFragmentManager, "add_tx")
+        }
+
         binding.chipAccountSelector.setOnClickListener {
             val accounts = viewModel.accounts.value.orEmpty()
             val names = arrayOf(
@@ -125,7 +130,7 @@ class DashboardFragment : Fragment() {
             val selected = if (selectedId == -1L) 0 else
                 accounts.indexOfFirst { it.id == selectedId }.let { if (it < 0) 0 else it + 1 }
             AlertDialog.Builder(requireContext())
-                .setTitle("Chọn tài khoản")
+                .setTitle(R.string.select_account)
                 .setSingleChoiceItems(names, selected) { dialog, which ->
                     viewModel.selectAccount(if (which == 0) -1L else accounts[which - 1].id)
                     dialog.dismiss()
@@ -199,6 +204,8 @@ class DashboardFragment : Fragment() {
             transactionAdapter.submitList(transactions) {
                 binding.rvRecentTransactions.scheduleLayoutAnimation()
             }
+            binding.tvDashboardEmpty.visibility = if (transactions.isEmpty()) View.VISIBLE else View.GONE
+            binding.rvRecentTransactions.visibility = if (transactions.isEmpty()) View.GONE else View.VISIBLE
             if (isFirstLoad) {
                 isFirstLoad = false
             }

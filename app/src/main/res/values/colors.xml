@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Primary — anime lavender (Light Theme) -->
-    <color name="primary">#7046D2</color>
+    <!-- Dark Editorial · light palette -->
+    <color name="primary">#7651C8</color>
     <color name="on_primary">#FFFFFF</color>
-    <color name="primary_container">#E9DFFF</color>
+    <color name="primary_container">#EAE0FF</color>
     <color name="on_primary_container">#281252</color>
     <color name="primary_fixed">#E8DDFF</color>
     <color name="primary_fixed_dim">#C8B0FF</color>
 
     <!-- Secondary — Blue -->
-    <color name="secondary">#C73572</color>
+    <color name="secondary">#9A4771</color>
     <color name="on_secondary">#FFFFFF</color>
-    <color name="secondary_container">#FFD9E8</color>
+    <color name="secondary_container">#F4DCE8</color>
     <color name="on_secondary_container">#4B102B</color>
 
     <!-- Tertiary — Pink -->
@@ -21,33 +21,41 @@
     <color name="on_tertiary_container">#003B36</color>
 
     <!-- Error -->
-    <color name="error">#BA1A1A</color>
+    <color name="error">#B8324B</color>
     <color name="on_error">#FFFFFF</color>
-    <color name="error_container">#FFDAD6</color>
+    <color name="error_container">#F8DCE1</color>
     <color name="on_error_container">#410002</color>
 
     <!-- Background & Surface — Light Mode -->
-    <color name="background">#FFFAFE</color>
-    <color name="on_background">#201B28</color>
-    <color name="surface">#FFFAFE</color>
-    <color name="surface_dim">#E5DDE9</color>
-    <color name="surface_bright">#FFFAFE</color>
-    <color name="on_surface">#201B28</color>
-    <color name="on_surface_variant">#51495B</color>
+    <color name="background">#F8F6FA</color>
+    <color name="on_background">#211B2B</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_dim">#E7E2EA</color>
+    <color name="surface_bright">#FFFFFF</color>
+    <color name="on_surface">#211B2B</color>
+    <color name="on_surface_variant">#6D6677</color>
 
     <!-- Surface Containers -->
     <color name="surface_container_lowest">#FFFFFF</color>
-    <color name="surface_container_low">#F8F2FB</color>
-    <color name="surface_container">#F1EAF6</color>
-    <color name="surface_container_high">#EBE3F1</color>
-    <color name="surface_container_highest">#E4DBED</color>
+    <color name="surface_container_low">#F8F6FA</color>
+    <color name="surface_container">#F0EBF5</color>
+    <color name="surface_container_high">#EBE5F0</color>
+    <color name="surface_container_highest">#E4DEE9</color>
 
     <!-- Card background (semi-transparent glass effect base) -->
     <color name="card_glass">#E6F5EDFA</color>
 
     <!-- Outline -->
-    <color name="outline">#7A7186</color>
-    <color name="outline_variant">#CDC3D8</color>
+    <color name="outline">#77707F</color>
+    <color name="outline_variant">#E4DEE9</color>
+
+    <!-- Semantic state colors -->
+    <color name="finance_income">#23794B</color>
+    <color name="finance_expense">#B8324B</color>
+    <color name="warning">#855A0A</color>
+    <color name="disabled">#A7A1AD</color>
+    <color name="focus_indicator">#7651C8</color>
+    <color name="scrim">#660D0B12</color>
 
     <!-- Inverse -->
     <color name="inverse_surface">#352F3D</color>
@@ -55,13 +63,13 @@
     <color name="inverse_primary">#D1BFFF</color>
 
     <!-- Surface tint -->
-    <color name="surface_tint">#7046D2</color>
+    <color name="surface_tint">#7651C8</color>
 
     <!-- Transparent -->
     <color name="transparent">#00000000</color>
 
     <!-- Status bar -->
-    <color name="status_bar">#F8F2FB</color>
+    <color name="status_bar">#F8F6FA</color>
 
     <!-- Category colors -->
     <color name="cat_food">#E9789A</color>

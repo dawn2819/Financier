@@ -17,6 +17,7 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -122,6 +123,8 @@ class ReportsFragment : Fragment() {
     private fun setupCharts() {
         // Pie Chart
         binding.pieChart.apply {
+            setNoDataText(getString(R.string.reports_no_data))
+            setNoDataTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.on_surface_variant))
             setUsePercentValues(true)
             description.isEnabled = false
             isDrawHoleEnabled = true
@@ -137,6 +140,8 @@ class ReportsFragment : Fragment() {
 
         // Bar Chart
         binding.barChart.apply {
+            setNoDataText(getString(R.string.reports_no_data))
+            setNoDataTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.on_surface_variant))
             description.isEnabled = false
             legend.isEnabled = true
             legend.textColor = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.on_surface_variant)
@@ -148,8 +153,16 @@ class ReportsFragment : Fragment() {
             setBackgroundColor(Color.TRANSPARENT)
             axisRight.isEnabled = false
             axisLeft.apply {
-                isEnabled = false
-                setDrawGridLines(false)
+                isEnabled = true
+                setDrawAxisLine(false)
+                setDrawGridLines(true)
+                gridColor = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.outline_variant)
+                textColor = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.on_surface_variant)
+                textSize = 10f
+                valueFormatter = object : ValueFormatter() {
+                    override fun getFormattedValue(value: Float): String =
+                        CurrencyFormatter.formatShort(value.toDouble(), currentCurrency)
+                }
             }
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
@@ -186,6 +199,7 @@ class ReportsFragment : Fragment() {
         viewModel.currency.observe(viewLifecycleOwner) { currency ->
             currentCurrency = currency
             breakdownAdapter.currency = currency
+            renderNetCashFlow()
             viewModel.totalIncome.value?.let { income ->
                 binding.tvTotalIncome.text = "+${CurrencyFormatter.format(income, currency)}"
             }
@@ -199,10 +213,12 @@ class ReportsFragment : Fragment() {
 
         viewModel.totalIncome.observe(viewLifecycleOwner) { income ->
             binding.tvTotalIncome.text = "+${CurrencyFormatter.format(income ?: 0.0, currentCurrency)}"
+            renderNetCashFlow()
         }
 
         viewModel.totalExpense.observe(viewLifecycleOwner) { expense ->
             binding.tvTotalExpense.text = "-${CurrencyFormatter.format(expense ?: 0.0, currentCurrency)}"
+            renderNetCashFlow()
         }
 
         viewModel.categorySpending.observe(viewLifecycleOwner) { items ->
@@ -215,10 +231,22 @@ class ReportsFragment : Fragment() {
         }
     }
 
+    private fun renderNetCashFlow() {
+        if (_binding == null) return
+        val net = (viewModel.totalIncome.value ?: 0.0) - (viewModel.totalExpense.value ?: 0.0)
+        binding.tvNetCashFlow.text = if (net > 0.0) {
+            "+${CurrencyFormatter.format(net, currentCurrency)}"
+        } else {
+            CurrencyFormatter.format(net, currentCurrency)
+        }
+        val color = if (net >= 0.0) R.color.finance_income else R.color.error
+        binding.tvNetCashFlow.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), color))
+    }
+
     private fun updatePieChart(items: List<CategorySpending>) {
         if (items.isEmpty()) {
             binding.pieChart.clear()
-            binding.pieChart.centerText = "Không có dữ liệu"
+            binding.pieChart.centerText = getString(R.string.reports_no_data)
             binding.pieChart.setCenterTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.on_surface_variant))
             binding.pieChart.setCenterTextSize(14f)
             binding.pieChart.invalidate()
@@ -233,9 +261,7 @@ class ReportsFragment : Fragment() {
 
         val dataSet = PieDataSet(entries, "").apply {
             setColors(colors)
-            setDrawValues(true)
-            valueTextColor = Color.WHITE
-            valueTextSize = 11f
+            setDrawValues(false)
             valueFormatter = PercentFormatter(binding.pieChart)
             sliceSpace = 2f
         }
@@ -249,14 +275,18 @@ class ReportsFragment : Fragment() {
     }
 
     private fun updateBarChart(data: List<MonthlyComparison>) {
-        if (data.isEmpty()) return
+        if (data.isEmpty()) {
+            binding.barChart.clear()
+            binding.barChart.invalidate()
+            return
+        }
 
         val incomeEntries = data.mapIndexed { i, it -> BarEntry(i.toFloat(), it.income.toFloat()) }
         val expenseEntries = data.mapIndexed { i, it -> BarEntry(i.toFloat(), it.expense.toFloat()) }
         val labels = data.map { it.label }
 
         val incomeDataSet = BarDataSet(incomeEntries, "Thu nhập").apply {
-            color = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.cat_income)
+            color = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.finance_income)
             setDrawValues(false)
         }
         val expenseDataSet = BarDataSet(expenseEntries, "Chi tiêu").apply {

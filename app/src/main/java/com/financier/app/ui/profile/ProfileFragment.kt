@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.financier.app.R
 import com.financier.app.common.LocaleHelper
 import com.financier.app.common.AppAudio
+import com.financier.app.common.AppThemePreferences
 import com.financier.app.common.SessionManager
 import com.financier.app.data.local.AppDatabase
 import com.financier.app.data.local.entity.AppSettingsEntity
@@ -63,6 +63,7 @@ class ProfileFragment : Fragment() {
 
         // Currency switcher
         binding.rowCurrency.setOnClickListener { AppAudio.playClick(requireContext()); showCurrencyDialog() }
+        binding.rowAppearance.setOnClickListener { AppAudio.playClick(requireContext()); showAppearanceDialog() }
 
         // Manage accounts — navigate to ManageAccountsFragment
         binding.rowManageAccounts.setOnClickListener {
@@ -93,17 +94,6 @@ class ProfileFragment : Fragment() {
         // Notifications toggle
         binding.switchNotifications.setOnCheckedChangeListener { _, checked ->
             if (!isLoadingSettings) saveSettings { it.copy(notificationsOn = checked) }
-        }
-
-        // Dark mode toggle
-        binding.switchDarkMode.setOnCheckedChangeListener { _, checked ->
-            if (!isLoadingSettings) {
-                saveSettings { it.copy(darkMode = checked) }
-                AppCompatDelegate.setDefaultNightMode(
-                    if (checked) AppCompatDelegate.MODE_NIGHT_YES
-                    else AppCompatDelegate.MODE_NIGHT_NO
-                )
-            }
         }
 
         // Biometric toggle
@@ -150,13 +140,20 @@ class ProfileFragment : Fragment() {
                 binding.switchSoundEffects.isChecked = AppAudio.areSoundEffectsEnabled(requireContext())
                 settings?.let {
                     binding.switchNotifications.isChecked = it.notificationsOn
-                    binding.switchDarkMode.isChecked = it.darkMode
                     binding.switchBiometric.isChecked = it.biometricEnabled
                     binding.tvCurrency.text = it.currency
                     binding.tvLanguage.text = if (it.language == "vi")
                         getString(R.string.lang_vietnamese)
                     else
                         getString(R.string.lang_english)
+                }
+                val appearance = AppThemePreferences.selectedMode(requireContext()) ?: settings?.let {
+                    if (it.darkMode) AppThemePreferences.DARK else AppThemePreferences.LIGHT
+                } ?: AppThemePreferences.SYSTEM
+                binding.tvAppearance.text = when (appearance) {
+                    AppThemePreferences.DARK -> getString(R.string.theme_dark)
+                    AppThemePreferences.LIGHT -> getString(R.string.theme_light)
+                    else -> getString(R.string.theme_system)
                 }
                 isLoadingSettings = false
             }
@@ -184,6 +181,26 @@ class ProfileFragment : Fragment() {
                 binding.tvCurrency.text = currency
                 saveSettings { it.copy(currency = currency) }
             }.show()
+    }
+
+    private fun showAppearanceDialog() {
+        val options = arrayOf(
+            getString(R.string.theme_system),
+            getString(R.string.theme_light),
+            getString(R.string.theme_dark)
+        )
+        val modes = arrayOf(AppThemePreferences.SYSTEM, AppThemePreferences.LIGHT, AppThemePreferences.DARK)
+        val selected = AppThemePreferences.selectedMode(requireContext())
+        val checked = modes.indexOf(selected).takeIf { it >= 0 } ?: 0
+        android.app.AlertDialog.Builder(requireContext())
+            .setTitle(R.string.appearance_title)
+            .setSingleChoiceItems(options, checked) { dialog, which ->
+                AppThemePreferences.saveAndApply(requireContext(), modes[which])
+                binding.tvAppearance.text = options[which]
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     private fun saveSettings(update: (AppSettingsEntity) -> AppSettingsEntity) {

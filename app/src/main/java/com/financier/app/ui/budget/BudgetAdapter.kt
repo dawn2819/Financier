@@ -57,17 +57,26 @@ class BudgetAdapter(
             binding.ivCategoryIcon.setImageResource(iconRes)
             binding.tvCategoryName.text = name
             binding.tvSpentOfLimit.text = "${CurrencyFormatter.formatShort(item.spent, currency)} / ${CurrencyFormatter.formatShort(item.budget.limitAmount, currency)}"
+            val difference = item.budget.limitAmount - item.spent
+            binding.tvRemainingAmount.text = if (difference < 0.0) {
+                ctx.getString(R.string.budget_over_by, CurrencyFormatter.formatShort(-difference, currency))
+            } else {
+                ctx.getString(R.string.budget_item_remaining, CurrencyFormatter.formatShort(difference, currency))
+            }
             binding.tvPercentage.text = "${item.percentage}%"
             binding.progressBudget.progress = item.percentage
 
             // Color based on percentage
             val indicatorColor = when {
                 item.percentage >= 90 -> ContextCompat.getColor(ctx, R.color.error)
-                item.percentage >= 70 -> ContextCompat.getColor(ctx, R.color.cat_shopping)
-                else -> ContextCompat.getColor(ctx, R.color.cat_income)
+                item.percentage >= 70 -> ContextCompat.getColor(ctx, R.color.warning)
+                else -> ContextCompat.getColor(ctx, R.color.finance_income)
             }
             binding.progressBudget.setIndicatorColor(indicatorColor)
             binding.tvPercentage.setTextColor(indicatorColor)
+            binding.tvRemainingAmount.setTextColor(
+                ContextCompat.getColor(ctx, if (difference < 0.0) R.color.error else R.color.finance_income)
+            )
 
             // Category icon color
             try {

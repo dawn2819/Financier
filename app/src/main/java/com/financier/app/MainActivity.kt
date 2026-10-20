@@ -7,12 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import androidx.lifecycle.lifecycleScope
-import androidx.appcompat.app.AppCompatDelegate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.financier.app.data.local.AppDatabase
 import com.financier.app.common.LocaleHelper
+import com.financier.app.common.AppThemePreferences
 import com.financier.app.common.AppAudio
 import com.financier.app.common.SessionManager
 import com.financier.app.databinding.ActivityMainBinding
@@ -30,6 +30,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        AppThemePreferences.apply(this)
+
         requestHighRefreshRate()
 
         // Kiểm tra session
@@ -43,12 +45,8 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             val db = AppDatabase.getDatabase(this@MainActivity)
             val settings = db.settingsDao().getSettingsByUser(userId)
-            val darkMode = settings?.darkMode ?: true
             withContext(Dispatchers.Main) {
-                val targetMode = if (darkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-                if (AppCompatDelegate.getDefaultNightMode() != targetMode) {
-                    AppCompatDelegate.setDefaultNightMode(targetMode)
-                }
+                AppThemePreferences.apply(this@MainActivity, settings?.darkMode)
             }
         }
 

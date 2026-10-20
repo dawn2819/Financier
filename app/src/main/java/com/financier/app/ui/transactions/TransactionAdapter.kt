@@ -40,7 +40,11 @@ class TransactionAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val item = getItem(position)
+        val startsDateGroup = position == 0 ||
+            com.financier.app.common.DateFormatter.formatDate(getItem(position - 1).dateMs) !=
+            com.financier.app.common.DateFormatter.formatDate(item.dateMs)
+        holder.bind(item, startsDateGroup)
     }
 
     private val colorCache = java.util.concurrent.ConcurrentHashMap<String, Int>()
@@ -73,7 +77,7 @@ class TransactionAdapter(
             }
         }
 
-        fun bind(item: TransactionEntity) {
+        fun bind(item: TransactionEntity, startsDateGroup: Boolean) {
             val ctx = binding.root.context
 
             // Bind iv_sms_badge visibility
@@ -83,12 +87,14 @@ class TransactionAdapter(
             val (iconRes, categoryName, colorHex) = getCategoryInfo(ctx, item.category)
             binding.tvTransactionName.text = item.note.ifEmpty { categoryName }
             binding.tvCategory.text = "$categoryName • ${com.financier.app.common.DateFormatter.formatTime(item.dateMs)}"
+            binding.tvTransactionDate.text = com.financier.app.common.DateFormatter.formatDate(item.dateMs)
+            binding.tvTransactionDate.visibility = if (startsDateGroup) android.view.View.VISIBLE else android.view.View.GONE
 
             // Amount
             val isIncome = item.type == "INCOME"
             val prefix = if (isIncome) "+" else "-"
             val amountColor = if (isIncome)
-                ContextCompat.getColor(ctx, R.color.cat_income)
+                ContextCompat.getColor(ctx, R.color.finance_income)
             else
                 ContextCompat.getColor(ctx, R.color.error)
 

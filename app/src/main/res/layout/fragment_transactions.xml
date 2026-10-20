@@ -10,23 +10,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingHorizontal="16dp">
+        android:paddingHorizontal="@dimen/screen_margin">
 
         <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="14dp">
             <TextView
-                android:layout_width="0dp"
+                style="@style/TextAppearance.Financier.ScreenTitle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/nav_history"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="@color/on_surface"/>
+                android:text="@string/nav_history" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="@string/history_subtitle"
+                android:textSize="13sp"
+                android:textColor="@color/on_surface_variant" />
         </LinearLayout>
 
         <!-- Search -->
@@ -65,6 +70,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:minHeight="48dp"
                 android:text="@string/filter_all_time"
                 android:textSize="12sp" />
 
@@ -75,6 +81,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
+                android:minHeight="48dp"
                 android:text="@string/filter_all_accounts"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -84,12 +91,13 @@
             android:id="@+id/tv_empty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/no_data"
+            android:text="@string/history_empty_transactions"
             android:textSize="16sp"
             android:textColor="@color/on_surface_variant"
             android:gravity="center"
             android:layout_marginTop="60dp"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:padding="20dp" />
 
         <!-- Transactions list -->
         <androidx.recyclerview.widget.RecyclerView
@@ -110,9 +118,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:layout_marginBottom="80dp"
+            android:layout_marginBottom="@dimen/bottom_nav_height"
         app:backgroundTint="@color/primary"
         app:tint="@color/on_primary"
-        android:src="@drawable/ic_add"/>
+        android:src="@drawable/ic_add"
+        android:contentDescription="@string/add_transaction" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
