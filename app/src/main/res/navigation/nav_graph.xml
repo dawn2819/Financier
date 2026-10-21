@@ -38,6 +38,54 @@
         android:label="History"/>
 
     <fragment
+        android:id="@+id/servicesHubFragment"
+        android:name="com.financier.app.ui.services.ServicesHubFragment"
+        android:label="Services">
+        <action
+            android:id="@+id/action_services_to_budget"
+            app:destination="@id/budgetFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_services_to_crypto"
+            app:destination="@id/cryptoWalletFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_services_to_nearby"
+            app:destination="@id/nearbyPlacesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_services_to_bank_link"
+            app:destination="@id/bankLinkFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_services_to_qr"
+            app:destination="@id/qrScanFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_services_to_transactions"
+            app:destination="@id/transactionsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+
+    <fragment
         android:id="@+id/budgetFragment"
         android:name="com.financier.app.ui.budget.BudgetFragment"
         android:label="Budget"/>

@@ -65,7 +65,11 @@ object SessionManager {
 
     fun markBackgrounded(context: Context) {
         if (isLoggedIn(context)) {
-            getPrefs(context).edit().putLong(KEY_BACKGROUNDED_AT, System.currentTimeMillis()).apply()
+            val prefs = getPrefs(context)
+            val current = prefs.getLong(KEY_BACKGROUNDED_AT, 0L)
+            if (current == 0L) {
+                prefs.edit().putLong(KEY_BACKGROUNDED_AT, System.currentTimeMillis()).apply()
+            }
         }
     }
 

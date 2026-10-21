@@ -9,9 +9,9 @@
         android:icon="@drawable/ic_nav_history"
         android:title="@string/nav_history"/>
     <item
-        android:id="@+id/budgetFragment"
-        android:icon="@drawable/ic_nav_budget"
-        android:title="@string/nav_budget"/>
+        android:id="@+id/servicesHubFragment"
+        android:icon="@drawable/ic_nav_services"
+        android:title="@string/nav_services"/>
     <item
         android:id="@+id/reportsFragment"
         android:icon="@drawable/ic_nav_reports"

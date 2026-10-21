@@ -34,9 +34,18 @@ class MainActivity : AppCompatActivity() {
 
         requestHighRefreshRate()
 
-        // Kiểm tra session
-        if (!SessionManager.isLoggedIn(this)) {
-            startActivity(Intent(this, LoginActivity::class.java))
+        // Kiểm tra session và yêu cầu xác thực lại nếu chạy nền >= 3 phút
+        if (!SessionManager.isLoggedIn(this) || SessionManager.requiresReauthentication(this)) {
+            val intent = Intent(this, LoginActivity::class.java).apply {
+                if (SessionManager.requiresReauthentication(this@MainActivity)) {
+                    putExtra("require_authentication", true)
+                }
+                val navTarget = this@MainActivity.intent?.getStringExtra("navigate_to")
+                if (navTarget != null) {
+                    putExtra("navigate_to", navTarget)
+                }
+            }
+            startActivity(intent)
             finish()
             return
         }
@@ -54,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupNavigation()
+        com.financier.app.data.news.DailyNewsScheduler.scheduleDaily8AM(this)
     }
 
     private fun requestHighRefreshRate() {
@@ -84,6 +94,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNav.setupWithNavController(navController)
 
+        if (intent?.getStringExtra("navigate_to") == "services") {
+            navController.navigate(R.id.servicesHubFragment)
+        }
+
         var hasSeenDestination = false
         navController.addOnDestinationChangedListener { _, _, _ ->
             if (hasSeenDestination) AppAudio.playClick(this)
@@ -97,6 +111,16 @@ class MainActivity : AppCompatActivity() {
                     // Keep nav visible — user can navigate back
                 }
             }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        if (intent?.getStringExtra("navigate_to") == "services") {
+            val navHostFragment = supportFragmentManager
+                .findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
+            navHostFragment?.navController?.navigate(R.id.servicesHubFragment)
         }
     }
 
@@ -127,7 +151,14 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (SessionManager.isLoggedIn(this) && SessionManager.requiresReauthentication(this)) {
-            startActivity(Intent(this, LoginActivity::class.java).putExtra("require_authentication", true))
+            val intent = Intent(this, LoginActivity::class.java).apply {
+                putExtra("require_authentication", true)
+                val navTarget = this@MainActivity.intent?.getStringExtra("navigate_to")
+                if (navTarget != null) {
+                    putExtra("navigate_to", navTarget)
+                }
+            }
+            startActivity(intent)
             finish()
             return
         }

@@ -5,45 +5,100 @@
     android:layout_height="match_parent"
     android:background="@drawable/widget_finance_background"
     android:orientation="vertical"
-    android:padding="14dp">
+    android:padding="12dp">
 
-    <TextView
-        android:id="@+id/widget_title"
+    <!-- Header Row -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/finance_widget_title"
-        android:textColor="@color/primary"
-        android:textSize="13sp"
-        android:textStyle="bold" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/widget_balance_label"
+        <TextView
+            android:id="@+id/widget_app_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="FINANCIER"
+            android:textColor="@color/primary"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/widget_sync_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="8:00 AM"
+            android:textColor="@color/tertiary"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Bills Section -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        android:text="@string/finance_widget_balance"
-        android:textColor="@color/on_surface_variant"
-        android:textSize="11sp" />
+        android:layout_marginTop="6dp"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/widget_balance"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="—"
-        android:textColor="@color/on_surface"
-        android:textSize="19sp"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/widget_bills_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/finance_widget_bills_label"
+            android:textColor="@color/on_surface_variant"
+            android:textSize="10sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/widget_month_summary"
+        <TextView
+            android:id="@+id/widget_bills_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="⚡ Điện: 450.000 đ · 🏠 Nhà: 3.500.000 đ"
+            android:textColor="@color/on_surface"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Divider Line (Using ImageView with background for RemoteViews compatibility) -->
+    <ImageView
+        android:id="@+id/widget_divider"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="@string/finance_widget_loading"
-        android:textColor="@color/on_surface_variant"
-        android:textSize="11sp" />
+        android:layout_height="1dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:background="@color/outline_variant"
+        android:contentDescription="@null" />
+
+    <!-- Financial News Section (8h Daily) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/widget_news_source"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TIN TÀI CHÍNH · DÂN TRÍ / VNEXPRESS"
+            android:textColor="@color/secondary"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/widget_news_headline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:text="Đang cập nhật bản tin tài chính 8:00 AM..."
+            android:textColor="@color/on_surface"
+            android:textSize="12sp" />
+    </LinearLayout>
+
 </LinearLayout>

@@ -276,4 +276,46 @@
     <string name="net_cash_flow">Net cash flow</string>
     <string name="previous_month">Previous month</string>
     <string name="next_month">Next month</string>
+
+    <!-- Services Hub & P2P & Widgets -->
+    <string name="nav_services">Services</string>
+    <string name="services_title">All Services</string>
+    <string name="services_search_hint">Search services, bills, utilities…</string>
+    <string name="services_popular">Popular Services</string>
+    <string name="services_recent">Recently Used</string>
+    <string name="services_bills">Bills &amp; Living</string>
+    <string name="services_financial">Financial Services</string>
+    <string name="services_utilities">Utilities &amp; Web3</string>
+    <string name="services_gamification">Events &amp; Rewards</string>
+    <string name="services_news_title">Market &amp; Economy News</string>
+    <string name="services_p2p_transfer">Transfer Money</string>
+    <string name="services_p2p_receive">Receive (QR)</string>
+    <string name="services_bill_electric">Electricity (EVN)</string>
+    <string name="services_bill_water">Water</string>
+    <string name="services_bill_rent">Rent / Apartment</string>
+    <string name="services_bill_internet">Internet &amp; TV</string>
+    <string name="services_phone_recharge">Phone Top-up</string>
+    <string name="services_savings">Earn &amp; Savings</string>
+    <string name="services_loans">Pay Loans</string>
+    <string name="services_pay_later">Postpaid Wallet</string>
+    <string name="services_fast_loan">Fast Consumer Loan</string>
+    <string name="services_credit_score">Trust &amp; Credit Score</string>
+    <string name="services_lucky_wheel">Lucky Wheel</string>
+    <string name="services_tarot">Financial Tarot</string>
+    <string name="services_crypto_wallet">Crypto Wallet</string>
+    <string name="services_nearby_atms">Nearby ATMs &amp; Branches</string>
+    <string name="services_budget_mgmt">Budget &amp; Limits</string>
+    <string name="services_bank_link">Bank SMS Link</string>
+    <string name="services_qr_pay">Scan VietQR</string>
+    <string name="p2p_transfer_title">Internal Transfer</string>
+    <string name="p2p_recipient">Recipient (Username)</string>
+    <string name="p2p_amount">Amount</string>
+    <string name="p2p_note">Message</string>
+    <string name="p2p_confirm">Confirm Transfer</string>
+    <string name="p2p_success">Transfer Successful!</string>
+    <string name="p2p_user_not_found">User not found</string>
+    <string name="p2p_insufficient_funds">Insufficient balance in selected account</string>
+    <string name="finance_widget_bills_label">Upcoming Bills</string>
+    <string name="finance_widget_news_label">8:00 AM Financial News</string>
+    <string name="finance_widget_no_bills">No bills due this week</string>
 </resources>

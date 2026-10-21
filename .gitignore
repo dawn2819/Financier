@@ -35,3 +35,4 @@ Thumbs.db
 .android-user/
 .apk-download/
 .gradle-user/
+serve_apk.js

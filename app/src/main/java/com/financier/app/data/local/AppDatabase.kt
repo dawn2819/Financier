@@ -20,9 +20,10 @@ import net.sqlcipher.database.SupportFactory
         TransactionEntity::class,
         BudgetEntity::class,
         AppSettingsEntity::class,
-        BankSmsLogEntity::class
+        BankSmsLogEntity::class,
+        InvoiceEntity::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -33,6 +34,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun budgetDao(): BudgetDao
     abstract fun settingsDao(): SettingsDao
     abstract fun bankSmsLogDao(): BankSmsLogDao
+    abstract fun invoiceDao(): InvoiceDao
 
     companion object {
         @Volatile
@@ -132,6 +134,31 @@ abstract class AppDatabase : RoomDatabase() {
                     TransactionEntity(userId = userId, accountId = cashId, amount = 200_000.0, type = "EXPENSE", category = "food", note = "Siêu thị", dateMs = now - 4 * oneDayMs)
                 )
                 sampleTransactions.forEach { db.transactionDao().insertTransaction(it) }
+
+                // Seed hóa đơn mẫu của doanh nghiệp (admin @dawn tạo)
+                val sampleInvoices = listOf(
+                    InvoiceEntity(
+                        creatorId = userId,
+                        creatorUsername = "dawn",
+                        billCode = "EVN-2024",
+                        targetUsername = "ALL",
+                        title = "Tiền điện sinh hoạt EVN Kỳ 10/2026",
+                        category = "bills",
+                        amount = 450_000.0,
+                        status = "UNPAID"
+                    ),
+                    InvoiceEntity(
+                        creatorId = userId,
+                        creatorUsername = "dawn",
+                        billCode = "NHA-P302",
+                        targetUsername = "ALL",
+                        title = "Tiền thuê nhà P.302 Tháng 10",
+                        category = "housing",
+                        amount = 3_500_000.0,
+                        status = "UNPAID"
+                    )
+                )
+                sampleInvoices.forEach { db.invoiceDao().insertInvoice(it) }
 
                 android.util.Log.d("AppDatabase", "✅ Seed data thành công! User: dawn / dawn123")
             } catch (e: Exception) {

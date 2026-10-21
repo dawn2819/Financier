@@ -64,14 +64,13 @@ class LoginActivity : AppCompatActivity() {
                     if (AppCompatDelegate.getDefaultNightMode() != targetMode) {
                         AppCompatDelegate.setDefaultNightMode(targetMode)
                     }
-                    // Khi sinh trắc học đã tắt, không tự bỏ qua màn hình đăng nhập.
-                    // Người dùng phải xác thực lại bằng mật khẩu đã đăng ký.
-                    val shouldAuthenticate = requiresAuthentication || !biometricEnabled
+                    // Chỉ yêu cầu xác thực lại khi đã quá 3 phút không sử dụng app (chạy nền)
+                    val shouldAuthenticate = requiresAuthentication
                     if (!shouldAuthenticate) {
                         SessionManager.clearBackgroundedAt(this@LoginActivity)
                         goToMain()
                     } else {
-                        // Phiên hết hạn hoặc đã tắt sinh trắc học: yêu cầu xác thực lại.
+                        // Đã quá 3 phút: yêu cầu xác thực lại bằng mk hoặc sinh trắc học
                         binding.tvError.visibility = View.GONE
                         binding.tvLoginSubtitle.text = getString(R.string.reauthentication_password_prompt)
                         playEntryAnimation()
@@ -300,7 +299,13 @@ class LoginActivity : AppCompatActivity() {
 
     private fun goToMain() {
         SessionManager.clearBackgroundedAt(this)
-        startActivity(Intent(this, MainActivity::class.java))
+        val mainIntent = Intent(this, MainActivity::class.java).apply {
+            val navTarget = this@LoginActivity.intent?.getStringExtra("navigate_to")
+            if (navTarget != null) {
+                putExtra("navigate_to", navTarget)
+            }
+        }
+        startActivity(mainIntent)
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         finish()
     }

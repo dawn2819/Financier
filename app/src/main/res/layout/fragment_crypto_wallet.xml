@@ -71,7 +71,6 @@
                 android:id="@+id/crypto_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/crypto_address_hint"
                 android:inputType="textVisiblePassword"
                 android:maxLines="1"
                 android:autofillHints="" />
@@ -86,7 +85,6 @@
                 android:id="@+id/crypto_token_contract"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/crypto_token_hint"
                 android:inputType="textVisiblePassword"
                 android:maxLines="1"
                 android:autofillHints="" />

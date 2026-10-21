@@ -276,4 +276,46 @@
     <string name="net_cash_flow">Dòng tiền ròng</string>
     <string name="previous_month">Tháng trước</string>
     <string name="next_month">Tháng sau</string>
+
+    <!-- Services Hub & P2P & Widgets -->
+    <string name="nav_services">Dịch vụ</string>
+    <string name="services_title">Tất cả dịch vụ</string>
+    <string name="services_search_hint">Tìm kiếm dịch vụ, hóa đơn, tiện ích…</string>
+    <string name="services_popular">Dịch vụ phổ biến</string>
+    <string name="services_recent">Xem gần đây</string>
+    <string name="services_bills">Hóa đơn &amp; Đời sống</string>
+    <string name="services_financial">Dịch vụ tài chính</string>
+    <string name="services_utilities">Tiện ích &amp; Web3</string>
+    <string name="services_gamification">Sự kiện &amp; Giải trí</string>
+    <string name="services_news_title">Tin tức thị trường &amp; Kinh tế</string>
+    <string name="services_p2p_transfer">Chuyển tiền</string>
+    <string name="services_p2p_receive">Nhận tiền</string>
+    <string name="services_bill_electric">Tiền điện</string>
+    <string name="services_bill_water">Tiền nước</string>
+    <string name="services_bill_rent">Tiền nhà</string>
+    <string name="services_bill_internet">Internet / TV</string>
+    <string name="services_phone_recharge">Điện thoại</string>
+    <string name="services_savings">Số dư sinh lời</string>
+    <string name="services_loans">Trả khoản vay</string>
+    <string name="services_pay_later">Tài khoản trả sau</string>
+    <string name="services_fast_loan">Vay tiền nhanh</string>
+    <string name="services_credit_score">Điểm tin cậy</string>
+    <string name="services_lucky_wheel">Vòng quay may mắn</string>
+    <string name="services_tarot">Xem Tarot tài chính</string>
+    <string name="services_crypto_wallet">Ví Crypto</string>
+    <string name="services_nearby_atms">Cây ATM &amp; Điểm GD</string>
+    <string name="services_budget_mgmt">Ngân sách &amp; Hạn mức</string>
+    <string name="services_bank_link">Liên kết Bank SMS</string>
+    <string name="services_qr_pay">Quét VietQR</string>
+    <string name="p2p_transfer_title">Chuyển tiền nội bộ</string>
+    <string name="p2p_recipient">Người nhận (Tên đăng nhập)</string>
+    <string name="p2p_amount">Số tiền</string>
+    <string name="p2p_note">Lời nhắn</string>
+    <string name="p2p_confirm">Xác nhận chuyển tiền</string>
+    <string name="p2p_success">Chuyển tiền thành công!</string>
+    <string name="p2p_user_not_found">Không tìm thấy người dùng này</string>
+    <string name="p2p_insufficient_funds">Số dư trong tài khoản không đủ</string>
+    <string name="finance_widget_bills_label">Hóa đơn sắp tới</string>
+    <string name="finance_widget_news_label">Tin tài chính 8h sáng</string>
+    <string name="finance_widget_no_bills">Không có hóa đơn đến hạn</string>
 </resources>

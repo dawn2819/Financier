@@ -10,23 +10,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="@dimen/screen_margin"
         android:paddingBottom="100dp">
 
         <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="14dp">
             <TextView
-                android:layout_width="0dp"
+                style="@style/TextAppearance.Financier.ScreenTitle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/profile_title"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="@color/on_surface"/>
+                android:text="@string/profile_title" />
         </LinearLayout>
 
         <!-- Avatar section -->
@@ -39,8 +38,8 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_profile_avatar"
-                android:layout_width="84dp"
-                android:layout_height="84dp"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
                 app:shapeAppearanceOverlay="@style/ShapeCircle"
                 android:src="@drawable/ic_default_avatar"
                 android:scaleType="centerCrop"
@@ -51,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Dawn"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/on_surface"/>
 
@@ -77,7 +76,35 @@
                 android:paddingVertical="4dp"/>
         </LinearLayout>
 
-        <!-- General Preferences card -->
+        <!-- Accounts -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@color/surface_container"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/account_group_title"
+                    android:textColor="@color/on_surface_variant"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+                <LinearLayout android:id="@+id/row_manage_accounts" android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/manage_accounts" android:textSize="15sp" android:textColor="@color/on_surface"/>
+                    <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_chevron_right" android:tint="@color/on_surface_variant" android:importantForAccessibility="no"/>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Preferences -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -125,16 +152,34 @@
                     <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_chevron_right" android:tint="@color/on_surface_variant" android:layout_marginStart="4dp"/>
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/row_appearance"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/appearance_label" android:textSize="15sp" android:textColor="@color/on_surface"/>
+                    <TextView android:id="@+id/tv_appearance" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/theme_system" android:textSize="14sp" android:textColor="@color/on_surface_variant"/>
+                    <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_chevron_right" android:tint="@color/on_surface_variant" android:layout_marginStart="4dp" android:importantForAccessibility="no"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/notifications_sound_group"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_surface_variant" />
+
                 <!-- Notifications -->
                 <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/notifications_label" android:textSize="15sp" android:textColor="@color/on_surface"/>
                     <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switch_notifications" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true"/>
-                </LinearLayout>
-
-                <!-- Dark Mode -->
-                <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/dark_mode_label" android:textSize="15sp" android:textColor="@color/on_surface"/>
-                    <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switch_dark_mode" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true"/>
                 </LinearLayout>
 
                 <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
@@ -164,6 +209,15 @@
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/biometric_lock" android:textSize="15sp" android:textColor="@color/on_surface"/>
                     <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switch_biometric" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                 </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/connected_services_group"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_surface_variant" />
                 <LinearLayout android:id="@+id/row_bank_link" android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/bank_link_title" android:textSize="15sp" android:textColor="@color/on_surface"/>
                     <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_chevron_right" android:tint="@color/on_surface_variant"/>
@@ -174,10 +228,6 @@
                 </LinearLayout>
                 <LinearLayout android:id="@+id/row_crypto_wallet" android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/crypto_wallet_title" android:textSize="15sp" android:textColor="@color/on_surface"/>
-                    <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_chevron_right" android:tint="@color/on_surface_variant"/>
-                </LinearLayout>
-                <LinearLayout android:id="@+id/row_manage_accounts" android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/manage_accounts" android:textSize="15sp" android:textColor="@color/on_surface"/>
                     <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_chevron_right" android:tint="@color/on_surface_variant"/>
                 </LinearLayout>
             </LinearLayout>
