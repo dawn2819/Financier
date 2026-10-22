@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.financier.app.R
+import com.financier.app.common.AppAudio
 import com.financier.app.databinding.FragmentNearbyPlacesBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,10 +29,15 @@ class NearbyPlacesFragment : Fragment() {
     private lateinit var placesAdapter: NearbyPlacesAdapter
 
     private val locationPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        if (granted) getCurrentLocation()
-        else showStatus(R.string.nearby_places_permission_denied)
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
+        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        if (fineGranted || coarseGranted) {
+            getCurrentLocation()
+        } else {
+            fallbackDefaultLocation(getString(R.string.nearby_places_permission_denied))
+        }
     }
 
     override fun onCreateView(
@@ -49,45 +55,90 @@ class NearbyPlacesFragment : Fragment() {
         binding.rvNearbyPlaces.layoutManager = LinearLayoutManager(requireContext())
         binding.rvNearbyPlaces.adapter = placesAdapter
 
-        binding.btnBack.setOnClickListener { findNavController().navigateUp() }
-        binding.btnFindNearby.setOnClickListener { findNearbyPlaces() }
+        binding.btnBack.setOnClickListener {
+            AppAudio.playClick(requireContext())
+            findNavController().navigateUp()
+        }
+        binding.btnFindNearby.setOnClickListener {
+            AppAudio.playClick(requireContext())
+            findNearbyPlaces()
+        }
         binding.tvOsmCredit.setOnClickListener {
             openUrl("https://www.openstreetmap.org/copyright")
+        }
+
+        // Auto find if permission is already granted
+        val hasFine = ContextCompat.checkSelfPermission(
+            requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        val hasCoarse = ContextCompat.checkSelfPermission(
+            requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (hasFine || hasCoarse) {
+            getCurrentLocation()
         }
     }
 
     private fun findNearbyPlaces() {
-        val permission = Manifest.permission.ACCESS_COARSE_LOCATION
-        if (ContextCompat.checkSelfPermission(requireContext(), permission) ==
-            PackageManager.PERMISSION_GRANTED
-        ) {
+        val finePermission = Manifest.permission.ACCESS_FINE_LOCATION
+        val coarsePermission = Manifest.permission.ACCESS_COARSE_LOCATION
+
+        val hasFine = ContextCompat.checkSelfPermission(requireContext(), finePermission) == PackageManager.PERMISSION_GRANTED
+        val hasCoarse = ContextCompat.checkSelfPermission(requireContext(), coarsePermission) == PackageManager.PERMISSION_GRANTED
+
+        if (hasFine || hasCoarse) {
             getCurrentLocation()
         } else {
-            locationPermissionLauncher.launch(permission)
+            locationPermissionLauncher.launch(arrayOf(finePermission, coarsePermission))
         }
     }
 
     @Suppress("MissingPermission")
     private fun getCurrentLocation() {
         val manager = requireContext().getSystemService(LocationManager::class.java)
+        if (manager == null) {
+            fallbackDefaultLocation()
+            return
+        }
+
+        // 1. Try to find the best last known location immediately
+        var bestLocation: Location? = null
+        try {
+            val enabledProviders = manager.getProviders(true)
+            for (p in enabledProviders) {
+                val loc = manager.getLastKnownLocation(p) ?: continue
+                if (bestLocation == null || (loc.hasAccuracy() && loc.accuracy < (bestLocation?.accuracy ?: Float.MAX_VALUE))) {
+                    bestLocation = loc
+                }
+            }
+        } catch (_: SecurityException) {
+        }
+
+        if (bestLocation != null) {
+            loadPlaces(bestLocation!!)
+            return
+        }
+
+        // 2. If no last known location, select an enabled provider
         val provider = try {
             when {
-                manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ->
-                    LocationManager.NETWORK_PROVIDER
-                manager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER) ->
-                    LocationManager.PASSIVE_PROVIDER
-                else -> null
+                manager.isProviderEnabled(LocationManager.GPS_PROVIDER) -> LocationManager.GPS_PROVIDER
+                manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) -> LocationManager.NETWORK_PROVIDER
+                manager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER) -> LocationManager.PASSIVE_PROVIDER
+                else -> manager.getProviders(true).firstOrNull()
             }
         } catch (_: SecurityException) {
             null
         }
 
         if (provider == null) {
-            showStatus(R.string.nearby_places_location_unavailable)
+            fallbackDefaultLocation("Vui lòng bật định vị GPS để tìm chính xác hơn quanh bạn")
             return
         }
 
         setLoading(true, R.string.nearby_places_loading)
+
         try {
             manager.getCurrentLocation(
                 provider,
@@ -100,42 +151,48 @@ class NearbyPlacesFragment : Fragment() {
                 } catch (_: SecurityException) {
                     null
                 }
+
                 if (usableLocation == null) {
-                    setLoading(false)
-                    showStatus(R.string.nearby_places_location_unavailable)
+                    fallbackDefaultLocation("Đang hiển thị điểm giao dịch lân cận (Chưa nhận tín hiệu GPS)")
                 } else {
                     loadPlaces(usableLocation)
                 }
             }
         } catch (_: SecurityException) {
-            setLoading(false)
-            showStatus(R.string.nearby_places_permission_denied)
+            fallbackDefaultLocation()
         }
     }
 
-    private fun loadPlaces(location: Location) {
+    private fun fallbackDefaultLocation(noticeText: String? = null) {
+        val defaultLoc = Location("default").apply {
+            latitude = 21.028511
+            longitude = 105.854167
+        }
+        loadPlaces(defaultLoc, noticeText)
+    }
+
+    private fun loadPlaces(location: Location, customNotice: String? = null) {
+        setLoading(true, R.string.nearby_places_loading)
+
         viewLifecycleOwner.lifecycleScope.launch {
-            val result = runCatching {
-                withContext(Dispatchers.IO) {
-                    NearbyPlacesRepository.findNearby(location.latitude, location.longitude)
-                }
+            val places = withContext(Dispatchers.IO) {
+                NearbyPlacesRepository.findNearby(location.latitude, location.longitude)
             }
             if (_binding == null) return@launch
 
             setLoading(false)
-            result.onSuccess { places ->
-                placesAdapter.submitList(places)
-                if (places.isEmpty()) {
-                    showStatus(R.string.nearby_places_none)
+            placesAdapter.submitList(places)
+
+            if (places.isEmpty()) {
+                showStatus(R.string.nearby_places_none)
+            } else {
+                val foundText = getString(R.string.nearby_places_found, places.size)
+                binding.tvNearbyStatus.text = if (customNotice != null) {
+                    "$customNotice\n$foundText"
                 } else {
-                    binding.tvNearbyStatus.text = getString(
-                        R.string.nearby_places_found,
-                        places.size
-                    )
-                    binding.tvNearbyStatus.visibility = View.VISIBLE
+                    foundText
                 }
-            }.onFailure {
-                showStatus(R.string.nearby_places_error)
+                binding.tvNearbyStatus.visibility = View.VISIBLE
             }
         }
     }
@@ -155,6 +212,7 @@ class NearbyPlacesFragment : Fragment() {
     }
 
     private fun openDirections(place: NearbyPlace) {
+        AppAudio.playClick(requireContext())
         val navigationUri = Uri.parse(
             "google.navigation:q=${place.latitude},${place.longitude}"
         )
