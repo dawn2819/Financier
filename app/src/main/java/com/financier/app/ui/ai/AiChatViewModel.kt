@@ -10,6 +10,7 @@ import kotlinx.coroutines.withContext
 import java.util.Calendar
 import com.financier.app.common.CurrencyFormatter
 import com.financier.app.common.DateFormatter
+import com.financier.app.common.SessionManager
 
 data class ChatMessage(
     val text: String,
@@ -91,13 +92,25 @@ class AiChatViewModel(private val context: Context, private val userId: Long) : 
                     }
             } else ""
 
+            val username = SessionManager.getUsername(context)
+            val unpaidInvoices = try {
+                db.invoiceDao().getUnpaidInvoicesForUserSync(username)
+            } catch (e: Exception) {
+                emptyList()
+            }
+            val unpaidBillsCount = unpaidInvoices.size
+            val unpaidBillsTotal = unpaidInvoices.sumOf { it.amount }
+
             val result = aiRepo.sendMessage(
+                context = context,
                 userMessage = userText,
                 totalBalance = balance,
                 monthlyIncome = income,
                 monthlyExpense = expense,
                 currency = currency,
-                topCategories = topCategories
+                topCategories = topCategories,
+                unpaidBillsCount = unpaidBillsCount,
+                unpaidBillsTotal = unpaidBillsTotal
             )
 
             withContext(Dispatchers.Main) {

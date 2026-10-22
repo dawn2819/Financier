@@ -3,6 +3,7 @@ package com.financier.app.common
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.financier.app.BuildConfig
 
 /**
  * Quản lý session đăng nhập, lưu trong EncryptedSharedPreferences
@@ -18,6 +19,7 @@ object SessionManager {
     private const val KEY_AVATAR_PATH = "avatar_path"
     private const val KEY_IS_LOGGED_IN = "is_logged_in"
     private const val KEY_BACKGROUNDED_AT = "backgrounded_at"
+    private const val KEY_CUSTOM_GEMINI_KEY = "custom_gemini_api_key"
     const val REAUTHENTICATION_TIMEOUT_MS = 3 * 60 * 1000L
 
     private fun getPrefs(context: Context) = try {
@@ -123,5 +125,31 @@ object SessionManager {
     fun isDawnAdmin(context: Context): Boolean {
         val username = getUsername(context).trim().lowercase()
         return username == "dawn"
+    }
+
+    /**
+     * Quản lý API Key của Google Gemini do người dùng thiết lập
+     */
+    fun getGeminiApiKey(context: Context): String {
+        return getPrefs(context).getString(KEY_CUSTOM_GEMINI_KEY, "")?.trim().orEmpty()
+    }
+
+    fun saveGeminiApiKey(context: Context, key: String?) {
+        val trimmed = key?.trim().orEmpty()
+        if (trimmed.isEmpty()) {
+            getPrefs(context).edit().remove(KEY_CUSTOM_GEMINI_KEY).apply()
+        } else {
+            getPrefs(context).edit().putString(KEY_CUSTOM_GEMINI_KEY, trimmed).apply()
+        }
+    }
+
+    fun getEffectiveGeminiApiKey(context: Context): String {
+        val customKey = getGeminiApiKey(context)
+        if (customKey.isNotBlank()) return customKey
+        return BuildConfig.GEMINI_API_KEY.trim()
+    }
+
+    fun hasGeminiApiKey(context: Context): Boolean {
+        return getEffectiveGeminiApiKey(context).isNotBlank()
     }
 }
