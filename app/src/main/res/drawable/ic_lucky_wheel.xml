@@ -1,0 +1,50 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="260dp"
+    android:height="260dp"
+    android:viewportWidth="260"
+    android:viewportHeight="260">
+    <!-- Outer Rim -->
+    <path
+        android:fillColor="#FFB300"
+        android:pathData="M130,130m-125,0a125,125 0,1 1,250 0a125,125 0,1 1,-250 0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M130,130m-116,0a116,116 0,1 1,232 0a116,116 0,1 1,-232 0" />
+
+    <!-- 6 Segments -->
+    <!-- Segment 1: Red/Orange (0 to 60 deg) -->
+    <path
+        android:fillColor="#FF5722"
+        android:pathData="M130,130 L130,18 A112,112 0 0,1 227,74 Z" />
+    <!-- Segment 2: Purple (60 to 120 deg) -->
+    <path
+        android:fillColor="#7C4DFF"
+        android:pathData="M130,130 L227,74 A112,112 0 0,1 227,186 Z" />
+    <!-- Segment 3: Teal (120 to 180 deg) -->
+    <path
+        android:fillColor="#00BFA5"
+        android:pathData="M130,130 L227,186 A112,112 0 0,1 130,242 Z" />
+    <!-- Segment 4: Amber (180 to 240 deg) -->
+    <path
+        android:fillColor="#FF9800"
+        android:pathData="M130,130 L130,242 A112,112 0 0,1 33,186 Z" />
+    <!-- Segment 5: Blue (240 to 300 deg) -->
+    <path
+        android:fillColor="#2979FF"
+        android:pathData="M130,130 L33,186 A112,112 0 0,1 33,74 Z" />
+    <!-- Segment 6: Pink (300 to 360 deg) -->
+    <path
+        android:fillColor="#E91E63"
+        android:pathData="M130,130 L33,74 A112,112 0 0,1 130,18 Z" />
+
+    <!-- Center Hub -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M130,130m-36,0a36,36 0,1 1,72 0a36,36 0,1 1,-72 0" />
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M130,130m-28,0a28,28 0,1 1,56 0a28,28 0,1 1,-56 0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M130,130m-14,0a14,14 0,1 1,28 0a14,14 0,1 1,-28 0" />
+</vector>

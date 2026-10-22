@@ -40,7 +40,8 @@ class FinanceWidgetProvider : AppWidgetProvider() {
         val billsSummary: String,
         val newsSource: String,
         val newsHeadline: String,
-        val syncTimeBadge: String
+        val syncTimeBadge: String,
+        val articleUrl: String
     )
 
     private suspend fun loadWidgetContent(context: Context): WidgetContent {
@@ -54,13 +55,15 @@ class FinanceWidgetProvider : AppWidgetProvider() {
 
         val newsSource = "TIN TÀI CHÍNH 8:00 AM · ${headline.source.uppercase()}"
         val newsHeadline = headline.title
+        val articleUrl = headline.link
 
         if (!SessionManager.isLoggedIn(context) || userId < 0) {
             return WidgetContent(
                 billsSummary = "⚡ Điện EVN · 🏠 Tiền nhà (Mở app để đồng bộ)",
                 newsSource = newsSource,
                 newsHeadline = newsHeadline,
-                syncTimeBadge = "8:00 AM"
+                syncTimeBadge = "8:00 AM",
+                articleUrl = articleUrl
             )
         }
 
@@ -141,14 +144,16 @@ class FinanceWidgetProvider : AppWidgetProvider() {
                 billsSummary = billsSummary,
                 newsSource = newsSource,
                 newsHeadline = newsHeadline,
-                syncTimeBadge = "8:00 AM"
+                syncTimeBadge = "8:00 AM",
+                articleUrl = articleUrl
             )
         } catch (_: Exception) {
             WidgetContent(
                 billsSummary = "⚡ Điện EVN · 🏠 Tiền nhà (Chạm để xem)",
                 newsSource = newsSource,
                 newsHeadline = newsHeadline,
-                syncTimeBadge = "8:00 AM"
+                syncTimeBadge = "8:00 AM",
+                articleUrl = articleUrl
             )
         }
     }
@@ -161,17 +166,48 @@ class FinanceWidgetProvider : AppWidgetProvider() {
             setTextViewText(R.id.widget_news_headline, content.newsHeadline)
         }
 
-        val openIntent = Intent(context, MainActivity::class.java).apply {
+        // 1. Click on news section -> Opens article directly (as seen on web)
+        val newsIntent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra("navigate_to", "article_reader")
+            putExtra("article_url", content.articleUrl)
+            putExtra("article_title", content.newsHeadline)
+            putExtra("article_source", content.newsSource)
+        }
+        val newsPending = PendingIntent.getActivity(
+            context,
+            7202,
+            newsIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        views.setOnClickPendingIntent(R.id.widget_news_section, newsPending)
+
+        // 2. Click on bills section -> Opens Bills Hub page
+        val billsIntent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra("navigate_to", "bills")
+        }
+        val billsPending = PendingIntent.getActivity(
+            context,
+            7203,
+            billsIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        views.setOnClickPendingIntent(R.id.widget_bills_section, billsPending)
+
+        // 3. Click on root -> Opens Services Hub
+        val rootIntent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra("navigate_to", "services")
         }
-        val pending = PendingIntent.getActivity(
+        val rootPending = PendingIntent.getActivity(
             context,
             7201,
-            openIntent,
+            rootIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        views.setOnClickPendingIntent(R.id.widget_root, pending)
+        views.setOnClickPendingIntent(R.id.widget_root, rootPending)
+
         return views
     }
 

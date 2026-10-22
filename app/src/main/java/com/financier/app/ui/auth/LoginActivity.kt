@@ -300,10 +300,7 @@ class LoginActivity : AppCompatActivity() {
     private fun goToMain() {
         SessionManager.clearBackgroundedAt(this)
         val mainIntent = Intent(this, MainActivity::class.java).apply {
-            val navTarget = this@LoginActivity.intent?.getStringExtra("navigate_to")
-            if (navTarget != null) {
-                putExtra("navigate_to", navTarget)
-            }
+            this@LoginActivity.intent?.extras?.let { putExtras(it) }
         }
         startActivity(mainIntent)
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)

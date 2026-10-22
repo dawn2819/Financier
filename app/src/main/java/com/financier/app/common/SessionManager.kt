@@ -116,4 +116,12 @@ object SessionManager {
     fun saveAvatarPath(context: Context, path: String?) {
         getPrefs(context).edit().putString(KEY_AVATAR_PATH, path).apply()
     }
+
+    /**
+     * Chỉ duy nhất tài khoản admin @dawn mới có quyền tạo mã hóa đơn doanh nghiệp
+     */
+    fun isDawnAdmin(context: Context): Boolean {
+        val username = getUsername(context).trim().lowercase()
+        return username == "dawn"
+    }
 }

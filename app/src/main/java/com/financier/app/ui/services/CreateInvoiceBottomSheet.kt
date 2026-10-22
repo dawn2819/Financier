@@ -49,6 +49,11 @@ class CreateInvoiceBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (!SessionManager.isDawnAdmin(requireContext())) {
+            Toast.makeText(requireContext(), "Chỉ tài khoản admin @dawn mới có quyền tạo mã hóa đơn!", Toast.LENGTH_SHORT).show()
+            dismiss()
+            return
+        }
         setupViews()
     }
 

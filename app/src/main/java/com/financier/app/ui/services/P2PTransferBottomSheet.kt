@@ -59,6 +59,26 @@ class P2PTransferBottomSheet : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         loadData()
         setupListeners()
+        applyInitialArguments()
+    }
+
+    private fun applyInitialArguments() {
+        arguments?.let { args ->
+            val recipient = args.getString(ARG_RECIPIENT)
+            val amount = args.getDouble(ARG_AMOUNT, 0.0)
+            val note = args.getString(ARG_NOTE)
+
+            if (!recipient.isNullOrBlank()) {
+                binding.etRecipient.setText(recipient)
+                debounceRecipientCheck(recipient)
+            }
+            if (amount > 0.0) {
+                binding.etAmount.setText(amount.toLong().toString())
+            }
+            if (!note.isNullOrBlank()) {
+                binding.etNote.setText(note)
+            }
+        }
     }
 
     private fun loadData() {
@@ -102,11 +122,9 @@ class P2PTransferBottomSheet : BottomSheetDialogFragment() {
         binding.spinnerSourceAccount.adapter = adapter
         binding.spinnerSourceAccount.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (position in senderAccounts.indices) {
-                    selectedAccount = senderAccounts[position]
-                    val bal = accountBalances[selectedAccount?.id] ?: 0.0
-                    binding.tvSourceBalance.text = "Số dư khả dụng: ${CurrencyFormatter.format(bal, selectedAccount?.currency ?: "VND")}"
-                }
+                selectedAccount = senderAccounts[position]
+                val bal = accountBalances[selectedAccount?.id] ?: 0.0
+                binding.tvSourceBalance.text = "Số dư khả dụng: ${CurrencyFormatter.format(bal, selectedAccount?.currency ?: "VND")}"
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
@@ -143,7 +161,8 @@ class P2PTransferBottomSheet : BottomSheetDialogFragment() {
 
     private fun debounceRecipientCheck(query: String) {
         recipientSearchJob?.cancel()
-        if (query.isBlank()) {
+        val cleanQuery = query.removePrefix("@").trim()
+        if (cleanQuery.isBlank()) {
             validatedRecipient = null
             binding.tvRecipientFeedback.text = "Nhập tên tài khoản để kiểm tra"
             binding.tvRecipientFeedback.setTextColor(ContextCompat.getColor(requireContext(), R.color.on_surface_variant))
@@ -153,13 +172,13 @@ class P2PTransferBottomSheet : BottomSheetDialogFragment() {
         recipientSearchJob = lifecycleScope.launch(Dispatchers.IO) {
             delay(300) // 300ms debounce
             val db = AppDatabase.getDatabase(requireContext())
-            val user = db.userDao().getUserByUsername(query)
+            val user = db.userDao().getUserByUsername(cleanQuery)
             withContext(Dispatchers.Main) {
                 if (!isAdded) return@withContext
                 val currentUserId = SessionManager.getUserId(requireContext())
                 if (user == null) {
                     validatedRecipient = null
-                    binding.tvRecipientFeedback.text = "⚠ Không tìm thấy người dùng '@$query'"
+                    binding.tvRecipientFeedback.text = "⚠ Không tìm thấy người dùng '@$cleanQuery'"
                     binding.tvRecipientFeedback.setTextColor(ContextCompat.getColor(requireContext(), R.color.error))
                 } else if (user.id == currentUserId) {
                     validatedRecipient = null
@@ -363,6 +382,22 @@ class P2PTransferBottomSheet : BottomSheetDialogFragment() {
 
     companion object {
         const val TAG = "P2PTransferBottomSheet"
-        fun newInstance() = P2PTransferBottomSheet()
+        private const val ARG_RECIPIENT = "arg_recipient"
+        private const val ARG_AMOUNT = "arg_amount"
+        private const val ARG_NOTE = "arg_note"
+
+        fun newInstance(
+            initialRecipient: String? = null,
+            initialAmount: Double? = null,
+            initialNote: String? = null
+        ): P2PTransferBottomSheet {
+            return P2PTransferBottomSheet().apply {
+                arguments = Bundle().apply {
+                    if (initialRecipient != null) putString(ARG_RECIPIENT, initialRecipient)
+                    if (initialAmount != null) putDouble(ARG_AMOUNT, initialAmount)
+                    if (initialNote != null) putString(ARG_NOTE, initialNote)
+                }
+            }
+        }
     }
 }

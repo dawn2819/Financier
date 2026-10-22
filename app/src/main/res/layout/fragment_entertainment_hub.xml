@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/surface"
+        app:elevation="1dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@color/on_surface"
+            app:title="Giải trí &amp; Săn thưởng"
+            app:titleTextColor="@color/on_surface"
+            app:titleTextAppearance="@style/TextAppearance.Material3.TitleMedium" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="48dp">
+
+            <!-- 1. Daily Check-in Streak Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/outline_variant"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="🔥 Điểm danh nhận thưởng"
+                            android:textColor="@color/on_surface"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_streak_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_badge"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="4dp"
+                            android:text="Chuỗi 3 ngày"
+                            android:textColor="@color/primary"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Điểm danh liên tiếp 7 ngày để nhận quà lớn 50.000 ₫"
+                        android:textColor="@color/on_surface_variant"
+                        android:textSize="12sp" />
+
+                    <!-- 7 Days Badges Row -->
+                    <LinearLayout
+                        android:id="@+id/layout_checkin_days"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:orientation="horizontal"
+                        android:weightSum="7">
+
+                        <!-- Days 1 to 7 generated dynamically or via child views -->
+                        <include layout="@layout/item_checkin_day" android:id="@+id/day_1" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
+                        <include layout="@layout/item_checkin_day" android:id="@+id/day_2" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
+                        <include layout="@layout/item_checkin_day" android:id="@+id/day_3" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
+                        <include layout="@layout/item_checkin_day" android:id="@+id/day_4" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
+                        <include layout="@layout/item_checkin_day" android:id="@+id/day_5" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
+                        <include layout="@layout/item_checkin_day" android:id="@+id/day_6" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
+                        <include layout="@layout/item_checkin_day" android:id="@+id/day_7" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_checkin_now"
+                        style="@style/Widget.Material3.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="14dp"
+                        android:text="Điểm danh hôm nay (+10.000 ₫)"
+                        android:textSize="14sp"
+                        app:cornerRadius="12dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 2. Lucky Wheel Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/outline_variant"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="🎡 Vòng quay may mắn"
+                            android:textColor="@color/on_surface"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_spin_turns"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_badge"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="4dp"
+                            android:text="Còn 1 lượt quay"
+                            android:textColor="@color/primary"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Quay để rinh quà tiền mặt và hàng ngàn voucher thanh toán hóa đơn"
+                        android:textColor="@color/on_surface_variant"
+                        android:textSize="12sp" />
+
+                    <!-- Wheel View Container with Pointer -->
+                    <RelativeLayout
+                        android:layout_width="260dp"
+                        android:layout_height="260dp"
+                        android:layout_marginTop="16dp">
+
+                        <ImageView
+                            android:id="@+id/iv_lucky_wheel"
+                            android:layout_width="260dp"
+                            android:layout_height="260dp"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/ic_lucky_wheel" />
+
+                        <ImageView
+                            android:id="@+id/iv_wheel_pointer"
+                            android:layout_width="32dp"
+                            android:layout_height="40dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="-4dp"
+                            android:src="@drawable/ic_wheel_pointer" />
+                    </RelativeLayout>
+
+                    <!-- Prize Legend -->
+                    <TextView
+                        android:id="@+id/tv_wheel_result"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Phần thưởng: 10K · 50K · 100K · Voucher EVN · Voucher Cà phê"
+                        android:textColor="@color/on_surface_variant"
+                        android:textSize="12sp"
+                        android:textStyle="italic" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_spin_wheel"
+                        style="@style/Widget.Material3.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="12dp"
+                        android:text="Quay ngay!"
+                        android:textSize="14sp"
+                        app:cornerRadius="12dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 3. Tarot Card Flip (Bói Vui Tài Lộc) -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/outline_variant"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🔮 Bói quẻ tài lộc hôm nay"
+                        android:textColor="@color/on_surface"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Chọn 1 trong 3 lá bài Tarot để mở thông điệp tài chính may mắn của bạn"
+                        android:textColor="@color/on_surface_variant"
+                        android:textSize="12sp" />
+
+                    <!-- 3 Cards Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:weightSum="3">
+
+                        <!-- Card 1 -->
+                        <FrameLayout
+                            android:id="@+id/card_tarot_1"
+                            android:layout_width="0dp"
+                            android:layout_height="130dp"
+                            android:layout_margin="4dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/ic_tarot_back"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <TextView
+                                android:id="@+id/tv_tarot_1_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom|center_horizontal"
+                                android:layout_marginBottom="8dp"
+                                android:text="Tài Vận"
+                                android:textColor="#FFD700"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+                        </FrameLayout>
+
+                        <!-- Card 2 -->
+                        <FrameLayout
+                            android:id="@+id/card_tarot_2"
+                            android:layout_width="0dp"
+                            android:layout_height="130dp"
+                            android:layout_margin="4dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/ic_tarot_back"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <TextView
+                                android:id="@+id/tv_tarot_2_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom|center_horizontal"
+                                android:layout_marginBottom="8dp"
+                                android:text="Công Danh"
+                                android:textColor="#FFD700"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+                        </FrameLayout>
+
+                        <!-- Card 3 -->
+                        <FrameLayout
+                            android:id="@+id/card_tarot_3"
+                            android:layout_width="0dp"
+                            android:layout_height="130dp"
+                            android:layout_margin="4dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/ic_tarot_back"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <TextView
+                                android:id="@+id/tv_tarot_3_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom|center_horizontal"
+                                android:layout_marginBottom="8dp"
+                                android:text="Bình An"
+                                android:textColor="#FFD700"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+                        </FrameLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 4. Voucher Bag Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/outline_variant"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🎟️ Túi voucher của bạn"
+                        android:textColor="@color/on_surface"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/container_vouchers"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

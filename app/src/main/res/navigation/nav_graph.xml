@@ -30,6 +30,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_dashboard_to_bills"
+            app:destination="@id/billsHubFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
@@ -83,7 +90,63 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_services_to_bills_hub"
+            app:destination="@id/billsHubFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_services_to_receive_money"
+            app:destination="@id/receiveMoneyFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_services_to_entertainment_hub"
+            app:destination="@id/entertainmentHubFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_services_to_news_feed"
+            app:destination="@id/financialNewsFeedFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
+
+    <fragment
+        android:id="@+id/billsHubFragment"
+        android:name="com.financier.app.ui.services.BillsHubFragment"
+        android:label="Hóa đơn &amp; Cước phí" />
+
+    <fragment
+        android:id="@+id/receiveMoneyFragment"
+        android:name="com.financier.app.ui.services.ReceiveMoneyFragment"
+        android:label="Nhận tiền" />
+
+    <fragment
+        android:id="@+id/entertainmentHubFragment"
+        android:name="com.financier.app.ui.services.EntertainmentHubFragment"
+        android:label="Giải trí &amp; Sự kiện">
+        <action
+            android:id="@+id/action_entertainmentHubFragment_to_billsHubFragment"
+            app:destination="@id/billsHubFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/financialNewsFeedFragment"
+        android:name="com.financier.app.ui.news.FinancialNewsFeedFragment"
+        android:label="Tin tức tài chính" />
 
     <fragment
         android:id="@+id/budgetFragment"

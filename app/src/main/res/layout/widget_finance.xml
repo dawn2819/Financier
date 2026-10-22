@@ -36,6 +36,7 @@
 
     <!-- Bills Section -->
     <LinearLayout
+        android:id="@+id/widget_bills_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
@@ -75,6 +76,7 @@
 
     <!-- Financial News Section (8h Daily) -->
     <LinearLayout
+        android:id="@+id/widget_news_section"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

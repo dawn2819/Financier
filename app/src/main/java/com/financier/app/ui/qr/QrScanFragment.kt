@@ -2,6 +2,7 @@ package com.financier.app.ui.qr
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +12,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.financier.app.R
 import com.financier.app.common.CurrencyFormatter
 import com.financier.app.data.bank.BankDeepLinkHelper
 import com.financier.app.data.bank.VietQrParser
 import com.financier.app.databinding.FragmentQrScanBinding
 import com.financier.app.databinding.LayoutQrResultBottomSheetBinding
+import com.financier.app.ui.services.P2PTransferBottomSheet
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.zxing.ResultPoint
 import com.journeyapps.barcodescanner.BarcodeCallback
@@ -79,9 +80,26 @@ class QrScanFragment : Fragment() {
     }
 
     private fun handleQrResult(rawText: String) {
+        // 1. Kiểm tra mã QR chuyển tiền nội bộ Financier
+        if (rawText.startsWith("financier://transfer", ignoreCase = true) || rawText.startsWith("financier://pay", ignoreCase = true)) {
+            val uri = try { Uri.parse(rawText) } catch (_: Exception) { null }
+            val recipient = uri?.getQueryParameter("to")?.removePrefix("@")
+            val amount = uri?.getQueryParameter("amount")?.toDoubleOrNull()
+            val note = uri?.getQueryParameter("note")
+
+            val sheet = P2PTransferBottomSheet.newInstance(
+                initialRecipient = recipient,
+                initialAmount = amount,
+                initialNote = note
+            )
+            sheet.show(childFragmentManager, P2PTransferBottomSheet.TAG)
+            return
+        }
+
+        // 2. Kiểm tra mã VietQR tiêu chuẩn ngân hàng
         val qrData = VietQrParser.parse(rawText)
         if (qrData == null) {
-            Toast.makeText(requireContext(), "Mã QR không đúng định dạng VietQR", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Mã QR không đúng định dạng VietQR hoặc Financier", Toast.LENGTH_SHORT).show()
             binding.barcodeScanner.postDelayed({
                 if (_binding != null) {
                     binding.barcodeScanner.resume()

@@ -85,4 +85,5 @@
     <color name="cat_pets">#A6D985</color>
     <color name="cat_others">#A6AFBF</color>
     <color name="cat_income">#75D6B8</color>
+    <color name="surface_variant">#332C3D</color>
 </resources>

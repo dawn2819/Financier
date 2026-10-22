@@ -4,20 +4,22 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import androidx.lifecycle.lifecycleScope
+import com.financier.app.common.AppAudio
+import com.financier.app.common.AppThemePreferences
+import com.financier.app.common.LocaleHelper
+import com.financier.app.common.SessionManager
+import com.financier.app.data.local.AppDatabase
+import com.financier.app.data.news.DailyNewsScheduler
+import com.financier.app.databinding.ActivityMainBinding
+import com.financier.app.ui.auth.LoginActivity
+import com.financier.app.ui.news.ArticleReaderActivity
+import com.financier.app.widget.FinanceWidgetProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import com.financier.app.data.local.AppDatabase
-import com.financier.app.common.LocaleHelper
-import com.financier.app.common.AppThemePreferences
-import com.financier.app.common.AppAudio
-import com.financier.app.common.SessionManager
-import com.financier.app.databinding.ActivityMainBinding
-import com.financier.app.ui.auth.LoginActivity
-import com.financier.app.widget.FinanceWidgetProvider
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,10 +42,7 @@ class MainActivity : AppCompatActivity() {
                 if (SessionManager.requiresReauthentication(this@MainActivity)) {
                     putExtra("require_authentication", true)
                 }
-                val navTarget = this@MainActivity.intent?.getStringExtra("navigate_to")
-                if (navTarget != null) {
-                    putExtra("navigate_to", navTarget)
-                }
+                this@MainActivity.intent?.extras?.let { putExtras(it) }
             }
             startActivity(intent)
             finish()
@@ -63,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupNavigation()
-        com.financier.app.data.news.DailyNewsScheduler.scheduleDaily8AM(this)
+        DailyNewsScheduler.scheduleDaily8AM(this)
     }
 
     private fun requestHighRefreshRate() {
@@ -94,33 +93,53 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNav.setupWithNavController(navController)
 
-        if (intent?.getStringExtra("navigate_to") == "services") {
-            navController.navigate(R.id.servicesHubFragment)
-        }
+        handleNavigationIntent(intent)
 
         var hasSeenDestination = false
         navController.addOnDestinationChangedListener { _, _, _ ->
             if (hasSeenDestination) AppAudio.playClick(this)
             hasSeenDestination = true
         }
-
-        // Ẩn bottom nav khi vào profile/accounts (optional)
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.profileFragment, R.id.manageAccountsFragment -> {
-                    // Keep nav visible — user can navigate back
-                }
-            }
-        }
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         setIntent(intent)
-        if (intent?.getStringExtra("navigate_to") == "services") {
-            val navHostFragment = supportFragmentManager
-                .findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
-            navHostFragment?.navController?.navigate(R.id.servicesHubFragment)
+        handleNavigationIntent(intent)
+    }
+
+    private fun handleNavigationIntent(targetIntent: Intent?) {
+        val navTarget = targetIntent?.getStringExtra("navigate_to") ?: return
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as? NavHostFragment ?: return
+        val navController = navHostFragment.navController
+
+        when (navTarget) {
+            "article_reader" -> {
+                val url = targetIntent.getStringExtra("article_url")
+                val title = targetIntent.getStringExtra("article_title")
+                val source = targetIntent.getStringExtra("article_source")
+                if (!url.isNullOrBlank()) {
+                    ArticleReaderActivity.open(this, url, title.orEmpty().ifEmpty { "Tin tức" }, source.orEmpty().ifEmpty { "Tin tức" })
+                } else {
+                    navController.navigate(R.id.financialNewsFeedFragment)
+                }
+            }
+            "news" -> {
+                navController.navigate(R.id.financialNewsFeedFragment)
+            }
+            "bills" -> {
+                navController.navigate(R.id.billsHubFragment)
+            }
+            "services" -> {
+                navController.navigate(R.id.servicesHubFragment)
+            }
+            "receive_money" -> {
+                navController.navigate(R.id.receiveMoneyFragment)
+            }
+            "entertainment" -> {
+                navController.navigate(R.id.entertainmentHubFragment)
+            }
         }
     }
 
@@ -130,6 +149,7 @@ class MainActivity : AppCompatActivity() {
             SessionManager.markBackgrounded(this)
             val intent = Intent(this, LoginActivity::class.java).apply {
                 putExtra("require_authentication", true)
+                this@MainActivity.intent?.extras?.let { putExtras(it) }
             }
             startActivity(intent)
             finish()
@@ -153,10 +173,7 @@ class MainActivity : AppCompatActivity() {
         if (SessionManager.isLoggedIn(this) && SessionManager.requiresReauthentication(this)) {
             val intent = Intent(this, LoginActivity::class.java).apply {
                 putExtra("require_authentication", true)
-                val navTarget = this@MainActivity.intent?.getStringExtra("navigate_to")
-                if (navTarget != null) {
-                    putExtra("navigate_to", navTarget)
-                }
+                this@MainActivity.intent?.extras?.let { putExtras(it) }
             }
             startActivity(intent)
             finish()
